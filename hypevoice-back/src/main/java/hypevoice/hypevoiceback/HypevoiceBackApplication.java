@@ -1,13 +1,13 @@
-package hypevoice.hpyevoiceback;
+package hypevoice.hypevoiceback;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class HpyevoiceBackApplication {
+public class HypevoiceBackApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(HpyevoiceBackApplication.class, args);
+		SpringApplication.run(HypevoiceBackApplication.class, args);
 	}
 
 }
