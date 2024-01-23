@@ -1,2 +1,0 @@
-HYPE VOICE
-gerrit change
