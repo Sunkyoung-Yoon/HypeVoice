@@ -13,5 +13,5 @@ public class WorkRequest {
     private String scriptURL;
     private String recordURL;
     private String info;
-    private String isRep;
+
 }

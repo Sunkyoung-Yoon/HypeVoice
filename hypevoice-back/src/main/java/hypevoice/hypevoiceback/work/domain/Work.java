@@ -1,18 +1,21 @@
 package hypevoice.hypevoiceback.work.domain;
 
+import hypevoice.hypevoiceback.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+
 @Getter
-@Table(name = "work")
 @Entity
-public class Work {
+@NoArgsConstructor
+@Table(name = "work")
+
+public class Work extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "work_id")
     private Long id;
 
@@ -21,57 +24,46 @@ public class Work {
 //    private Voice voice;
 
     private String intro;
-
-    @Column(name = "video_link")
     private String videoLink;
-
-    @Column(name = "photo_url")
     private String photoURL;
-
-    @Column(name = "script_url")
     private String scriptURL;
-
-    @Column(name = "record_url")
     private String recordURL;
-
     private String info;
-
-    @Column(name = "is_rep")
-    private String isRep;
-
-    @Column(name = "created_date")
-    private String createdDate;
-
-    @Column(name = "modified_date")
-    private String modifiedDate;
+    private int isRep;
 
     @Builder
-    public Work(String intro, String videoLink, String photoURL, String scriptURL,
-                String recordURL, String info, String isRep) {
+    private Work(String intro, String videoLink, String photoURL, String scriptURL,
+                 String recordURL, String info) {
         this.intro = intro;
         this.videoLink = videoLink;
         this.photoURL = photoURL;
         this.scriptURL = scriptURL;
         this.recordURL = recordURL;
         this.info = info;
-        this.isRep = isRep;
+        this.isRep = 0;
     }
 
-    public static Work createWork(String intro, String videoLink, String photoURL, String scriptURL,
-                                  String recordURL, String info, String isRep) {
-        return new Work(intro, videoLink, photoURL, scriptURL,
-                recordURL, info, isRep);
+    public static Work createWork(String intro, String videoLink, String photoURL, String scriptURL, String recordURL, String info) {
+        return new Work(intro, videoLink, photoURL, scriptURL, recordURL, info);
     }
 
     public void updateWork(String intro, String videoLink, String photoURL, String scriptURL,
-                String recordURL, String info, String isRep) {
+                           String recordURL, String info) {
         this.intro = intro;
         this.videoLink = videoLink;
         this.photoURL = photoURL;
         this.scriptURL = scriptURL;
         this.recordURL = recordURL;
         this.info = info;
-        this.isRep = isRep;
+    }
+
+    public void updateRep() {
+        if(this.isRep == 1){
+            this.isRep = 0;
+        }
+        else{
+            this.isRep = 1;
+        }
     }
 }
 
