@@ -35,6 +35,7 @@ public class Member extends BaseTimeEntity {
         this.username = username;
         this.email = email;
         this.nickname = nickname;
+        this.profileUrl = null;
         this.role = Role.USER;
         this.socialType = socialType;
         this.socialId = socialId;
