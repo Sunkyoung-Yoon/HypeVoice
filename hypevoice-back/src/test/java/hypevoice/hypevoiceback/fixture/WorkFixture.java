@@ -14,13 +14,13 @@ public enum WorkFixture {
 
     private final String intro;
     private final String videoLink;
-    private final String photoURL;
-    private final String scriptURL;
-    private final String recordURL;
+    private final String photoUrl;
+    private final String scriptUrl;
+    private final String recordUrl;
     private final String info;
 
     public Work toWork() {
-        return Work.createWork(intro, videoLink, photoURL, scriptURL, recordURL, info);
+        return Work.createWork(intro);
     }
 
 }

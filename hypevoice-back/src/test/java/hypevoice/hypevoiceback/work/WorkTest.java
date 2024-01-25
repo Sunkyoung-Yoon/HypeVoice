@@ -19,9 +19,9 @@ public class WorkTest {
         assertAll(
                 () -> assertThat(work.getIntro()).isEqualTo(Work1.getIntro()),
                 () -> assertThat(work.getVideoLink()).isEqualTo(Work1.getVideoLink()),
-                () -> assertThat(work.getPhotoURL()).isEqualTo(Work1.getPhotoURL()),
-                () -> assertThat(work.getScriptURL()).isEqualTo(Work1.getScriptURL()),
-                () -> assertThat(work.getRecordURL()).isEqualTo(Work1.getRecordURL()),
+                () -> assertThat(work.getPhotoUrl()).isEqualTo(Work1.getPhotoUrl()),
+                () -> assertThat(work.getScriptUrl()).isEqualTo(Work1.getScriptUrl()),
+                () -> assertThat(work.getRecordUrl()).isEqualTo(Work1.getRecordUrl()),
                 () -> assertThat(work.getInfo()).isEqualTo(Work1.getInfo())
         );
     }
@@ -39,9 +39,9 @@ public class WorkTest {
         assertAll(
                 () -> assertThat(work.getIntro()).isEqualTo("새로운한줄소개1"),
                 () -> assertThat(work.getVideoLink()).isEqualTo("새로운vLink1"),
-                () -> assertThat(work.getPhotoURL()).isEqualTo("새로운pURL1"),
-                () -> assertThat(work.getScriptURL()).isEqualTo("새로운sURL1"),
-                () -> assertThat(work.getRecordURL()).isEqualTo("새로운rURL1"),
+                () -> assertThat(work.getPhotoUrl()).isEqualTo("새로운pURL1"),
+                () -> assertThat(work.getScriptUrl()).isEqualTo("새로운sURL1"),
+                () -> assertThat(work.getRecordUrl()).isEqualTo("새로운rURL1"),
                 () -> assertThat(work.getInfo()).isEqualTo("새로운디테일1")
         );
 
