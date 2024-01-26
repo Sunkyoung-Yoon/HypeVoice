@@ -1,7 +1,7 @@
 package hypevoice.hypevoiceback.work.domain;
 
 import hypevoice.hypevoiceback.global.BaseTimeEntity;
-//import hypevoice.hypevoiceback.voice.domain.Voice;
+import hypevoice.hypevoiceback.voice.domain.Voice;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,9 +20,9 @@ public class Work extends BaseTimeEntity {
     @Column(name = "work_id")
     private Long id;
 
-//    @ManyToOne
-//    @JoinColumn(name = "voice_id")
-//    private Voice voice;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "voice_id", referencedColumnName = "voice_id")
+    private Voice voice;
 
     @Column(nullable = false)
     private String intro;
@@ -35,7 +35,8 @@ public class Work extends BaseTimeEntity {
     private int isRep;
 
     @Builder
-    private Work(String intro, String videoLink, String photoUrl, String scriptUrl, String recordUrl, String info) {
+    private Work(Voice voice, String intro, String videoLink, String photoUrl, String scriptUrl, String recordUrl, String info) {
+        this.voice = voice;
         this.intro = intro;
         this.videoLink = videoLink;
         this.photoUrl = photoUrl;
@@ -45,8 +46,8 @@ public class Work extends BaseTimeEntity {
         this.isRep = 0;
     }
 
-    public static Work createWork(String intro) {
-        return new Work(intro, null, null, null, null, null);
+    public static Work createWork(Voice voice, String intro, String videoLink, String photoUrl, String scriptUrl, String recordUrl, String info) {
+        return new Work(voice, intro, videoLink, photoUrl, scriptUrl, recordUrl, info);
     }
 
     public void updateWork(String intro, String videoLink, String photoUrl, String scriptUrl,
