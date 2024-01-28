@@ -109,3 +109,8 @@
 
 - 타입 스크립트 공부
 - Recoil 공부
+
+## [0128 요약]
+
+- React, Recoil, Typescript를 사용하는 프로젝트 전반적인 구조 공부 및 설계
+- Node.Js 기본 파일들 공부
