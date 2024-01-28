@@ -31,23 +31,23 @@ public class Member extends BaseTimeEntity {
 
 
     @Builder
-    private Member(String username, String email, String nickname, SocialType socialType, String socialId) {
+    private Member(String username, String email, SocialType socialType, String socialId) {
         this.username = username;
         this.email = email;
-        this.nickname = nickname;
         this.profileUrl = null;
-        this.role = Role.USER;
+        this.role = Role.GUEST;
         this.socialType = socialType;
         this.socialId = socialId;
     }
 
-    public static Member createMember(String username, String email, String nickname, SocialType socialType, String socialId){
-        return new Member(username, email, nickname, socialType, socialId);
+    public static Member createMember(String username, String email, SocialType socialType, String socialId){
+        return new Member(username, email, socialType, socialId);
     }
 
-    public void updateMember(String username, String email){
+    public Member updateMember(String username, String email){
         this.username = username;
         this.email = email;
+        return this;
     }
 
     public void updateNickname(String nickname){
@@ -56,6 +56,14 @@ public class Member extends BaseTimeEntity {
 
     public void updateProfileUrl(String profileUrl){
         this.profileUrl = profileUrl;
+    }
+
+    public String getRoleKey() {
+        return this.role.getAuthority();
+    }
+
+    public void updateRole(Role role) {
+        this.role = role;
     }
 
 }

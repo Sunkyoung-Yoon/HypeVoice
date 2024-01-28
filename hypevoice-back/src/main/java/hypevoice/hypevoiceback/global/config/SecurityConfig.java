@@ -1,5 +1,11 @@
 package hypevoice.hypevoiceback.global.config;
 
+import hypevoice.hypevoiceback.auth.security.CustomOAuth2UserService;
+import hypevoice.hypevoiceback.auth.security.OAuth2LoginSuccessHandler;
+import hypevoice.hypevoiceback.auth.security.OAuthLoginFailureHandler;
+import hypevoice.hypevoiceback.auth.security.jwt.JwtAuthenticationFilter;
+import hypevoice.hypevoiceback.auth.security.jwt.JwtProvider;
+import hypevoice.hypevoiceback.member.service.MemberFindService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
@@ -16,9 +23,17 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final OAuthLoginFailureHandler oAuthLoginFailureHandler;
+
+    private final JwtProvider jwtProvider;
+    private final MemberFindService memberFindService;
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/h2-console/**", "/error");
+        return (web) -> web.ignoring().requestMatchers("/h2-console/**", "/error", "/favicon.ico", "/api/auth/logout/**");
     }
 
     @Bean
@@ -33,12 +48,20 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequest ->
                         authorizeRequest
                                 .requestMatchers(
-                                        AntPathRequestMatcher.antMatcher("/login/**")
+                                        AntPathRequestMatcher.antMatcher( "/api/token/reissue")
                                 ).permitAll()
-                                .requestMatchers(
-                                        AntPathRequestMatcher.antMatcher("/h2-console/**")
-                                ).permitAll()
-                );
+                                .anyRequest().authenticated()
+                )
+                .oauth2Login(configure  ->
+                        configure
+                                .userInfoEndpoint(config  ->
+                                        config.userService(customOAuth2UserService)
+                                )
+                                .successHandler(oAuth2LoginSuccessHandler)
+                                .failureHandler(oAuthLoginFailureHandler)
+                )
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, memberFindService), UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
     }
