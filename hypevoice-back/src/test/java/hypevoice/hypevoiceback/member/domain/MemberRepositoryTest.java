@@ -43,7 +43,7 @@ public class MemberRepositoryTest extends RepositoryTest {
     @DisplayName("ID(PK)로 사용자를 확인한다")
     void findById() {
         // when
-        Member findMember = memberRepository.findBySocialTypeAndEmail(SUNKYOUNG.getSocialType(), SUNKYOUNG.getEmail()).orElseThrow();
+        Member findMember = memberRepository.findById(member.getId()).orElseThrow();
 
         // then
         assertAll(
@@ -60,7 +60,7 @@ public class MemberRepositoryTest extends RepositoryTest {
     @DisplayName("이메일로 사용자를 조회한다")
     void findByEmail() {
         // when
-        Member findMember = memberRepository.findBySocialTypeAndEmail(SUNKYOUNG.getSocialType(), SUNKYOUNG.getEmail()).orElseThrow();
+        Member findMember = memberRepository.findByEmail(SUNKYOUNG.getEmail()).orElseThrow();
 
         // then
         assertAll(
