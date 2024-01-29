@@ -20,4 +20,11 @@
 - 발표
 - gerrit 코드 리뷰 참여
 
+01/29
+- Board 엔티티 생성 및 테스트 코드 작성
+- Comment 엔티티 생성 및 테스트 코드 작성
+- Board 등록, 수정,삭제 API 구현 및 테스트 코드 작성
+- BoardApiControllerTest 302 및 500 에러 해결
+
+
 
