@@ -31,6 +31,7 @@ public class Board extends BaseTimeEntity {
 
     private int view;
 
+    @Convert(converter = Category.CategoryConverter.class)
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)

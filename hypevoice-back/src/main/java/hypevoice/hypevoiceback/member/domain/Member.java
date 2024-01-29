@@ -22,7 +22,7 @@ public class Member extends BaseTimeEntity {
     private String nickname;
     private String profileUrl;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = Role.RoleConverter.class)
     private Role role;
 
     @Convert(converter = SocialType.SocialTypeConverter.class)
