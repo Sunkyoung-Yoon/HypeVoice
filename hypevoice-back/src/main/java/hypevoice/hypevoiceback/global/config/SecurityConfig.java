@@ -3,6 +3,8 @@ package hypevoice.hypevoiceback.global.config;
 import hypevoice.hypevoiceback.auth.security.CustomOAuth2UserService;
 import hypevoice.hypevoiceback.auth.security.OAuth2LoginSuccessHandler;
 import hypevoice.hypevoiceback.auth.security.OAuthLoginFailureHandler;
+import hypevoice.hypevoiceback.auth.security.jwt.JwtAccessDeniedHandler;
+import hypevoice.hypevoiceback.auth.security.jwt.JwtAuthenticationEntryPoint;
 import hypevoice.hypevoiceback.auth.security.jwt.JwtAuthenticationFilter;
 import hypevoice.hypevoiceback.auth.security.jwt.JwtProvider;
 import hypevoice.hypevoiceback.member.service.MemberFindService;
@@ -35,6 +37,9 @@ public class SecurityConfig {
     private final JwtProvider jwtProvider;
     private final MemberFindService memberFindService;
 
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers("/h2-console/**", "/error", "/favicon.ico", "/api/auth/logout/**", "/");
@@ -61,11 +66,17 @@ public class SecurityConfig {
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
+                .exceptionHandling(authenticationManager -> authenticationManager
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .accessDeniedHandler(jwtAccessDeniedHandler))
                 .authorizeHttpRequests(authorizeRequest ->
                         authorizeRequest
                                 .requestMatchers(
                                         AntPathRequestMatcher.antMatcher( "/api/token/reissue")
                                 ).permitAll()
+                                .requestMatchers(
+                                        AntPathRequestMatcher.antMatcher("/api/**")
+                                ).hasRole("USER")
                                 .anyRequest().authenticated()
                 )
                 .oauth2Login(configure  ->
