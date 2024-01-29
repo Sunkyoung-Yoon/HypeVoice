@@ -1,7 +1,6 @@
 package hypevoice.hypevoiceback.comment.domain;
 
 import hypevoice.hypevoiceback.board.domain.Board;
-import hypevoice.hypevoiceback.board.domain.Category;
 import hypevoice.hypevoiceback.global.BaseTimeEntity;
 import hypevoice.hypevoiceback.member.domain.Member;
 import jakarta.persistence.*;
@@ -21,7 +20,7 @@ public class Comment extends BaseTimeEntity {
     @Column(name = "content", nullable = false)
     private String content;
 
-    private String voice_comment_url;
+    private String voiceCommentUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id", referencedColumnName = "member_id")
@@ -31,14 +30,14 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "board_id", referencedColumnName = "board_id")
     private Board board;
 
-    private Comment(Member writer, Board board, String content, String voice_comment_url) {
+    private Comment(Member writer, Board board, String content, String voiceCommentUrl) {
         this.writer = writer;
         this.board = board;
         this.content = content;
-        this.voice_comment_url = voice_comment_url;
+        this.voiceCommentUrl = voiceCommentUrl;
     }
 
-    public static Comment createComment(Member writer, Board board, String content, String voice_comment_url) {
-        return new Comment(writer, board, content, voice_comment_url);
+    public static Comment createComment(Member writer, Board board, String content, String voiceCommentUrl) {
+        return new Comment(writer, board, content, voiceCommentUrl);
     }
 }
