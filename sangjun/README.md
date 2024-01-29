@@ -114,3 +114,9 @@
 
 - React, Recoil, Typescript를 사용하는 프로젝트 전반적인 구조 공부 및 설계
 - Node.Js 기본 파일들 공부
+
+## [0129 요약]
+
+- 스프린트 계획
+- Router 관련 공부 및 적용하여 프로젝트 구조 설계
+- favicon.ico 공부 및 제작
