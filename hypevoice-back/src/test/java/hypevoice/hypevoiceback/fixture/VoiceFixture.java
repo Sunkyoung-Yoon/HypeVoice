@@ -5,16 +5,14 @@ import hypevoice.hypevoiceback.voice.domain.Voice;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import static hypevoice.hypevoiceback.fixture.MemberFixture.JAESIK;
-
 @Getter
 @RequiredArgsConstructor
 public enum VoiceFixture {
-    Voice1("최재식"),
-    Voice2( "김가빈"),
-    Voice3( "윤선경")
-    ;
+    Voice1(1L, "최재식"),
+    Voice2(2L, "김가빈"),
+    Voice3(3L, "윤선경");
 
+    private final Long voiceId;
     private final String name;
 
     public Voice toVoice(Member member) {

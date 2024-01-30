@@ -15,6 +15,9 @@ import hypevoice.hypevoiceback.board.service.BoardFindService;
 import hypevoice.hypevoiceback.board.service.BoardService;
 import hypevoice.hypevoiceback.global.config.SecurityConfig;
 import hypevoice.hypevoiceback.member.service.MemberFindService;
+import hypevoice.hypevoiceback.voice.controller.VoiceController;
+import hypevoice.hypevoiceback.voice.service.VoiceFindService;
+import hypevoice.hypevoiceback.voice.service.VoiceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -30,7 +33,8 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 @ImportAutoConfiguration(SecurityConfig.class)
 @WebMvcTest({
         AuthApiController.class,
-        BoardApiController.class
+        BoardApiController.class,
+        VoiceController.class
 })
 @WithMockUser("test")
 public abstract class ControllerTest {
@@ -82,6 +86,12 @@ public abstract class ControllerTest {
 
     @MockBean
     protected BoardService boardService;
+
+    @MockBean
+    protected VoiceService voiceService;
+
+    @MockBean
+    protected VoiceFindService voiceFindService;
 
     protected String convertObjectToJson(Object data) throws JsonProcessingException {
         return objectMapper.writeValueAsString(data);
