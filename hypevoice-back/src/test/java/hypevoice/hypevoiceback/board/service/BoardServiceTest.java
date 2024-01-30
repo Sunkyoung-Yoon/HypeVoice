@@ -1,6 +1,7 @@
 package hypevoice.hypevoiceback.board.service;
 
 import hypevoice.hypevoiceback.board.domain.Board;
+import hypevoice.hypevoiceback.board.dto.BoardResponse;
 import hypevoice.hypevoiceback.board.exception.BoardErrorCode;
 import hypevoice.hypevoiceback.common.ServiceTest;
 import hypevoice.hypevoiceback.global.exception.BaseException;
@@ -30,14 +31,14 @@ public class BoardServiceTest extends ServiceTest {
     private BoardFindService boardFindService;
 
     private Member writer;
-    private Member not_writer;
+    private Member notWriter;
     private Board board;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @BeforeEach
     void setup() {
         writer = memberRepository.save(SUNKYOUNG.toMember());
-        not_writer = memberRepository.save(GABIN.toMember());
+        notWriter = memberRepository.save(GABIN.toMember());
         board = boardRepository.save(BOARD_0.toBoard(writer));
     }
 
@@ -67,7 +68,7 @@ public class BoardServiceTest extends ServiceTest {
         @DisplayName("다른 사람의 게시글은 수정할 수 없다")
         void throwExceptionByUserNotBoardWriter() {
             // when - then
-            assertThatThrownBy(() -> boardService.update(not_writer.getId(),board.getId(), "제목2", "내용2"))
+            assertThatThrownBy(() -> boardService.update(notWriter.getId(),board.getId(), "제목2", "내용2"))
                     .isInstanceOf(BaseException.class)
                     .hasMessage(BoardErrorCode.USER_IS_NOT_BOARD_WRITER.getMessage());
         }
@@ -97,7 +98,7 @@ public class BoardServiceTest extends ServiceTest {
         @DisplayName("다른 사람의 게시글은 삭제할 수 없다")
         void throwExceptionByUserNotBoardWriter() {
             // when - then
-            assertThatThrownBy(() -> boardService.delete(not_writer.getId(),board.getId()))
+            assertThatThrownBy(() -> boardService.delete(notWriter.getId(),board.getId()))
                     .isInstanceOf(BaseException.class)
                     .hasMessage(BoardErrorCode.USER_IS_NOT_BOARD_WRITER.getMessage());
         }
@@ -112,6 +113,29 @@ public class BoardServiceTest extends ServiceTest {
             assertThatThrownBy(() -> boardFindService.findById(board.getId()))
                     .isInstanceOf(BaseException.class)
                     .hasMessage(BoardErrorCode.BOARD_NOT_FOUND.getMessage());
+        }
+    }
+
+    @Nested
+    @DisplayName("게시글 상세 조회")
+    class read {
+        @Test
+        @DisplayName("게시글 상세 조회에 성공한다")
+        void success() {
+            // when
+            BoardResponse boardResponse = boardService.read(board.getId());
+
+            // then
+            assertAll(
+                    () -> assertThat(boardResponse.boardId()).isEqualTo(board.getId()),
+                    () -> assertThat(boardResponse.title()).isEqualTo(board.getTitle()),
+                    () -> assertThat(boardResponse.content()).isEqualTo(board.getContent()),
+                    () -> assertThat(boardResponse.view()).isEqualTo(1),
+                    () -> assertThat(boardResponse.category()).isEqualTo(board.getCategory().getValue()),
+                    () -> assertThat(boardResponse.createdDate()).isEqualTo(board.getCreatedDate()),
+                    () -> assertThat(boardResponse.writerId()).isEqualTo(board.getWriter().getId()),
+                    () -> assertThat(boardResponse.writerNickname()).isEqualTo(board.getWriter().getNickname())
+            );
         }
     }
 }

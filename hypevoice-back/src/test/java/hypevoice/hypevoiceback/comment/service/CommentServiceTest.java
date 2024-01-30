@@ -32,7 +32,7 @@ public class CommentServiceTest extends ServiceTest {
     private CommentFindService commentFindService;
 
     private Member writer;
-    private Member not_writer;
+    private Member notWriter;
     private Board board;
 
     private Comment comment;
@@ -41,7 +41,7 @@ public class CommentServiceTest extends ServiceTest {
     @BeforeEach
     void setup() {
         writer = memberRepository.save(SUNKYOUNG.toMember());
-        not_writer = memberRepository.save(GABIN.toMember());
+        notWriter = memberRepository.save(GABIN.toMember());
         board = boardRepository.save(BOARD_0.toBoard(writer));
         comment = commentRepository.save(COMMENT_0.toComment(writer, board));
     }
@@ -71,7 +71,7 @@ public class CommentServiceTest extends ServiceTest {
         @DisplayName("다른 사람의 댓글은 삭제할 수 없다")
         void throwExceptionByUserNotCommentWriter() {
             // when - then
-            assertThatThrownBy(() -> commentService.delete(not_writer.getId(),board.getId()))
+            assertThatThrownBy(() -> commentService.delete(notWriter.getId(),board.getId()))
                     .isInstanceOf(BaseException.class)
                     .hasMessage(CommentErrorCode.USER_IS_NOT_COMMENT_WRITER.getMessage());
         }

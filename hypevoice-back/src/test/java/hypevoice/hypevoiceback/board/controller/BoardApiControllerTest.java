@@ -3,6 +3,7 @@ package hypevoice.hypevoiceback.board.controller;
 
 import hypevoice.hypevoiceback.auth.exception.AuthErrorCode;
 import hypevoice.hypevoiceback.board.dto.BoardRequest;
+import hypevoice.hypevoiceback.board.dto.BoardResponse;
 import hypevoice.hypevoiceback.board.exception.BoardErrorCode;
 import hypevoice.hypevoiceback.common.ControllerTest;
 import hypevoice.hypevoiceback.global.exception.BaseException;
@@ -11,6 +12,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.time.LocalDate;
 
 import static hypevoice.hypevoiceback.fixture.BoardFixture.BOARD_0;
 import static hypevoice.hypevoiceback.fixture.TokenFixture.ACCESS_TOKEN;
@@ -241,7 +244,37 @@ public class BoardApiControllerTest extends ControllerTest {
         }
     }
 
+    @Nested
+    @DisplayName("게시글 상세조회 API [GET /api/boards/{boardId}]")
+    class getDetailBoard {
+        private static final String BASE_URL = "/api/boards/{boardId}";
+        private static final Long BOARD_ID = 2L;
+
+        @Test
+        @DisplayName("게시글 상세조회에 성공한다")
+        void success() throws Exception {
+            // given
+            doReturn(readBoardResponse())
+                    .when(boardService)
+                    .read(anyLong());
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .get(BASE_URL, BOARD_ID)
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(status().isOk());
+        }
+    }
+
     private BoardRequest createBoardRequest() {
         return new BoardRequest(BOARD_0.getTitle(), BOARD_0.getContent(), "feedback");
+    }
+
+    private BoardResponse readBoardResponse() {
+        return new BoardResponse(2L, BOARD_0.getTitle(), BOARD_0.getContent(), 0, "feedback",
+                LocalDate.of(2024, 1, 30).atTime(1, 1), 1L, "voice123");
     }
 }
