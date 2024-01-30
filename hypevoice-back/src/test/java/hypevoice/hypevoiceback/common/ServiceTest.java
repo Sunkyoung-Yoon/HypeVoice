@@ -2,6 +2,7 @@ package hypevoice.hypevoiceback.common;
 
 import hypevoice.hypevoiceback.auth.domain.TokenRepository;
 import hypevoice.hypevoiceback.board.domain.BoardRepository;
+import hypevoice.hypevoiceback.comment.domain.CommentRepository;
 import hypevoice.hypevoiceback.member.domain.MemberRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
@@ -22,6 +23,9 @@ public class ServiceTest {
 
     @Autowired
     protected BoardRepository boardRepository;
+
+    @Autowired
+    protected CommentRepository commentRepository;
 
     @AfterEach
     void clearDatabase() {
