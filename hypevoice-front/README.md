@@ -1,2 +1,2 @@
-![HYPE_VOICE_LOGO](./src/assets/HYPE_VOICE_logo(transparent).png)
+![HYPE_VOICE_IMG](./src/assets/HYPE_VOICE_IMG.png)
 HYPE VOICE FRONT

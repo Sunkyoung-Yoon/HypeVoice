@@ -1,0 +1,31 @@
+{
+  "name": "Hype Voice",
+  "icons": [
+    {
+      "src": "C:UsersSSAFYDesktopHypeVoiceS10P12B109hypevoice-frontsrcassetsmaskable_logo_x48.png",
+      "sizes": "48x48 96x96 192x192 384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "C:UsersSSAFYDesktopHypeVoiceS10P12B109hypevoice-frontsrcassetsmaskable_logo_x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "C:UsersSSAFYDesktopHypeVoiceS10P12B109hypevoice-frontsrcassetsmaskable_logo_x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url_comment": "필수. 어플리케이션 실행 시 시작할 위치를 브라우저에게 알려주고 사용자가 홈 화면에 앱을 추가할 때 어느페이지에서나 앱이 시작되지 않도록 함!",
+  "start_url": ".",
+  "display_comment": "앱 실행 시의 브라우저 UI 종류 - fullscreen / standalone / minimal-ui / browser 중 하나",
+  "display": "browser",
+  "theme_color_comment": "브라우저의 도구모음 색(윗 부분 색)",
+  "theme_color": "#000000",
+  "background_color_comment": "실행 시 스플래시 화면(로딩 시 화면) 배경 색",
+  "background_color": "FFFFFF"
+}
