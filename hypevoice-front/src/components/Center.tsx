@@ -12,6 +12,7 @@ const CenterStyleDiv = styled.div`
 function Center() {
   return (
     <CenterStyleDiv>
+      센터
       {/* 상황에 따라 Voice 또는 MyInfo 또는 WorkGrid 또는 Studio 또는 Board가 들어감 */}
     </CenterStyleDiv>
   );
