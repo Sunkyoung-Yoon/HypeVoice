@@ -1,18 +1,46 @@
 import React from "react";
 import { Box, AppBar, Toolbar, Button } from "@mui/material";
-// import LogoComponent from "../components/LogoComponent";
+import LogoComponent from "../components/LogoComponent";
 import styled from "styled-components";
-// import kakaoLogo from "../assets/kakaoIcon.png";
-// import naverLogo from "../assets/naverIcon.jpg";
+import kakaoLogo from "../assets/kakaoIcon.png";
+import naverLogo from "../assets/naverIcon.jpg";
 
 const Container = styled.div`
   height: 80vh;
   position: relative;
   overflow: hidden;
   display: grid;
-  grid-template-columns: 4fr 1fr 6fr; // 비율 4:1:6으로 설정
+  grid-template-columns: 1fr 7fr;
   justify-items: center;
-  padding: 10vh;
+  padding: 5vh;
+`;
+
+const OuterContainer = styled.div`
+  display: flex;
+`;
+
+const LogoComponentContainer = styled.div`
+  align-items: absolute;
+  left : 50%
+  transfrom : translateX(-50%);
+  align-items : center;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const StyledLogoComponent = styled(LogoComponent)`
+  width: 10vw;
+  height: 10vw;
+
+  @media (max-width: 768px) {
+    width: 20vw;
+    // height: 20vw;
+  }
 `;
 
 const AboutLogin = styled.div`
@@ -86,43 +114,44 @@ const Logo = styled("img")`
 
 function Login() {
   return (
-    <Container>
-      {/* <LogoComponent></LogoComponent> */}
-      <div></div>
-      <AboutLogin>
-        {/* <h1 style={{ whiteSpace: "nowrap" }}>
-          HYPE VOICE에서 <br /> <br /> &nbsp;&nbsp;&nbsp;&nbsp;모든 목소리를
-          만나보세요!
-        </h1> */}
-        <h1
-          style={{
-            textAlign: "center",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          HYPE VOICE에서
-          <div style={{ height: "20px" }}></div>
-          모든 목소리를 만나보세요!
-        </h1>
-        <LoginButtonContainer>
-          <KakaoLoginButton>
-            <LogoContainer>
-              {/* <Logo src={kakaoLogo} /> */}
-            </LogoContainer>
-            <TextContainer>카카오로 로그인하기</TextContainer>
-          </KakaoLoginButton>
-          <NaverLoginButton>
-            <LogoContainer>
-              {/* <Logo src={naverLogo} /> */}
-            </LogoContainer>
-            <TextContainer>네이버로 로그인하기</TextContainer>
-          </NaverLoginButton>
-        </LoginButtonContainer>
-      </AboutLogin>
-    </Container>
+    <OuterContainer>
+      <LogoComponentContainer>
+        <StyledLogoComponent />
+      </LogoComponentContainer>
+      <Container>
+        <div></div>
+        <AboutLogin>
+          <h2
+            style={{
+              textAlign: "center",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              whiteSpace: "balance",
+            }}
+          >
+            HYPE VOICE에서
+            <div style={{ height: "20px" }}></div>
+            모든 목소리를 만나보세요!
+          </h2>
+          <LoginButtonContainer>
+            <KakaoLoginButton>
+              <LogoContainer>
+                <Logo src={kakaoLogo} />
+              </LogoContainer>
+              <TextContainer>카카오로 로그인하기</TextContainer>
+            </KakaoLoginButton>
+            <NaverLoginButton>
+              <LogoContainer>
+                <Logo src={naverLogo} />
+              </LogoContainer>
+              <TextContainer>네이버로 로그인하기</TextContainer>
+            </NaverLoginButton>
+          </LoginButtonContainer>
+        </AboutLogin>
+      </Container>
+    </OuterContainer>
   );
 }
 
