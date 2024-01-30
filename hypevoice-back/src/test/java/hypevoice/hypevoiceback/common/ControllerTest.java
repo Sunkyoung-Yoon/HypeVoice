@@ -13,6 +13,9 @@ import hypevoice.hypevoiceback.auth.service.AuthService;
 import hypevoice.hypevoiceback.board.controller.BoardApiController;
 import hypevoice.hypevoiceback.board.service.BoardFindService;
 import hypevoice.hypevoiceback.board.service.BoardService;
+import hypevoice.hypevoiceback.comment.controller.CommentApiController;
+import hypevoice.hypevoiceback.comment.service.CommentFindService;
+import hypevoice.hypevoiceback.comment.service.CommentService;
 import hypevoice.hypevoiceback.global.config.SecurityConfig;
 import hypevoice.hypevoiceback.member.service.MemberFindService;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +33,8 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 @ImportAutoConfiguration(SecurityConfig.class)
 @WebMvcTest({
         AuthApiController.class,
-        BoardApiController.class
+        BoardApiController.class,
+        CommentApiController.class
 })
 @WithMockUser("test")
 public abstract class ControllerTest {
@@ -82,6 +86,12 @@ public abstract class ControllerTest {
 
     @MockBean
     protected BoardService boardService;
+
+    @MockBean
+    protected CommentFindService commentFindService;
+
+    @MockBean
+    protected CommentService commentService;
 
     protected String convertObjectToJson(Object data) throws JsonProcessingException {
         return objectMapper.writeValueAsString(data);
