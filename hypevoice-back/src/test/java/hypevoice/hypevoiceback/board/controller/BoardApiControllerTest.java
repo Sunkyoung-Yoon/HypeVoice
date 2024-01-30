@@ -171,7 +171,7 @@ public class BoardApiControllerTest extends ControllerTest {
             // when
             final BoardRequest request = createBoardRequest();
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .patch(BASE_URL, BOARD_ID)
+                    .delete(BASE_URL, BOARD_ID)
                     .contentType(APPLICATION_JSON)
                     .content(convertObjectToJson(request));
 
@@ -230,7 +230,7 @@ public class BoardApiControllerTest extends ControllerTest {
             // when
             final BoardRequest request = createBoardRequest();
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .patch(BASE_URL, BOARD_ID)
+                    .delete(BASE_URL, BOARD_ID)
                     .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
                     .contentType(APPLICATION_JSON)
                     .content(convertObjectToJson(request));
