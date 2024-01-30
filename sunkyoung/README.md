@@ -26,5 +26,8 @@
 - Board 등록, 수정,삭제 API 구현 및 테스트 코드 작성
 - BoardApiControllerTest 302 및 500 에러 해결
 
+01/30
+- Comment 등록, 삭제 API 구현 및 테스트 코드 작성
+- Board 상세 조회 API 구현 및 테스트 코드 작성
 
 
