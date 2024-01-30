@@ -1,13 +1,9 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Toolbar from "@mui/material/Toolbar";
-import { styled } from "@mui/material/styles";
-
-function LogoComponent() {
-  return <img src="/public/static/HypeVoiceLogo.PNG" alt="HypeVoice Logo" />;
-}
+import React from "react";
+import { Box, AppBar, Toolbar, Button } from "@mui/material";
+import LogoComponent from "./LogoComponent";
+import { LoginState } from "../recoil/Auth";
+import styled from "@emotion/styled";
+import { useNavigate } from "react-router-dom";
 
 const HeaderButtonComponent = styled(Button)`
   color: black;
@@ -21,11 +17,8 @@ const HeaderButtonComponent = styled(Button)`
   }
 `;
 
-const isLogin = () => {
-  return false;
-};
-
-export default function HeaderComponent() {
+export default function HeaderBarComponent() {
+  const navigation = useNavigate();
   return (
     <Box
       sx={{ flexGrow: 1 }}
@@ -62,13 +55,23 @@ export default function HeaderComponent() {
             </HeaderButtonComponent>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            {isLogin() && (
-              <HeaderButtonComponent variant="text">
+            {LoginState && (
+              <HeaderButtonComponent
+                variant="text"
+                onClick={() =>
+                  navigation("/", { state: { wantToGo: "/myPage" } })
+                }
+              >
                 마이 페이지
               </HeaderButtonComponent>
             )}
-            <HeaderButtonComponent variant="text">
-              {isLogin() ? "로그아웃" : "로그인"}
+            <HeaderButtonComponent
+              variant="text"
+              onClick={() =>
+                LoginState ? navigation("/logout") : navigation("/login")
+              }
+            >
+              {LoginState ? "로그아웃" : "로그인"}
             </HeaderButtonComponent>
           </div>
         </Toolbar>
