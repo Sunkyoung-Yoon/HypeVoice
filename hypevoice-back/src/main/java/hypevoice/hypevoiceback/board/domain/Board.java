@@ -61,4 +61,8 @@ public class Board extends BaseTimeEntity {
     public void addComment(Member writer, String content, String voice_comment_url) {
         commentList.add(Comment.createComment(writer, this, content, voice_comment_url));
     }
+
+    public void updateView() {
+        this.view = this.view + 1;
+    }
 }

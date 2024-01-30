@@ -2,6 +2,7 @@ package hypevoice.hypevoiceback.board.service;
 
 import hypevoice.hypevoiceback.board.domain.Board;
 import hypevoice.hypevoiceback.board.domain.BoardRepository;
+import hypevoice.hypevoiceback.board.dto.BoardResponse;
 import hypevoice.hypevoiceback.board.exception.BoardErrorCode;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.board.domain.Category;
@@ -41,6 +42,23 @@ public class BoardService {
     public void delete(Long writerId, Long boardId){
         validateWriter(boardId, writerId);
         boardRepository.deleteById(boardId);
+    }
+
+    @Transactional
+    public BoardResponse read(Long boardId) {
+        Board board = boardFindService.findById(boardId);
+        board.updateView();
+        Board readBoard = boardFindService.findById(boardId);
+        return BoardResponse.builder()
+                .boardId(readBoard.getId())
+                .title(readBoard.getTitle())
+                .content(readBoard.getContent())
+                .view(readBoard.getView())
+                .category(readBoard.getCategory().getValue())
+                .createdDate(readBoard.getCreatedDate())
+                .writerId(readBoard.getWriter().getId())
+                .writerNickname(readBoard.getWriter().getNickname())
+                .build();
     }
 
     private void validateWriter(Long boardId, Long writerId) {

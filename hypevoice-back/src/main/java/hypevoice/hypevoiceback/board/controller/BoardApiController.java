@@ -1,6 +1,7 @@
 package hypevoice.hypevoiceback.board.controller;
 
 import hypevoice.hypevoiceback.board.dto.BoardRequest;
+import hypevoice.hypevoiceback.board.dto.BoardResponse;
 import hypevoice.hypevoiceback.board.service.BoardService;
 import hypevoice.hypevoiceback.global.annotation.ExtractPayload;
 import jakarta.validation.Valid;
@@ -33,5 +34,11 @@ public class BoardApiController {
     public ResponseEntity<Void> delete(@ExtractPayload Long writerId, @PathVariable("boardId") Long boardId) {
         boardService.delete(writerId, boardId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{boardId}")
+    public ResponseEntity<BoardResponse> readBoard(@PathVariable("boardId") Long boardId) {
+        BoardResponse boardResponse = boardService.read(boardId);
+        return new ResponseEntity<>(boardResponse, HttpStatus.OK);
     }
 }
