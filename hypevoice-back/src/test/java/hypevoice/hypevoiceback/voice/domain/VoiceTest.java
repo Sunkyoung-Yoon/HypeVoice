@@ -1,7 +1,7 @@
-package hypevoice.hypevoiceback.voice;
+package hypevoice.hypevoiceback.voice.domain;
 
 import hypevoice.hypevoiceback.member.domain.Member;
-import hypevoice.hypevoiceback.voice.domain.Voice;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,11 +13,18 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("Voice 도메인 테스트")
 public class VoiceTest {
 
+    private Member member;
+    private Voice voice;
+
+    @BeforeEach
+    void setUp() {
+        member = JAESIK.toMember();
+        voice = Voice1.toVoice(member);
+    }
+
     @Test
     @DisplayName("Voice를 생성한다")
     public void createVoice() {
-        Member member = JAESIK.toMember();
-        Voice voice = Voice1.toVoice(member);
 
         assertAll(
                 () -> assertThat(voice.getMember()).isEqualTo(member),
@@ -34,10 +41,6 @@ public class VoiceTest {
     @Test
     @DisplayName("Voice의 내용들을 변경한다")
     public void updateVoice() {
-        // given
-        Member member = JAESIK.toMember();
-        Voice voice = Voice1.toVoice(member);
-
         // when
         voice.updateVoice("변경이름1", "image1", "소개1", "test1@ssafy.com", "01011112222", "추가정보1");
 
@@ -56,9 +59,6 @@ public class VoiceTest {
     @Test
     @DisplayName("Voice 좋아요수를 증가시킨다")
     public void increaseLikes() {
-        // given
-        Member member = JAESIK.toMember();
-        Voice voice = Voice1.toVoice(member);
 
         // when : 0 -> 1
         voice.increaseLikes();
@@ -70,9 +70,6 @@ public class VoiceTest {
     @Test
     @DisplayName("Voice 좋아요수를 감소시킨다")
     public void decreaseLikes() {
-        // given
-        Member member = JAESIK.toMember();
-        Voice voice = Voice1.toVoice(member);
 
         // when : 0 -> -1
         voice.decreaseLikes();
