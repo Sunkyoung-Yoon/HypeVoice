@@ -13,6 +13,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+@font-face {
+  font-family: "Nanum Gothic";
+  src: url("../src/assets/fonts/NanumGothic-Bold.woff2") format("woff2");
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -24,9 +29,7 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  min-width: 800px;
   min-height: 100vh;
 }
 
