@@ -1,6 +1,7 @@
 package hypevoice.hypevoiceback.work.domain;
 
 import hypevoice.hypevoiceback.global.BaseTimeEntity;
+import hypevoice.hypevoiceback.voice.domain.Voice;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,49 +20,50 @@ public class Work extends BaseTimeEntity {
     @Column(name = "work_id")
     private Long id;
 
-//    @ManyToOne
-//    @JoinColumn(name = "voice_id")
-//    private Voice voice;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "voice_id", referencedColumnName = "voice_id")
+    private Voice voice;
 
+    @Column(nullable = false)
     private String intro;
+
     private String videoLink;
-    private String photoURL;
-    private String scriptURL;
-    private String recordURL;
+    private String photoUrl;
+    private String scriptUrl;
+    private String recordUrl;
     private String info;
     private int isRep;
 
     @Builder
-    private Work(String intro, String videoLink, String photoURL, String scriptURL,
-                 String recordURL, String info) {
+    private Work(Voice voice, String intro, String videoLink, String photoUrl, String scriptUrl, String recordUrl, String info) {
+        this.voice = voice;
         this.intro = intro;
         this.videoLink = videoLink;
-        this.photoURL = photoURL;
-        this.scriptURL = scriptURL;
-        this.recordURL = recordURL;
+        this.photoUrl = photoUrl;
+        this.scriptUrl = scriptUrl;
+        this.recordUrl = recordUrl;
         this.info = info;
         this.isRep = 0;
     }
 
-    public static Work createWork(String intro, String videoLink, String photoURL, String scriptURL, String recordURL, String info) {
-        return new Work(intro, videoLink, photoURL, scriptURL, recordURL, info);
+    public static Work createWork(Voice voice, String intro, String videoLink, String photoUrl, String scriptUrl, String recordUrl, String info) {
+        return new Work(voice, intro, videoLink, photoUrl, scriptUrl, recordUrl, info);
     }
 
-    public void updateWork(String intro, String videoLink, String photoURL, String scriptURL,
-                           String recordURL, String info) {
+    public void updateWork(String intro, String videoLink, String photoUrl, String scriptUrl,
+                           String recordUrl, String info) {
         this.intro = intro;
         this.videoLink = videoLink;
-        this.photoURL = photoURL;
-        this.scriptURL = scriptURL;
-        this.recordURL = recordURL;
+        this.photoUrl = photoUrl;
+        this.scriptUrl = scriptUrl;
+        this.recordUrl = recordUrl;
         this.info = info;
     }
 
     public void updateRep() {
-        if(this.isRep == 1){
+        if (this.isRep == 1) {
             this.isRep = 0;
-        }
-        else{
+        } else {
             this.isRep = 1;
         }
     }

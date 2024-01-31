@@ -66,4 +66,22 @@ public class MemberTest {
         );
 
     }
+
+    @Test
+    @DisplayName("Member 프로필 이미지를 변경한다")
+    public void updateProfileUrl() {
+        //given
+        Member member1 = SUNKYOUNG.toMember();
+        Member member2 = GABIN.toMember();
+
+        //when
+        member1.updateProfileUrl("프로필 이미지 URL 변경1");
+
+        // then
+        assertAll(
+                () -> assertThat(member1.getProfileUrl()).isEqualTo("프로필 이미지 URL 변경1"),
+                () -> assertThat(member2.getProfileUrl()).isNull()
+        );
+
+    }
 }
