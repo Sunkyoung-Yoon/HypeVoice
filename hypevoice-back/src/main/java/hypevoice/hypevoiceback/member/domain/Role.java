@@ -11,4 +11,5 @@ public enum Role {
 
     private final String authority;
     private final String title;
+
 }
