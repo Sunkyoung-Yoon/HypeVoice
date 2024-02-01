@@ -15,19 +15,19 @@ public class WorkController {
     private final WorkService workService;
 
     @PostMapping
-    public ResponseEntity<Void> createWork(@ExtractPayload Long memberId, @PathVariable Long voiceId, @RequestBody WorkRequest request) {
+    public ResponseEntity<Void> createWork(@ExtractPayload Long memberId, @PathVariable("voiceId") Long voiceId, @RequestBody WorkRequest request) {
         workService.registerWork(memberId, voiceId, request.title(), request.videoLink(), request.photoUrl(), request.scriptUrl(), request.recordUrl(), request.info(), request.isRep());
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{workId}")
-    public ResponseEntity<Void> updateWork(@ExtractPayload Long memberId, @PathVariable Long voiceId, @PathVariable Long workId, @RequestBody WorkRequest request) {
+    public ResponseEntity<Void> updateWork(@ExtractPayload Long memberId, @PathVariable("voiceId") Long voiceId, @PathVariable("workId") Long workId, @RequestBody WorkRequest request) {
         workService.updateWork(memberId, voiceId, workId, request.title(), request.videoLink(), request.photoUrl(), request.scriptUrl(), request.recordUrl(), request.info(), request.isRep());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{workId}")
-    public ResponseEntity<Void> deleteWork(@ExtractPayload Long memberId, @PathVariable Long voiceId, @PathVariable Long workId) {
+    public ResponseEntity<Void> deleteWork(@ExtractPayload Long memberId, @PathVariable("voiceId") Long voiceId, @PathVariable("workId") Long workId) {
         workService.deleteWork(memberId, voiceId, workId);
         return ResponseEntity.ok().build();
     }
