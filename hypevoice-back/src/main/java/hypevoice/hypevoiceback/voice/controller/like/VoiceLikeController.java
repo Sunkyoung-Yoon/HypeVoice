@@ -13,13 +13,13 @@ public class VoiceLikeController {
     private final VoiceLikeService voiceLikeService;
 
     @PostMapping
-    public ResponseEntity<Void> register(@ExtractPayload Long memberId, @PathVariable Long voiceId) {
+    public ResponseEntity<Void> register(@ExtractPayload Long memberId, @PathVariable("voiceId") Long voiceId) {
         voiceLikeService.register(memberId, voiceId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> cancel(@ExtractPayload Long memberId, @PathVariable Long voiceId) {
+    public ResponseEntity<Void> cancel(@ExtractPayload Long memberId, @PathVariable("voiceId") Long voiceId) {
         voiceLikeService.cancel(memberId, voiceId);
         return ResponseEntity.ok().build();
     }
