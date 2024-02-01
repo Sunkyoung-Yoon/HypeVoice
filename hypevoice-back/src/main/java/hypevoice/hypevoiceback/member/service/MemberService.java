@@ -4,6 +4,7 @@ import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.member.domain.Member;
 import hypevoice.hypevoiceback.member.domain.MemberRepository;
 import hypevoice.hypevoiceback.member.domain.Role;
+import hypevoice.hypevoiceback.member.dto.MemberResponse;
 import hypevoice.hypevoiceback.member.exception.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,18 @@ public class MemberService {
     public void updateRole(Long memberId) {
         Member member = memberFindService.findById(memberId);
         member.updateRole(Role.USER);
+    }
+
+    @Transactional
+    public MemberResponse read(Long memberId) {
+        Member readMember = memberFindService.findById(memberId);
+        return MemberResponse.builder()
+                .memberId(readMember.getId())
+                .username(readMember.getUsername())
+                .nickname(readMember.getNickname())
+                .email(readMember.getEmail())
+                .profileUrl(readMember.getProfileUrl())
+                .build();
     }
 
     private void validateDuplicateNickname(String nickname) {
