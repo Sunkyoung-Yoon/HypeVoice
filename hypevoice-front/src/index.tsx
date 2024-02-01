@@ -49,10 +49,10 @@ const root = ReactDOM.createRoot(
 root.render(
   // 오류 방지 레벨 높은 리액트
   <React.StrictMode>
-    <style>
+    {/* <style>
       @import
       url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@700&display=swap')
-    </style>
+    </style> */}
     <QueryClientProvider client={queryClient}>
       {/* 전역 상태 관리용 */}
       <RecoilRoot>
