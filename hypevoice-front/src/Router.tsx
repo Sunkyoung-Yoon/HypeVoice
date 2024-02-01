@@ -22,12 +22,6 @@ const router = createBrowserRouter([
         element: <Main />,
         errorElement: <ErrorComponent />,
       },
-
-      {
-        path: "studio",
-        element: <Studio />,
-        errorElement: <ErrorComponent />,
-      },
       {
         path: "myPage",
         element: <Main />,
@@ -59,6 +53,11 @@ const router = createBrowserRouter([
   {
     path: "login",
     element: <Login />,
+    errorElement: <ErrorComponent />,
+  },
+  {
+    path: "studio",
+    element: <Studio />,
     errorElement: <ErrorComponent />,
   },
 ]);

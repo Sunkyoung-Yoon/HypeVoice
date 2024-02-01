@@ -9,10 +9,6 @@ import "./App.css";
 import Main from "./pages/Main";
 
 function App() {
-  const loginState = useRecoilValue(LoginState);
-  const navigation = useNavigate();
-  const location = useLocation();
-
   return <Main />;
 }
 

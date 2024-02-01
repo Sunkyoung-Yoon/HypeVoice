@@ -15,14 +15,7 @@ const CenterStyleDiv = styled.div`
 `;
 
 function Center({ children }) {
-  // const location = useLocation();
-
-  return (
-    <CenterStyleDiv>
-      {/* {location.path === "/homeGrid" ? <HomeGrid /> : <StudioList />} */}
-      {children}
-    </CenterStyleDiv>
-  );
+  return <CenterStyleDiv>{children}</CenterStyleDiv>;
 }
 
 export default Center;

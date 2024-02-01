@@ -62,6 +62,11 @@ export default function HeaderBarComponent() {
     loginState ? setLoginState(!loginState) : navigation("/login");
   };
 
+  const navigateAndCloseMenu = (path: string) => {
+    navigation(path);
+    setMenuOpen(false);
+  };
+
   return (
     <Box
       sx={{ flexGrow: 1 }}
@@ -156,17 +161,29 @@ export default function HeaderBarComponent() {
               }}
             >
               {/* <div id="menu" style={{ position: "absolute", top: "100%", left: 0, width: "100%", backgroundColor: "white" }}> */}
-              <Button variant="text" onClick={() => navigation("/voice")}>
+              <Button
+                variant="text"
+                onClick={() => navigateAndCloseMenu("/voice")}
+              >
                 내 보이스
               </Button>
-              <Button variant="text" onClick={() => navigation("/community")}>
+              <Button
+                variant="text"
+                onClick={() => navigateAndCloseMenu("/community")}
+              >
                 게시판
               </Button>
-              <Button variant="text" onClick={() => navigation("/studioList")}>
+              <Button
+                variant="text"
+                onClick={() => navigateAndCloseMenu("/studioList")}
+              >
                 스튜디오
               </Button>
               {loginState && (
-                <Button variant="text" onClick={() => navigation("/myPage")}>
+                <Button
+                  variant="text"
+                  onClick={() => navigateAndCloseMenu("/myPage")}
+                >
                   마이 페이지
                 </Button>
               )}
