@@ -20,8 +20,8 @@ import static hypevoice.hypevoiceback.categoryInfo.domain.VoiceTone.AUTHORITATIV
 import static hypevoice.hypevoiceback.categoryInfo.domain.VoiceTone.CUTE;
 import static hypevoice.hypevoiceback.fixture.CategoryInfoFixture.CATEGORY_INFO_01;
 import static hypevoice.hypevoiceback.fixture.MemberFixture.JAESIK;
-import static hypevoice.hypevoiceback.fixture.VoiceFixture.Voice1;
-import static hypevoice.hypevoiceback.fixture.WorkFixture.Work1;
+import static hypevoice.hypevoiceback.fixture.VoiceFixture.VOICE_01;
+import static hypevoice.hypevoiceback.fixture.WorkFixture.WORK_01;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -35,8 +35,8 @@ public class CategoryInfoTest {
     @BeforeEach
     void setUp() {
         member = JAESIK.toMember();
-        voice = Voice1.toVoice(member);
-        work = Work1.toWork(voice);
+        voice = VOICE_01.toVoice(member);
+        work = WORK_01.toWork(voice);
         category = CATEGORY_INFO_01.toCategoryInfo(work);
     }
 

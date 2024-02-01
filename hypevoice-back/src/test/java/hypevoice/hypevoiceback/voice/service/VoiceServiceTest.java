@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static hypevoice.hypevoiceback.fixture.MemberFixture.JAESIK;
-import static hypevoice.hypevoiceback.fixture.VoiceFixture.Voice1;
+import static hypevoice.hypevoiceback.fixture.VoiceFixture.VOICE_01;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -34,14 +34,14 @@ public class VoiceServiceTest extends ServiceTest {
     @BeforeEach
     void setUp() {
         member = memberRepository.save(JAESIK.toMember());
-        voice = voiceRepository.save(Voice1.toVoice(member));
+        voice = voiceRepository.save(VOICE_01.toVoice(member));
     }
 
     @Test
     @DisplayName("보이스 정보를 수정한다")
     void updateVoice() {
         // when
-        voiceService.updateVoice(member.getId(),voice.getId(), "변경이름", "변경이미지",
+        voiceService.updateVoice(member.getId(), voice.getId(), "변경이름", "변경이미지",
                 "변경소개글", "변경이메일", "변경전화번호",
                 "변경추가정보");
 

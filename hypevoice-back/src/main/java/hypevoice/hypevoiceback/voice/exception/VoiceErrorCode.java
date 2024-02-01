@@ -1,4 +1,4 @@
-package hypevoice.hypevoiceback.voice.excption;
+package hypevoice.hypevoiceback.voice.exception;
 
 import hypevoice.hypevoiceback.global.exception.ErrorCode;
 import lombok.Getter;

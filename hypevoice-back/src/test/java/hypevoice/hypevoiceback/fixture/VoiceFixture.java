@@ -8,9 +8,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum VoiceFixture {
-    Voice1(1L, "최재식"),
-    Voice2(2L, "김가빈"),
-    Voice3(3L, "윤선경");
+    VOICE_01(1L, "최재식"),
+    VOICE_02(2L, "김가빈"),
+    VOICE_03(3L, "윤선경");
 
     private final Long voiceId;
     private final String name;

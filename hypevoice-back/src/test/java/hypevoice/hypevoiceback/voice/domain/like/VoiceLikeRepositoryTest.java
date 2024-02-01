@@ -11,8 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static hypevoice.hypevoiceback.fixture.MemberFixture.*;
-import static hypevoice.hypevoiceback.fixture.VoiceFixture.Voice1;
-import static hypevoice.hypevoiceback.fixture.VoiceFixture.Voice2;
+import static hypevoice.hypevoiceback.fixture.VoiceFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -35,9 +34,9 @@ public class VoiceLikeRepositoryTest extends RepositoryTest {
         member[0] = memberRepository.save(SUNKYOUNG.toMember());
         member[1] = memberRepository.save(GABIN.toMember());
         member[2] = memberRepository.save(JAESIK.toMember());
-        voice[0] = voiceRepository.save(Voice1.toVoice(member[0]));
-        voice[1] = voiceRepository.save(Voice2.toVoice(member[1]));
-        voice[2] = voiceRepository.save(Voice2.toVoice(member[2]));
+        voice[0] = voiceRepository.save(VOICE_01.toVoice(member[0]));
+        voice[1] = voiceRepository.save(VOICE_02.toVoice(member[1]));
+        voice[2] = voiceRepository.save(VOICE_03.toVoice(member[2]));
     }
 
     @Test

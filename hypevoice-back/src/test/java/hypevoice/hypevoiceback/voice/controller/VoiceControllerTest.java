@@ -4,7 +4,7 @@ import hypevoice.hypevoiceback.auth.exception.AuthErrorCode;
 import hypevoice.hypevoiceback.common.ControllerTest;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.voice.dto.VoiceUpdateRequest;
-import hypevoice.hypevoiceback.voice.excption.VoiceErrorCode;
+import hypevoice.hypevoiceback.voice.exception.VoiceErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
