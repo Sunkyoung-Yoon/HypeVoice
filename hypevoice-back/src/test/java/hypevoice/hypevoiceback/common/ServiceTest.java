@@ -4,6 +4,8 @@ import hypevoice.hypevoiceback.auth.domain.TokenRepository;
 import hypevoice.hypevoiceback.board.domain.BoardRepository;
 import hypevoice.hypevoiceback.comment.domain.CommentRepository;
 import hypevoice.hypevoiceback.member.domain.MemberRepository;
+import hypevoice.hypevoiceback.voice.domain.VoiceRepository;
+import hypevoice.hypevoiceback.voice.domain.like.VoiceLikeRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,12 @@ public class ServiceTest {
 
     @Autowired
     protected CommentRepository commentRepository;
+
+    @Autowired
+    protected VoiceRepository voiceRepository;
+
+    @Autowired
+    protected VoiceLikeRepository voiceLikeRepository;
 
     @AfterEach
     void clearDatabase() {

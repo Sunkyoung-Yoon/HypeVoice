@@ -3,13 +3,12 @@ package hypevoice.hypevoiceback.auth.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hypevoice.hypevoiceback.auth.dto.LoginResponse;
 import hypevoice.hypevoiceback.auth.service.AuthService;
-import hypevoice.hypevoiceback.auth.service.TokenService;
 import hypevoice.hypevoiceback.member.domain.Member;
 import hypevoice.hypevoiceback.member.domain.Role;
 import hypevoice.hypevoiceback.member.domain.SocialType;
 import hypevoice.hypevoiceback.member.service.MemberFindService;
 import hypevoice.hypevoiceback.member.service.MemberService;
-import jakarta.servlet.ServletException;
+import hypevoice.hypevoiceback.voice.service.VoiceService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -32,13 +31,14 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     private final MemberFindService memberFindService;
     private final MemberService memberService;
 
-    private final TokenService tokenService;
     private final AuthService authService;
     private final ObjectMapper objectMapper;
 
+    private final VoiceService voiceService;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response
-            , Authentication authentication) throws IOException, ServletException {
+            , Authentication authentication) throws IOException {
 
         CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
@@ -51,6 +51,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         if(role == Role.GUEST){
             memberService.updateNickname(loginMember.getId(), initialNickname(loginMember.getId()));
             memberService.updateRole(loginMember.getId());
+            voiceService.createVoice(loginMember.getId(), loginMember.getUsername());
         }
         else{
             log.info("기존 회원 로그인");

@@ -1,7 +1,10 @@
 package hypevoice.hypevoiceback.voice.service;
 
 import hypevoice.hypevoiceback.global.exception.BaseException;
+import hypevoice.hypevoiceback.member.domain.Member;
+import hypevoice.hypevoiceback.member.service.MemberFindService;
 import hypevoice.hypevoiceback.voice.domain.Voice;
+import hypevoice.hypevoiceback.voice.domain.VoiceRepository;
 import hypevoice.hypevoiceback.voice.dto.VoiceReadResponse;
 import hypevoice.hypevoiceback.voice.excption.VoiceErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class VoiceService {
 
     private final VoiceFindService voiceFindService;
+
+    private final MemberFindService memberFindService;
+
+    private final VoiceRepository voiceRepository;
+
+    @Transactional
+    public void createVoice(Long memberId, String name) {
+        Member member = memberFindService.findById(memberId);
+        Voice voice = Voice.createVoice(member, name);
+        voiceRepository.save(voice);
+    }
 
     @Transactional
     public void updateVoice(Long memberId, Long voiceId, String name, String imageUrl, String intro, String email, String phone, String addInfo) {
