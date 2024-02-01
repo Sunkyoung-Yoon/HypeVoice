@@ -1,9 +1,11 @@
 package hypevoice.hypevoiceback.member.service;
 
+import hypevoice.hypevoiceback.board.dto.BoardResponse;
 import hypevoice.hypevoiceback.common.ServiceTest;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.member.domain.Member;
 import hypevoice.hypevoiceback.member.domain.Role;
+import hypevoice.hypevoiceback.member.dto.MemberResponse;
 import hypevoice.hypevoiceback.member.exception.MemberErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -77,5 +79,25 @@ public class MemberServiceTest extends ServiceTest {
 
         // then
         assertThat(findMember.getRole()).isEqualTo(Role.USER);
+    }
+
+    @Nested
+    @DisplayName("회원 정보 상세 조회")
+    class read {
+        @Test
+        @DisplayName("회원 상세 조회에 성공한다")
+        void success() {
+            // when
+            MemberResponse memberResponse = memberService.read(member1.getId());
+
+            // then
+            assertAll(
+                    () -> assertThat(memberResponse.memberId()).isEqualTo(member1.getId()),
+                    () -> assertThat(memberResponse.username()).isEqualTo(member1.getUsername()),
+                    () -> assertThat(memberResponse.nickname()).isEqualTo(member1.getNickname()),
+                    () -> assertThat(memberResponse.email()).isEqualTo(member1.getEmail()),
+                    () -> assertThat(memberResponse.profileUrl()).isEqualTo(member1.getProfileUrl())
+            );
+        }
     }
 }

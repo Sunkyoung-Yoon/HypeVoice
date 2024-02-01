@@ -2,6 +2,7 @@ package hypevoice.hypevoiceback.member.controller;
 
 import hypevoice.hypevoiceback.auth.exception.AuthErrorCode;
 import hypevoice.hypevoiceback.common.ControllerTest;
+import hypevoice.hypevoiceback.member.dto.MemberResponse;
 import hypevoice.hypevoiceback.member.dto.MemberUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -75,32 +76,35 @@ public class MemberApiControllerTest extends ControllerTest {
         }
     }
 
-//    @Nested
-//    @DisplayName("게시글 상세조회 API [GET /api/boards/{boardId}]")
-//    class getDetailBoard {
-//        private static final String BASE_URL = "/api/boards/{boardId}";
-//        private static final Long BOARD_ID = 2L;
-//
-//        @Test
-//        @DisplayName("게시글 상세조회에 성공한다")
-//        void success() throws Exception {
-//            // given
-//            doReturn(readBoardResponse())
-//                    .when(boardService)
-//                    .read(anyLong());
-//
-//            // when
-//            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-//                    .get(BASE_URL, BOARD_ID)
-//                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
-//
-//            // then
-//            mockMvc.perform(requestBuilder)
-//                    .andExpectAll(status().isOk());
-//        }
-//    }
+    @Nested
+    @DisplayName("회원 정보 상세조회 API [GET /api/members]")
+    class getDetailMember {
+        private static final String BASE_URL = "/api/members";
+
+        @Test
+        @DisplayName("회원 정보 상세조회에 성공한다")
+        void success() throws Exception {
+            // given
+            doReturn(readMemberResponse())
+                    .when(memberService)
+                    .read(anyLong());
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .get(BASE_URL)
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(status().isOk());
+        }
+    }
 
     private MemberUpdateRequest updateMemberRequest() {
         return new MemberUpdateRequest("voice123", "프로필이미지Url");
+    }
+
+    private MemberResponse readMemberResponse() {
+        return new MemberResponse(1L, "윤선경", "voice123", "qwe123@gnaver.com", "프로필이미지Url");
     }
 }
