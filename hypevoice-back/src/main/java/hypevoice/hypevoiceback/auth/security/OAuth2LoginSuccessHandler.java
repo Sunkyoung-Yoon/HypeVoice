@@ -49,7 +49,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         Member loginMember = memberFindService.findBySocialTypeAndEmail(socialType, email);
         // 처음 로그인한 유저라면 랜덤 닉네임 설정 필요
         if(role == Role.GUEST){
-            memberService.updateNickname(loginMember.getId(), initialNickname(loginMember.getId()));
+            memberService.update(loginMember.getId(), initialNickname(loginMember.getId()), null);
             memberService.updateRole(loginMember.getId());
             voiceService.createVoice(loginMember.getId(), loginMember.getUsername());
         }
