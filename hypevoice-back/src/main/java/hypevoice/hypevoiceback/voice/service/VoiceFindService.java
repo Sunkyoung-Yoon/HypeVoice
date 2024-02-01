@@ -3,7 +3,7 @@ package hypevoice.hypevoiceback.voice.service;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.voice.domain.Voice;
 import hypevoice.hypevoiceback.voice.domain.VoiceRepository;
-import hypevoice.hypevoiceback.voice.excption.VoiceErrorCode;
+import hypevoice.hypevoiceback.voice.exception.VoiceErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

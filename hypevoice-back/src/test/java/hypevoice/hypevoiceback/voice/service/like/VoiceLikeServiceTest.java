@@ -5,7 +5,7 @@ import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.member.domain.Member;
 import hypevoice.hypevoiceback.voice.domain.Voice;
 import hypevoice.hypevoiceback.voice.domain.like.VoiceLike;
-import hypevoice.hypevoiceback.voice.excption.VoiceErrorCode;
+import hypevoice.hypevoiceback.voice.exception.VoiceErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static hypevoice.hypevoiceback.fixture.MemberFixture.GABIN;
 import static hypevoice.hypevoiceback.fixture.MemberFixture.SUNKYOUNG;
-import static hypevoice.hypevoiceback.fixture.VoiceFixture.Voice1;
+import static hypevoice.hypevoiceback.fixture.VoiceFixture.VOICE_01;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -33,7 +33,7 @@ public class VoiceLikeServiceTest extends ServiceTest {
     void setup() {
         member1 = memberRepository.save(SUNKYOUNG.toMember());
         member2 = memberRepository.save(GABIN.toMember());
-        voice = voiceRepository.save(Voice1.toVoice(member1));
+        voice = voiceRepository.save(VOICE_01.toVoice(member1));
     }
 
     @Nested

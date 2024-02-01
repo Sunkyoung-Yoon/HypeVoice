@@ -25,7 +25,7 @@ public class Work extends BaseTimeEntity {
     private Voice voice;
 
     @Column(nullable = false)
-    private String intro;
+    private String title;
 
     private String videoLink;
     private String photoUrl;
@@ -35,29 +35,30 @@ public class Work extends BaseTimeEntity {
     private int isRep;
 
     @Builder
-    private Work(Voice voice, String intro, String videoLink, String photoUrl, String scriptUrl, String recordUrl, String info) {
+    private Work(Voice voice, String title, String videoLink, String photoUrl, String scriptUrl, String recordUrl, String info, int isRep) {
         this.voice = voice;
-        this.intro = intro;
+        this.title = title;
         this.videoLink = videoLink;
         this.photoUrl = photoUrl;
         this.scriptUrl = scriptUrl;
         this.recordUrl = recordUrl;
         this.info = info;
-        this.isRep = 0;
+        this.isRep = isRep;
     }
 
-    public static Work createWork(Voice voice, String intro, String videoLink, String photoUrl, String scriptUrl, String recordUrl, String info) {
-        return new Work(voice, intro, videoLink, photoUrl, scriptUrl, recordUrl, info);
+    public static Work createWork(Voice voice, String title, String videoLink, String photoUrl, String scriptUrl, String recordUrl, String info, int isRep) {
+        return new Work(voice, title, videoLink, photoUrl, scriptUrl, recordUrl, info, isRep);
     }
 
-    public void updateWork(String intro, String videoLink, String photoUrl, String scriptUrl,
-                           String recordUrl, String info) {
-        this.intro = intro;
+    public void updateWork(String title, String videoLink, String photoUrl, String scriptUrl,
+                           String recordUrl, String info, int isRep) {
+        this.title = title;
         this.videoLink = videoLink;
         this.photoUrl = photoUrl;
         this.scriptUrl = scriptUrl;
         this.recordUrl = recordUrl;
         this.info = info;
+        this.isRep = isRep;
     }
 
     public void updateRep() {

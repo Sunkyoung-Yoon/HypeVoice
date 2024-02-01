@@ -25,6 +25,9 @@ import hypevoice.hypevoiceback.voice.controller.like.VoiceLikeController;
 import hypevoice.hypevoiceback.voice.service.VoiceFindService;
 import hypevoice.hypevoiceback.voice.service.VoiceService;
 import hypevoice.hypevoiceback.voice.service.like.VoiceLikeService;
+import hypevoice.hypevoiceback.work.controller.WorkController;
+import hypevoice.hypevoiceback.work.service.WorkFindService;
+import hypevoice.hypevoiceback.work.service.WorkService;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -44,7 +47,8 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
         CommentApiController.class,
         VoiceController.class,
         VoiceLikeController.class,
-        MemberApiController.class
+        MemberApiController.class,
+        WorkController.class
 })
 @WithMockUser("test")
 public abstract class ControllerTest {
@@ -114,6 +118,12 @@ public abstract class ControllerTest {
 
     @MockBean
     protected MemberService memberService;
+
+    @MockBean
+    protected WorkService workService;
+
+    @MockBean
+    protected WorkFindService workFindService;
 
     protected String convertObjectToJson(Object data) throws JsonProcessingException {
         return objectMapper.writeValueAsString(data);

@@ -6,7 +6,7 @@ import hypevoice.hypevoiceback.member.service.MemberFindService;
 import hypevoice.hypevoiceback.voice.domain.Voice;
 import hypevoice.hypevoiceback.voice.domain.like.VoiceLike;
 import hypevoice.hypevoiceback.voice.domain.like.VoiceLikeRepository;
-import hypevoice.hypevoiceback.voice.excption.VoiceErrorCode;
+import hypevoice.hypevoiceback.voice.exception.VoiceErrorCode;
 import hypevoice.hypevoiceback.voice.service.VoiceFindService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

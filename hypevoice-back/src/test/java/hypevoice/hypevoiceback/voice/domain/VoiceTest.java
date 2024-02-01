@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static hypevoice.hypevoiceback.fixture.MemberFixture.JAESIK;
-import static hypevoice.hypevoiceback.fixture.VoiceFixture.Voice1;
+import static hypevoice.hypevoiceback.fixture.VoiceFixture.VOICE_01;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -19,7 +19,7 @@ public class VoiceTest {
     @BeforeEach
     void setUp() {
         member = JAESIK.toMember();
-        voice = Voice1.toVoice(member);
+        voice = VOICE_01.toVoice(member);
     }
 
     @Test
@@ -28,7 +28,7 @@ public class VoiceTest {
 
         assertAll(
                 () -> assertThat(voice.getMember()).isEqualTo(member),
-                () -> assertThat(voice.getName()).isEqualTo(Voice1.getName()),
+                () -> assertThat(voice.getName()).isEqualTo(VOICE_01.getName()),
                 () -> assertThat(voice.getImageUrl()).isEqualTo(null),
                 () -> assertThat(voice.getIntro()).isEqualTo(null),
                 () -> assertThat(voice.getEmail()).isEqualTo(null),
