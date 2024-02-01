@@ -19,6 +19,8 @@ public class Member extends BaseTimeEntity {
 
     private String username;
     private String email;
+
+    @Column(unique = true)
     private String nickname;
     private String profileUrl;
 
@@ -50,11 +52,8 @@ public class Member extends BaseTimeEntity {
         return this;
     }
 
-    public void updateNickname(String nickname){
+    public void update(String nickname, String profileUrl){
         this.nickname = nickname;
-    }
-
-    public void updateProfileUrl(String profileUrl){
         this.profileUrl = profileUrl;
     }
 

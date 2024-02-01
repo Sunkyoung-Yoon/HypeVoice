@@ -3,7 +3,6 @@ package hypevoice.hypevoiceback.auth.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hypevoice.hypevoiceback.auth.dto.LoginResponse;
 import hypevoice.hypevoiceback.auth.service.AuthService;
-import hypevoice.hypevoiceback.auth.service.TokenService;
 import hypevoice.hypevoiceback.member.domain.Member;
 import hypevoice.hypevoiceback.member.domain.Role;
 import hypevoice.hypevoiceback.member.domain.SocialType;
@@ -32,7 +31,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     private final MemberFindService memberFindService;
     private final MemberService memberService;
 
-    private final TokenService tokenService;
     private final AuthService authService;
     private final ObjectMapper objectMapper;
 
@@ -49,7 +47,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         Member loginMember = memberFindService.findBySocialTypeAndEmail(socialType, email);
         // 처음 로그인한 유저라면 랜덤 닉네임 설정 필요
         if(role == Role.GUEST){
-            memberService.updateNickname(loginMember.getId(), initialNickname(loginMember.getId()));
+            memberService.update(loginMember.getId(), initialNickname(loginMember.getId()), null);
             memberService.updateRole(loginMember.getId());
         }
         else{
