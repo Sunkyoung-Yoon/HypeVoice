@@ -5,6 +5,7 @@ import { LoginState } from "../recoil/Auth";
 import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu"; // 햄버거 아이콘
+import { useRecoilState } from "recoil";
 
 const HeaderButtonComponent = styled(Button)`
   color: black;
@@ -23,10 +24,10 @@ const HeaderButtonComponent = styled(Button)`
 
 const HamburgerButtonComponent = styled(MenuIcon)`
   display: none;
-  color : black;
-  width : 100px;
+  color: black;
+  width: 100px;
   position: fixed;
-  top : 10px;
+  top: 10px;
   right: 0;
 
   @media (max-width: 768px) {
@@ -34,14 +35,32 @@ const HamburgerButtonComponent = styled(MenuIcon)`
   }
 `;
 
+const LogoImg = styled.img`
+  cursor: pointer;
+  transition: opacity 0.3s ease, border 0.3s ease;
+  border: 0 solid transparent;
+  border-radius: 15%;
+
+  &:hover {
+    opacity: 0.6;
+    border: 2px solid #5b5ff4;
+  }
+`;
 
 export default function HeaderBarComponent() {
+  const [loginState, setLoginState] = useRecoilState(LoginState);
   const navigation = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleMenuClick = () => {
     setMenuOpen(!menuOpen);
-  }
+  };
+
+  const handleLoginState = () => {
+    // 로그인 상태면 로그아웃
+    // 비로그인 상태면 로그인 페이지로 이동
+    loginState ? setLoginState(!loginState) : navigation("/login");
+  };
 
   return (
     <Box
@@ -59,15 +78,16 @@ export default function HeaderBarComponent() {
       >
         <Toolbar
           variant="dense"
-          style={{ 
-            display: "flex", 
+          style={{
+            display: "flex",
             justifyContent: "space-between",
-            alignItems : "center",
-            height : "100%",
-            width : "97%",
-        }}
+            alignItems: "center",
+            height: "100%",
+            width: "97%",
+          }}
         >
-          <div id="left"
+          <div
+            id="left"
             style={{
               display: "flex",
               justifyContent: "space-between",
@@ -75,69 +95,83 @@ export default function HeaderBarComponent() {
               height: "100%",
             }}
           >
-            <img
+            <LogoImg
               src="src/assets/HYPE_VOICE_IMG.png"
               alt="HypeVoice Logo"
-              style={{ height : "50px", alignItems : "center"}}
+              onClick={() => navigation("/")}
+              style={{ height: "50px", alignItems: "center" }}
             />
-            <HeaderButtonComponent variant="text">
+            <HeaderButtonComponent
+              variant="text"
+              onClick={() => navigation("/voice")}
+            >
               내 보이스
             </HeaderButtonComponent>
-            <HeaderButtonComponent variant="text">게시판</HeaderButtonComponent>
-            <HeaderButtonComponent variant="text">
+            <HeaderButtonComponent
+              variant="text"
+              onClick={() => navigation("/community")}
+            >
+              게시판
+            </HeaderButtonComponent>
+            <HeaderButtonComponent
+              variant="text"
+              onClick={() => navigation("/studioList")}
+            >
               스튜디오
             </HeaderButtonComponent>
           </div>
-          <div id="right" style={{ display: "flex", justifyContent: "space-between", alignContent : "center" }}>
-            {LoginState && (
+          <div
+            id="right"
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignContent: "center",
+            }}
+          >
+            {loginState && (
               <HeaderButtonComponent
                 variant="text"
-                onClick={() =>
-                  navigation("/", { state: { wantToGo: "/myPage" } })
-                }
+                onClick={() => navigation("/myPage")}
               >
                 마이 페이지
               </HeaderButtonComponent>
             )}
-            <HeaderButtonComponent
-              variant="text"
-              onClick={() =>
-                LoginState ? navigation("/logout") : navigation("/login")
-              }
-            >
-              {LoginState ? "로그아웃" : "로그인"}
+            <HeaderButtonComponent variant="text" onClick={handleLoginState}>
+              {loginState ? "로그아웃" : "로그인"}
             </HeaderButtonComponent>
-            <HamburgerButtonComponent
-              onClick={handleMenuClick}
-            />
+            <HamburgerButtonComponent onClick={handleMenuClick} />
           </div>
           {menuOpen && (
-            <div id="menu" style={{ position: "absolute", top: "100%", left: 0, width: "100%", backgroundColor: "white", overflow: 'auto', display: 'flex', flexDirection: 'column' }}>
-             {/* <div id="menu" style={{ position: "absolute", top: "100%", left: 0, width: "100%", backgroundColor: "white" }}> */}
-              <Button variant="text">
+            <div
+              id="menu"
+              style={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                width: "100%",
+                backgroundColor: "white",
+                overflow: "auto",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              {/* <div id="menu" style={{ position: "absolute", top: "100%", left: 0, width: "100%", backgroundColor: "white" }}> */}
+              <Button variant="text" onClick={() => navigation("/voice")}>
                 내 보이스
               </Button>
-              <Button variant="text">게시판</Button>
-              <Button variant="text">
+              <Button variant="text" onClick={() => navigation("/community")}>
+                게시판
+              </Button>
+              <Button variant="text" onClick={() => navigation("/studioList")}>
                 스튜디오
               </Button>
-              {LoginState && (
-                <Button
-                  variant="text"
-                  onClick={() =>
-                    navigation("/", { state: { wantToGo: "/myPage" } })
-                  }
-                >
+              {loginState && (
+                <Button variant="text" onClick={() => navigation("/myPage")}>
                   마이 페이지
                 </Button>
               )}
-              <Button
-                variant="text"
-                onClick={() =>
-                  LoginState ? navigation("/logout") : navigation("/login")
-                }
-              >
-                {LoginState ? "로그아웃" : "로그인"}
+              <Button variant="text" onClick={handleLoginState}>
+                {loginState ? "로그아웃" : "로그인"}
               </Button>
             </div>
           )}

@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, AppBar, Toolbar, Button } from "@mui/material";
 import LogoComponent from "../components/LogoComponent";
 import styled from "styled-components";
 import kakaoLogo from "../assets/kakaoIcon.png";
 import naverLogo from "../assets/naverIcon.jpg";
+import { useNavigate } from "react-router-dom";
+import { LoginState } from "../recoil/Auth";
 
 const Container = styled.div`
   height: 80vh;
@@ -113,6 +115,10 @@ const Logo = styled("img")`
 `;
 
 function Login() {
+  // const [id, setId] = useState();
+  // const [password, setPassword] = useState();
+  const navigation = useNavigate();
+
   return (
     <OuterContainer>
       <LogoComponentContainer>
