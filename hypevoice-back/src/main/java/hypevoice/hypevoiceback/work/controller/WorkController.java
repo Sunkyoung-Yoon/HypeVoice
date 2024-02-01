@@ -2,8 +2,10 @@ package hypevoice.hypevoiceback.work.controller;
 
 import hypevoice.hypevoiceback.global.annotation.ExtractPayload;
 import hypevoice.hypevoiceback.work.dto.WorkRequest;
+import hypevoice.hypevoiceback.work.dto.WorkResponse;
 import hypevoice.hypevoiceback.work.service.WorkService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,5 +32,11 @@ public class WorkController {
     public ResponseEntity<Void> deleteWork(@ExtractPayload Long memberId, @PathVariable("voiceId") Long voiceId, @PathVariable("workId") Long workId) {
         workService.deleteWork(memberId, voiceId, workId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{workId}")
+    public ResponseEntity<WorkResponse> readWork(@PathVariable("voiceId") Long voiceId, @PathVariable("workId") Long workId) {
+        WorkResponse workResponse = workService.readWork(voiceId, workId);
+        return new ResponseEntity<>(workResponse, HttpStatus.OK);
     }
 }
