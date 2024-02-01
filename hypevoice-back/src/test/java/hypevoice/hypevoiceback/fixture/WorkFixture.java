@@ -8,20 +8,21 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum WorkFixture {
-    Work1("한줄소개1", "vLink1", "pLink1", "sUrl1", "rUrl1", "디테일소개1"),
-    Work2("한줄소개2", "vLink2", "pLink2", "sUrl2", "rUrl2", "디테일소개2"),
-    Work3("한줄소개3", "vLink3", "pLink3", "sUrl3", "rUrl3", "디테일소개3")
+    WORK_01("제목1", "vLink1", "pLink1", "sUrl1", "rUrl1", "디테일소개1", 1),
+    WORK_02("제목2", "vLink2", "pLink2", "sUrl2", "rUrl2", "디테일소개2", 0),
+    WORK_03("제목3", "vLink3", "pLink3", "sUrl3", "rUrl3", "디테일소개3", 1)
     ;
 
-    private final String intro;
+    private final String title;
     private final String videoLink;
     private final String photoUrl;
     private final String scriptUrl;
     private final String recordUrl;
     private final String info;
+    private final int isRep;
 
     public Work toWork(Voice voice) {
-        return Work.createWork(voice, intro, videoLink, photoUrl, scriptUrl, recordUrl, info);
+        return Work.createWork(voice, title, videoLink, photoUrl, scriptUrl, recordUrl, info, isRep);
     }
 
 }
