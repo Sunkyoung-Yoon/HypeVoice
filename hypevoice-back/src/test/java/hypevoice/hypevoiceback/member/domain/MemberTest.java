@@ -1,7 +1,5 @@
 package hypevoice.hypevoiceback.member.domain;
 
-import hypevoice.hypevoiceback.member.domain.Member;
-import hypevoice.hypevoiceback.member.domain.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,33 +54,18 @@ public class MemberTest {
     }
 
     @Test
-    @DisplayName("Member 닉네임을 변경한다")
-    public void updateNickname() {
+    @DisplayName("Member 닉네임과 프로필이미지Url을 변경한다")
+    public void update() {
 
         //when
-        member1.updateNickname("닉네임 변경1");
-        member2.updateNickname("닉네임 변경2");
+        member1.update("닉네임 변경1", "프로필 이미지 Url 변경");
 
         // then
         assertAll(
                 () -> assertThat(member1.getNickname()).isEqualTo("닉네임 변경1"),
-                () -> assertThat(member2.getNickname()).isEqualTo("닉네임 변경2")
+                () -> assertThat(member1.getProfileUrl()).isEqualTo("프로필 이미지 Url 변경")
         );
 
-    }
-
-    @Test
-    @DisplayName("Member 프로필 이미지를 변경한다")
-    public void updateProfileUrl() {
-
-        //when
-        member1.updateProfileUrl("프로필 이미지 URL 변경1");
-
-        // then
-        assertAll(
-                () -> assertThat(member1.getProfileUrl()).isEqualTo("프로필 이미지 URL 변경1"),
-                () -> assertThat(member2.getProfileUrl()).isNull()
-        );
     }
 
     @Test
