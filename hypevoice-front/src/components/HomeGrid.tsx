@@ -1,8 +1,20 @@
 import React from "react";
 import styled from "styled-components";
+import { voiceFilterCheckAtom } from "../recoil/voiceFilterCheck";
+import CategoryFilter from "./CategoryFilter";
+import SearchComponent from "./SearchComponent";
+
+const HomeGridDiv = styled.div`
+  height: 90vh;
+  background-color: #f5f5f5;
+`;
 
 export default function HomeGrid() {
   console.log("홈이다!");
 
-  return <div> 보이스 카드가 들어갈 자리</div>;
+  return (
+    <HomeGridDiv>
+      <SearchComponent />
+    </HomeGridDiv>
+  );
 }

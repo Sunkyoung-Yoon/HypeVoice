@@ -7,11 +7,12 @@ const HeaderStyleDiv = styled.div`
   width: 100%;
 `;
 
-function Header() {
-  return <HeaderStyleDiv>
-            <HeaderBarComponent />
-          </HeaderStyleDiv>
-  
+function HeaderComponent() {
+  return (
+    <HeaderStyleDiv>
+      <HeaderBarComponent />
+    </HeaderStyleDiv>
+  );
 }
 
-export default Header;
+export default HeaderComponent;

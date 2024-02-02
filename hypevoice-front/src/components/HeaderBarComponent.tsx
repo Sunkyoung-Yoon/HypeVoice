@@ -47,7 +47,6 @@ const LogoImg = styled.img`
   }
 `;
 
-
 export default function HeaderBarComponent() {
   const [loginState, setLoginState] = useRecoilState(LoginState);
   const navigation = useNavigate();
