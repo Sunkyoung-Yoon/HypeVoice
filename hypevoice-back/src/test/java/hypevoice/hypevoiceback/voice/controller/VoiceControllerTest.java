@@ -3,6 +3,7 @@ package hypevoice.hypevoiceback.voice.controller;
 import hypevoice.hypevoiceback.auth.exception.AuthErrorCode;
 import hypevoice.hypevoiceback.common.ControllerTest;
 import hypevoice.hypevoiceback.global.exception.BaseException;
+import hypevoice.hypevoiceback.voice.dto.VoiceReadResponse;
 import hypevoice.hypevoiceback.voice.dto.VoiceUpdateRequest;
 import hypevoice.hypevoiceback.voice.exception.VoiceErrorCode;
 import org.junit.jupiter.api.DisplayName;
@@ -13,10 +14,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static hypevoice.hypevoiceback.fixture.TokenFixture.ACCESS_TOKEN;
 import static hypevoice.hypevoiceback.fixture.TokenFixture.BEARER_TOKEN;
+import static hypevoice.hypevoiceback.fixture.VoiceFixture.VOICE_02;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -60,7 +61,7 @@ public class VoiceControllerTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("다른 사람의 게시글은 수정할 수 없다")
+        @DisplayName("다른 사람의 보이스은 수정할 수 없다")
         void throwExceptionByUserIsNotVoiceMember() throws Exception {
             // given
             doThrow(BaseException.type(VoiceErrorCode.USER_IS_NOT_VOICE_MEMBER))
@@ -90,7 +91,7 @@ public class VoiceControllerTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("게시글 수정에 성공한다")
+        @DisplayName("보이스 수정에 성공한다")
         void success() throws Exception {
             // given
             doNothing()
@@ -111,7 +112,36 @@ public class VoiceControllerTest extends ControllerTest {
         }
     }
 
+    @Nested
+    @DisplayName("보이스 상세조회 API [GET /api/voices/{voiceId}]")
+    class getDetailVoice {
+        private static final String BASE_URL = "/api/voices/{voiceId}";
+        private static final Long VOICE_ID = 1L;
+
+        @Test
+        @DisplayName("보이스 상세조회에 성공한다")
+        void readSuccess() throws Exception {
+            // given
+            doReturn(readResponse())
+                    .when(voiceService)
+                    .readDetailVoice(anyLong());
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .get(BASE_URL, VOICE_ID)
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(status().isOk());
+        }
+    }
+
     private VoiceUpdateRequest updateRequest(){
         return new VoiceUpdateRequest(updateVoice.MEMBER_ID, updateVoice.NAME,null,null,null,null,null);
+    }
+
+    private VoiceReadResponse readResponse(){
+        return new VoiceReadResponse(updateVoice.NAME,"image","intro","email","phone","addInfo",109);
     }
 }

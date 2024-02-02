@@ -6,6 +6,8 @@ import hypevoice.hypevoiceback.voice.exception.VoiceErrorCode;
 import hypevoice.hypevoiceback.voice.service.VoiceFindService;
 import hypevoice.hypevoiceback.work.domain.Work;
 import hypevoice.hypevoiceback.work.domain.WorkRepository;
+import hypevoice.hypevoiceback.work.dto.WorkResponse;
+import hypevoice.hypevoiceback.work.exception.WorkErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,10 +45,37 @@ public class WorkService {
         workRepository.deleteById(workId);
     }
 
+    public WorkResponse readWork(Long voiceId, Long workId) {
+        validateVoice(voiceId,workId);
+        Work work = workFindService.findById(workId);
+        return WorkResponse.builder()
+                .voiceId(voiceId)
+                .workId(workId)
+                .title(work.getTitle())
+                .videoLink(work.getVideoLink())
+                .photoUrl(work.getPhotoUrl())
+                .scriptUrl(work.getScriptUrl())
+                .recordUrl(work.getRecordUrl())
+                .info(work.getInfo())
+                .isRep(work.getIsRep())
+                .build();
+    }
+
+    // 유튜브 링크 조회
+
+    // 대본 조회
+
     private void validateMember(Long voiceId, Long memberId) {
         Voice voice = voiceFindService.findById(voiceId);
         if (!voice.getMember().getId().equals(memberId)) {
             throw BaseException.type(VoiceErrorCode.USER_IS_NOT_VOICE_MEMBER);
+        }
+    }
+
+    private void validateVoice(Long voiceId, Long workId) {
+        Work work = workFindService.findById(workId);
+        if (!work.getVoice().getId().equals(voiceId)) {
+            throw BaseException.type(WorkErrorCode.WORK_NOT_IN_VOICE);
         }
     }
 

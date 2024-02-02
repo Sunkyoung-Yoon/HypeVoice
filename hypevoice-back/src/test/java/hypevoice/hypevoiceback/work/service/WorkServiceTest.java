@@ -1,10 +1,12 @@
 package hypevoice.hypevoiceback.work.service;
 
+import hypevoice.hypevoiceback.board.dto.BoardResponse;
 import hypevoice.hypevoiceback.common.ServiceTest;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.member.domain.Member;
 import hypevoice.hypevoiceback.voice.domain.Voice;
 import hypevoice.hypevoiceback.work.domain.Work;
+import hypevoice.hypevoiceback.work.dto.WorkResponse;
 import hypevoice.hypevoiceback.work.exception.WorkErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -70,7 +72,7 @@ public class WorkServiceTest extends ServiceTest {
     class update {
         @Test
         @DisplayName("다른 사람의 작업물은 수정할 수 없다")
-        void throwExceptionByUserNotWorkMember() {
+        void throwExceptionByMemberNotWorkMember() {
             // when - then
             assertThatThrownBy(() -> workService.updateWork(notMember.getId(), voice.getId(), work.getId(), "제목2", "vLink2", "pLink2", "sUrl2", "rUrl2", "디테일소개2", 1))
                     .isInstanceOf(BaseException.class)
@@ -105,7 +107,7 @@ public class WorkServiceTest extends ServiceTest {
     class delete {
         @Test
         @DisplayName("다른 사람의 작업물은 삭제할 수 없다")
-        void throwExceptionByUserNotWorkMember() {
+        void throwExceptionByMemberNotWorkMember() {
             // when - then
             assertThatThrownBy(() -> workService.deleteWork(notMember.getId(),voice.getId(), work.getId()))
                     .isInstanceOf(BaseException.class)
@@ -113,7 +115,7 @@ public class WorkServiceTest extends ServiceTest {
         }
 
         @Test
-        @DisplayName("게시글 삭제에 성공한다")
+        @DisplayName("작업물 삭제에 성공한다")
         void deleteSuccess() {
             // given
             workService.deleteWork(member.getId(), voice.getId(), work.getId());
@@ -122,6 +124,30 @@ public class WorkServiceTest extends ServiceTest {
             assertThatThrownBy(() -> workFindService.findById(work.getId()))
                     .isInstanceOf(BaseException.class)
                     .hasMessage(WorkErrorCode.WORK_NOT_FOUND.getMessage());
+        }
+    }
+
+    @Nested
+    @DisplayName("작업물 상세 조회")
+    class readWork {
+        @Test
+        @DisplayName("작업물 상세 조회에 성공한다")
+        void readSuccess() {
+            // when
+            WorkResponse workResponse = workService.readWork(voice.getId(),work.getId());
+
+            // then
+            assertAll(
+                    () -> assertThat(workResponse.voiceId()).isEqualTo(voice.getId()),
+                    () -> assertThat(workResponse.workId()).isEqualTo(work.getId()),
+                    () -> assertThat(workResponse.title()).isEqualTo(work.getTitle()),
+                    () -> assertThat(workResponse.videoLink()).isEqualTo(work.getVideoLink()),
+                    () -> assertThat(workResponse.photoUrl()).isEqualTo(work.getPhotoUrl()),
+                    () -> assertThat(workResponse.scriptUrl()).isEqualTo(work.getScriptUrl()),
+                    () -> assertThat(workResponse.recordUrl()).isEqualTo(work.getRecordUrl()),
+                    () -> assertThat(workResponse.info()).isEqualTo(work.getInfo()),
+                    () -> assertThat(workResponse.isRep()).isEqualTo(work.getIsRep())
+            );
         }
     }
 }

@@ -16,8 +16,7 @@ import static hypevoice.hypevoiceback.fixture.TokenFixture.ACCESS_TOKEN;
 import static hypevoice.hypevoiceback.fixture.TokenFixture.BEARER_TOKEN;
 import static hypevoice.hypevoiceback.fixture.WorkFixture.WORK_01;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -26,11 +25,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("Work [Controller Layer] -> WorkController 테스트")
 public class WorkControllerTest extends ControllerTest {
 
+    private static final Long VOICE_ID = 1L;
+    private static final Long WORK_ID = 2L;
+
     @Nested
     @DisplayName("작업물 등록 API [POST /api/voices/{voiceId}/works]")
     class registerWork {
         private static final String BASE_URL = "/api/voices/{voiceId}/works";
-        private static final Long VOICE_ID = 1L;
 
         @Test
         @DisplayName("Authorization Header에 AccessToken이 없으면 작업물 등록에 실패한다")
@@ -113,8 +114,6 @@ public class WorkControllerTest extends ControllerTest {
     @DisplayName("작업물 수정 API [patch /api/voices/{voiceId}/works/{workId}]")
     class updateWork {
         private static final String BASE_URL = "/api/voices/{voiceId}/works/{workId}";
-        private static final Long VOICE_ID = 1L;
-        private static final Long WORK_ID = 2L;
 
         @Test
         @DisplayName("Authorization Header에 AccessToken이 없으면 작업물 수정에 실패한다")
@@ -182,7 +181,7 @@ public class WorkControllerTest extends ControllerTest {
             // when
             final WorkRequest request = createWorkRequest();
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .patch(BASE_URL, VOICE_ID , WORK_ID)
+                    .patch(BASE_URL, VOICE_ID, WORK_ID)
                     .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
                     .contentType(APPLICATION_JSON)
                     .content(convertObjectToJson(request));
@@ -197,8 +196,6 @@ public class WorkControllerTest extends ControllerTest {
     @DisplayName("작업물 삭제 API [DELETE /api/voices/{voiceId}/works/{workId}]")
     class deleteWork {
         private static final String BASE_URL = "/api/voices/{voiceId}/works/{workId}";
-        private static final Long VOICE_ID = 1L;
-        private static final Long WORK_ID = 1L;
 
         @Test
         @DisplayName("Authorization Header에 AccessToken이 없으면 작업물 삭제에 실패한다")
@@ -235,7 +232,7 @@ public class WorkControllerTest extends ControllerTest {
             // when
             final WorkRequest request = createWorkRequest();
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .delete(BASE_URL, VOICE_ID , WORK_ID)
+                    .delete(BASE_URL, VOICE_ID, WORK_ID)
                     .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
                     .contentType(APPLICATION_JSON)
                     .content(convertObjectToJson(request));
@@ -276,11 +273,35 @@ public class WorkControllerTest extends ControllerTest {
         }
     }
 
+    @Nested
+    @DisplayName("작업물 상세조회 API [GET /api/{voiceId}/works/{workId}]")
+    class getDetailWork {
+        private static final String BASE_URL = "/api/voices/{voiceId}/works/{workId}";
+
+        @Test
+        @DisplayName("작업물 상세조회에 성공한다")
+        void readSuccess() throws Exception {
+            // given
+            doReturn(readWorkResponse())
+                    .when(workService)
+                    .readWork(anyLong(), anyLong());
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .get(BASE_URL, VOICE_ID, WORK_ID)
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(status().isOk());
+        }
+    }
+
     private WorkRequest createWorkRequest() {
         return new WorkRequest(WORK_01.getTitle(), WORK_01.getVideoLink(), WORK_01.getPhotoUrl(), WORK_01.getScriptUrl(), WORK_01.getRecordUrl(), WORK_01.getInfo(), WORK_01.getIsRep());
     }
 
     private WorkResponse readWorkResponse() {
-        return new WorkResponse(WORK_01.getTitle(), WORK_01.getVideoLink(), WORK_01.getPhotoUrl(), WORK_01.getScriptUrl(), WORK_01.getRecordUrl(), WORK_01.getInfo(), WORK_01.getIsRep());
+        return new WorkResponse(VOICE_ID, WORK_ID, WORK_01.getTitle(), WORK_01.getVideoLink(), WORK_01.getPhotoUrl(), WORK_01.getScriptUrl(), WORK_01.getRecordUrl(), WORK_01.getInfo(), WORK_01.getIsRep());
     }
 }
