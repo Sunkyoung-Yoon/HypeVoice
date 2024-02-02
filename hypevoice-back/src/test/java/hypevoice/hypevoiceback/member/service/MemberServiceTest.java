@@ -1,6 +1,5 @@
 package hypevoice.hypevoiceback.member.service;
 
-import hypevoice.hypevoiceback.board.dto.BoardResponse;
 import hypevoice.hypevoiceback.common.ServiceTest;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.member.domain.Member;
@@ -99,5 +98,17 @@ public class MemberServiceTest extends ServiceTest {
                     () -> assertThat(memberResponse.profileUrl()).isEqualTo(member1.getProfileUrl())
             );
         }
+    }
+
+    @Test
+    @DisplayName("회원 정보를 삭제에 성공한다")
+    void deleteMember() {
+        // given
+        memberService.delete(member1.getId());
+
+        // when - then
+        assertThatThrownBy(() -> memberFindService.findById(member1.getId()))
+                .isInstanceOf(BaseException.class)
+                .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
     }
 }

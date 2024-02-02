@@ -1,6 +1,5 @@
 package hypevoice.hypevoiceback.member.controller;
 
-import hypevoice.hypevoiceback.board.dto.BoardResponse;
 import hypevoice.hypevoiceback.global.annotation.ExtractPayload;
 import hypevoice.hypevoiceback.member.dto.MemberResponse;
 import hypevoice.hypevoiceback.member.dto.MemberUpdateRequest;
@@ -26,5 +25,11 @@ public class MemberApiController {
     public ResponseEntity<MemberResponse> read(@ExtractPayload Long memberId) {
         MemberResponse memberResponse = memberService.read(memberId);
         return new ResponseEntity<>(memberResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@ExtractPayload Long memberId) {
+        memberService.delete(memberId);
+        return ResponseEntity.ok().build();
     }
 }

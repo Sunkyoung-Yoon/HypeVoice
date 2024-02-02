@@ -1,5 +1,6 @@
 package hypevoice.hypevoiceback.member.service;
 
+import hypevoice.hypevoiceback.auth.service.AuthService;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.member.domain.Member;
 import hypevoice.hypevoiceback.member.domain.MemberRepository;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
     private final MemberFindService memberFindService;
     private final MemberRepository memberRepository;
+    private final AuthService authService;
 
     @Transactional
     public void update(Long memberId, String nickname, String profileUrl) {
@@ -40,6 +42,13 @@ public class MemberService {
                 .email(readMember.getEmail())
                 .profileUrl(readMember.getProfileUrl())
                 .build();
+    }
+
+    @Transactional
+    public void delete(Long memberId) {
+        Member member = memberFindService.findById(memberId);
+        authService.logout(member.getId());
+        memberRepository.delete(member);
     }
 
     private void validateDuplicateNickname(String nickname) {
