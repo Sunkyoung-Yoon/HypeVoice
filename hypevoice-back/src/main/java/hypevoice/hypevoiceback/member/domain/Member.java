@@ -1,10 +1,17 @@
 package hypevoice.hypevoiceback.member.domain;
 
+import hypevoice.hypevoiceback.board.domain.Board;
 import hypevoice.hypevoiceback.global.BaseTimeEntity;
+import hypevoice.hypevoiceback.voice.domain.Voice;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static jakarta.persistence.CascadeType.PERSIST;
 
 @Getter
 @Entity
@@ -31,6 +38,11 @@ public class Member extends BaseTimeEntity {
     private SocialType socialType; // NAVER, GOOGLE
     private String socialId; // 해당 OAuth 의 key(id)
 
+    @OneToMany(mappedBy = "writer", cascade = PERSIST, orphanRemoval = true)
+    private List<Board> boardList = new ArrayList<>();
+
+    @OneToOne(mappedBy = "member", cascade = PERSIST, orphanRemoval = true)
+    private Voice voice;
 
     @Builder
     private Member(String username, String email, SocialType socialType, String socialId) {
