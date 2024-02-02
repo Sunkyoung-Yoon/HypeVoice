@@ -26,7 +26,7 @@ public class MemberApiControllerTest extends ControllerTest {
 
     @Nested
     @DisplayName("회원 정보 수정 API [PATCH /api/members]")
-    class updateBoard {
+    class updateMember {
         private static final String BASE_URL = "/api/members";
 
         @Test
@@ -97,6 +97,53 @@ public class MemberApiControllerTest extends ControllerTest {
             // then
             mockMvc.perform(requestBuilder)
                     .andExpectAll(status().isOk());
+        }
+    }
+
+    @Nested
+    @DisplayName("회원 탈퇴 API [DELETE /api/members]")
+    class deleteMember {
+        private static final String BASE_URL = "/api/members";
+        @Test
+        @DisplayName("Authorization Header에 AccessToken이 없으면 회원 정보 수정에 실패한다")
+        void withoutAccessToken() throws Exception {
+            // when
+            final MemberUpdateRequest request = updateMemberRequest();
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .delete(BASE_URL);
+
+            // then
+            final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(
+                            status().isForbidden(),
+                            jsonPath("$.status").exists(),
+                            jsonPath("$.status").value(expectedError.getStatus().value()),
+                            jsonPath("$.errorCode").exists(),
+                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
+                            jsonPath("$.message").exists(),
+                            jsonPath("$.message").value(expectedError.getMessage())
+                    );
+        }
+
+        @Test
+        @DisplayName("회원 탈퇴에 성공한다")
+        void success() throws Exception {
+            // given
+            doNothing()
+                    .when(memberService)
+                    .delete(anyLong());
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .delete(BASE_URL)
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpect(
+                            status().isOk()
+                    );
         }
     }
 
