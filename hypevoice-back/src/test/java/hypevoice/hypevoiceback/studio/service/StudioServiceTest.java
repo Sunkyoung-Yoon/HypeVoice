@@ -6,6 +6,7 @@ import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.member.domain.Member;
 import hypevoice.hypevoiceback.studio.domain.Studio;
 import hypevoice.hypevoiceback.studio.dto.StudioRequest;
+import hypevoice.hypevoiceback.studio.dto.StudioResponse;
 import hypevoice.hypevoiceback.studio.exception.StudioErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -97,4 +98,27 @@ public class StudioServiceTest extends ServiceTest {
         }
     }
 
+    @Nested
+    @DisplayName("스튜디오 상세 조회")
+    class read {
+        @Test
+        @DisplayName("스튜디오 상세 조회에 성공한다")
+        void success() {
+            // when
+            StudioResponse studioResponse = studioService.findOneStudio(studio.getId());
+
+            // then
+            assertAll(
+
+                    () -> assertThat(studioResponse.studioId()).isEqualTo(studio.getId()),
+                    () -> assertThat(studioResponse.sessionId()).isEqualTo(studio.getSessionId()),
+                    () -> assertThat(studioResponse.title()).isEqualTo(studio.getTitle()),
+                    () -> assertThat(studioResponse.intro()).isEqualTo(studio.getIntro()),
+                    () -> assertThat(studioResponse.memberCount()).isEqualTo(studio.getMemberCount()),
+                    () -> assertThat(studioResponse.limitNumber()).isEqualTo(studio.getLimitNumber()),
+                    () -> assertThat(studioResponse.isPublic()).isEqualTo(studio.getIsPublic()),
+                    () -> assertThat(studioResponse.onAir()).isEqualTo(studio.getOnAir())
+            );
+        }
+    }
 }
