@@ -20,6 +20,9 @@ import hypevoice.hypevoiceback.global.config.SecurityConfig;
 import hypevoice.hypevoiceback.member.controller.MemberApiController;
 import hypevoice.hypevoiceback.member.service.MemberFindService;
 import hypevoice.hypevoiceback.member.service.MemberService;
+import hypevoice.hypevoiceback.studio.controller.StudioController;
+import hypevoice.hypevoiceback.studio.service.StudioFindService;
+import hypevoice.hypevoiceback.studio.service.StudioService;
 import hypevoice.hypevoiceback.voice.controller.VoiceController;
 import hypevoice.hypevoiceback.voice.controller.like.VoiceLikeController;
 import hypevoice.hypevoiceback.voice.service.VoiceFindService;
@@ -48,7 +51,8 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
         VoiceController.class,
         VoiceLikeController.class,
         MemberApiController.class,
-        WorkController.class
+        WorkController.class,
+        StudioController.class
 })
 @WithMockUser("test")
 public abstract class ControllerTest {
@@ -124,6 +128,12 @@ public abstract class ControllerTest {
 
     @MockBean
     protected WorkFindService workFindService;
+
+    @MockBean
+    protected StudioFindService studioFindService;
+
+    @MockBean
+    protected StudioService studioService;
 
     protected String convertObjectToJson(Object data) throws JsonProcessingException {
         return objectMapper.writeValueAsString(data);

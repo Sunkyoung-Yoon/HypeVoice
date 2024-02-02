@@ -1,7 +1,6 @@
-package hypevoice.hypevoiceback.studio;
+package hypevoice.hypevoiceback.studio.domain;
 
 
-import hypevoice.hypevoiceback.studio.domain.Studio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +19,7 @@ public class StudioTest {
         Studio studio = STUDIO_FIXTURE1.toStudio();
 
         assertAll(
+                () -> assertThat(studio.getSessionId()).isEqualTo(STUDIO_FIXTURE1.getSessionId()),
                 () -> assertThat(studio.getTitle()).isEqualTo(STUDIO_FIXTURE1.getTitle()),
                 () -> assertThat(studio.getIntro()).isEqualTo(STUDIO_FIXTURE1.getIntro()),
                 () -> assertThat(studio.getLimitNumber()).isEqualTo(STUDIO_FIXTURE1.getLimitNumber()),
@@ -42,11 +42,13 @@ public class StudioTest {
 
         // then
         assertAll(
+
                 () -> assertThat(studio1.getTitle()).isEqualTo("newTitle1"),
                 () -> assertThat(studio1.getIntro()).isEqualTo("newIntro1"),
                 () -> assertThat(studio1.getLimitNumber()).isEqualTo(6),
                 () -> assertThat(studio1.getIsPublic()).isEqualTo(1),
                 () -> assertThat(studio1.getPassword()).isEqualTo("password"),
+
 
                 () -> assertThat(studio3.getTitle()).isEqualTo("newTitle3"),
                 () -> assertThat(studio3.getIntro()).isEqualTo("newIntro3"),
@@ -56,5 +58,4 @@ public class StudioTest {
         );
 
     }
-
 }
