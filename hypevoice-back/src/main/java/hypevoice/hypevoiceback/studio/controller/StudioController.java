@@ -2,6 +2,7 @@ package hypevoice.hypevoiceback.studio.controller;
 
 import hypevoice.hypevoiceback.global.annotation.ExtractPayload;
 import hypevoice.hypevoiceback.studio.dto.StudioRequest;
+import hypevoice.hypevoiceback.studio.dto.StudioResponse;
 import hypevoice.hypevoiceback.studio.service.StudioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class StudioController {
 
     // 수정
     @PatchMapping("/{studioId}")
-    public ResponseEntity<Void> update(@PathVariable("studioId") Long studioId, @RequestBody StudioRequest studioRequest) {
+    public ResponseEntity<Void> update(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId, @RequestBody StudioRequest studioRequest) {
         studioService.updateStudio(studioId, studioRequest);
         return ResponseEntity.ok().build();
     }
@@ -36,4 +37,9 @@ public class StudioController {
         return ResponseEntity.ok().build();
     }
 
+    // 상세 조회
+    @GetMapping("/{studioId}")
+    public ResponseEntity<StudioResponse> findOneStudio(@PathVariable("studioId") Long studioId) {
+        return ResponseEntity.status(HttpStatus.OK).body(studioService.findOneStudio(studioId));
+    }
 }

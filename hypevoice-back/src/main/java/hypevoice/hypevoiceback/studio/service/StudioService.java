@@ -3,6 +3,7 @@ package hypevoice.hypevoiceback.studio.service;
 import hypevoice.hypevoiceback.studio.domain.Studio;
 import hypevoice.hypevoiceback.studio.domain.StudioRepository;
 import hypevoice.hypevoiceback.studio.dto.StudioRequest;
+import hypevoice.hypevoiceback.studio.dto.StudioResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,5 +42,18 @@ public class StudioService {
 
     }
 
+    public StudioResponse findOneStudio(Long studioId) {
+        Studio studio = studioFindService.findById(studioId);
+        return StudioResponse.builder().
+                studioId(studio.getId()).
+                title(studio.getTitle()).
+                intro(studio.getIntro()).
+                memberCount(studio.getMemberCount()).
+                limitNumber(studio.getLimitNumber()).
+                isPublic(studio.getIsPublic()).
+                sessionId(studio.getSessionId()).
+                onAir(studio.getOnAir()).
+                build();
+    }
 
 }
