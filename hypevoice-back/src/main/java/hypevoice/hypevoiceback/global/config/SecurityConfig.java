@@ -72,7 +72,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequest ->
                         authorizeRequest
                                 .requestMatchers(
-                                        AntPathRequestMatcher.antMatcher( "/api/token/reissue")
+                                        AntPathRequestMatcher.antMatcher( "/api/token/reissue"),
+                                        AntPathRequestMatcher.antMatcher( "/api/boards"),
+                                        AntPathRequestMatcher.antMatcher( "/api/boards/{boardId}"),
+                                        AntPathRequestMatcher.antMatcher( "/api/works"),
+                                        AntPathRequestMatcher.antMatcher( "/api/works/{workId}"),
+                                        AntPathRequestMatcher.antMatcher("/api/works/{workId}/categoryInfos"),
+                                        AntPathRequestMatcher.antMatcher( "/api/voices"),
+                                        AntPathRequestMatcher.antMatcher( "/api/voices/{voiceId}")
+
                                 ).permitAll()
                                 .requestMatchers(
                                         AntPathRequestMatcher.antMatcher("/api/**")
