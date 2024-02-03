@@ -5,6 +5,7 @@ import hypevoice.hypevoiceback.board.domain.BoardRepository;
 import hypevoice.hypevoiceback.comment.domain.CommentRepository;
 import hypevoice.hypevoiceback.member.domain.MemberRepository;
 import hypevoice.hypevoiceback.studio.domain.StudioRepository;
+import hypevoice.hypevoiceback.studiomember.domain.StudioMemberRepository;
 import hypevoice.hypevoiceback.voice.domain.VoiceRepository;
 import hypevoice.hypevoiceback.voice.domain.like.VoiceLikeRepository;
 import hypevoice.hypevoiceback.work.domain.WorkRepository;
@@ -42,6 +43,9 @@ public class ServiceTest {
 
     @Autowired
     protected StudioRepository studioRepository;
+
+    @Autowired
+    protected StudioMemberRepository studioMemberRepository;
 
     @AfterEach
     void clearDatabase() {
