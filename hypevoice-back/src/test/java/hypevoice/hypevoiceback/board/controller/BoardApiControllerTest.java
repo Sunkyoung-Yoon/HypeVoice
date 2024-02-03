@@ -260,8 +260,7 @@ public class BoardApiControllerTest extends ControllerTest {
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .get(BASE_URL, BOARD_ID)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
+                    .get(BASE_URL, BOARD_ID);
 
             // then
             mockMvc.perform(requestBuilder)
