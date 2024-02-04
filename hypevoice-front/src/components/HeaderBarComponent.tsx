@@ -47,8 +47,8 @@ const LogoImg = styled.img`
   }
 `;
 
-
 export default function HeaderBarComponent() {
+  // 로그인 여부
   const [loginState, setLoginState] = useRecoilState(LoginState);
   const navigation = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -58,9 +58,15 @@ export default function HeaderBarComponent() {
   };
 
   const handleLoginState = () => {
-    // 로그인 상태면 로그아웃
+    // 로그인 상태면 로그아웃 (확인 창 한 번 띄워서 의사 한 번 더 체크!)
     // 비로그인 상태면 로그인 페이지로 이동
-    loginState ? setLoginState(!loginState) : navigation("/login");
+    if (loginState) {
+      if (window.confirm("정말로 로그아웃하시겠습니까?")) {
+        setLoginState(!loginState);
+      }
+    } else {
+      navigation("/login");
+    }
   };
 
   const navigateAndCloseMenu = (path: string) => {

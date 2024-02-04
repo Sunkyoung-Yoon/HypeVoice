@@ -11,23 +11,10 @@ const { persistAtom } = recoilPersist({
   converter: JSON,
 });
 
-// 현재 사용중인 유저
-export const CurrentMemberAtom = atom({
-  key: "CurrentMemberAtom",
-  default: {
-    memberid: 0,
-    email: "",
-    nickname: "",
-    accessToken: "",
-  },
-  effects_UNSTABLE: [persistAtom],
-  // 이 부분 주석처리하면 localstorage에 유지 X => 새로고침해서 테스트 해볼 수 있음!!
-});
-
-// 로그인 여부
-export const LoginState = atom({
-  key: "LoginState",
-  default: true,
+// 메인 화면에 입력한 검색어(닉네임)
+export const MainCurrentKeyword = atom({
+  key: "MainCurrentKeyword",
+  default: "",
   // effects_UNSTABLE: [persistAtom],
   // 이 부분 주석처리하면 localstorage에 유지 X => 새로고침해서 테스트 해볼 수 있음!!
 });
