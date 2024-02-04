@@ -1,6 +1,5 @@
 package hypevoice.hypevoiceback.work.service;
 
-import hypevoice.hypevoiceback.board.dto.BoardResponse;
 import hypevoice.hypevoiceback.common.ServiceTest;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.member.domain.Member;
@@ -81,7 +80,7 @@ public class WorkServiceTest extends ServiceTest {
 
         @Test
         @DisplayName("작업물 수정에 성공한다")
-        void updateSuccess() {
+        void success() {
             // given
             workService.updateWork(member.getId(), voice.getId(), work.getId(), "제목2", "vLink2", "pLink2", "sUrl2", "rUrl2", "디테일소개2", 0);
 
@@ -109,14 +108,14 @@ public class WorkServiceTest extends ServiceTest {
         @DisplayName("다른 사람의 작업물은 삭제할 수 없다")
         void throwExceptionByMemberNotWorkMember() {
             // when - then
-            assertThatThrownBy(() -> workService.deleteWork(notMember.getId(),voice.getId(), work.getId()))
+            assertThatThrownBy(() -> workService.deleteWork(notMember.getId(), voice.getId(), work.getId()))
                     .isInstanceOf(BaseException.class)
                     .hasMessage(WorkErrorCode.MEMBER_IS_NOT_VOICE_MEMBER.getMessage());
         }
 
         @Test
         @DisplayName("작업물 삭제에 성공한다")
-        void deleteSuccess() {
+        void success() {
             // given
             workService.deleteWork(member.getId(), voice.getId(), work.getId());
 
@@ -132,9 +131,9 @@ public class WorkServiceTest extends ServiceTest {
     class readWork {
         @Test
         @DisplayName("작업물 상세 조회에 성공한다")
-        void readSuccess() {
+        void success() {
             // when
-            WorkResponse workResponse = workService.readWork(voice.getId(),work.getId());
+            WorkResponse workResponse = workService.readWork(voice.getId(), work.getId());
 
             // then
             assertAll(
@@ -148,6 +147,60 @@ public class WorkServiceTest extends ServiceTest {
                     () -> assertThat(workResponse.info()).isEqualTo(work.getInfo()),
                     () -> assertThat(workResponse.isRep()).isEqualTo(work.getIsRep())
             );
+        }
+    }
+
+    @Nested
+    @DisplayName("작업물의 대본 상세 조회")
+    class readWorkScript {
+        @Test
+        @DisplayName("작업물의 대본 상세 조회에 성공한다")
+        void success() {
+            // when
+            String findScriptUrl = workService.readScriptUrl(voice.getId(), work.getId());
+
+            // then
+            assertThat(findScriptUrl).isEqualTo(work.getScriptUrl());
+        }
+    }
+
+    @Nested
+    @DisplayName("작업물의 영상 상세 조회")
+    class readWorkVideo {
+        @Test
+        @DisplayName("작업물의 영상 상세 조회에 성공한다")
+        void success() {
+            // when
+            String findVideoLink = workService.readVideoLink(voice.getId(), work.getId());
+
+            // then
+            assertThat(findVideoLink).isEqualTo(work.getVideoLink());
+        }
+    }
+
+    @Nested
+    @DisplayName("작업물 대표 등록 수정")
+    class updateRepresentationWork {
+        @Test
+        @DisplayName("다른 사람의 작업물의 대표등록을 수정할 수 없다")
+        void throwExceptionByMemberNotWorkMember() {
+            // when - then
+            assertThatThrownBy(() -> workService.updateRepresentationWork(notMember.getId(), voice.getId(), work.getId()))
+                    .isInstanceOf(BaseException.class)
+                    .hasMessage(WorkErrorCode.MEMBER_IS_NOT_VOICE_MEMBER.getMessage());
+        }
+
+        @Test
+        @DisplayName("작업물의 대표 등록 수정에 성공한다")
+        void success() {
+            // given
+            workService.updateRepresentationWork(member.getId(), voice.getId(), work.getId());
+
+            // when : 1 -> 0
+            int findIsRep = work.getIsRep();
+
+            // then
+            assertThat(findIsRep).isEqualTo(0);
         }
     }
 }
