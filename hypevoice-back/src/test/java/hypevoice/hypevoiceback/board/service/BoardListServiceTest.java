@@ -81,17 +81,16 @@ public class BoardListServiceTest extends ServiceTest {
             CustomBoardListResponse<BoardList> boardListResponse = boardListService.getBoardList(PAGE, SORT_BY, SEARCH_TYPE, SEARCH_WORD);
 
             // then
-            assertThat(boardListResponse.getBoardList().size()).isLessThanOrEqualTo(PAGE_SIZE);
-            assertThat(boardListResponse.getBoardList().size()).isEqualTo(PAGE_SIZE);
+            assertThat(boardListResponse.boardList().size()).isLessThanOrEqualTo(PAGE_SIZE);
+            assertThat(boardListResponse.boardList().size()).isEqualTo(PAGE_SIZE);
 
             assertAll(
-                    () -> assertThat(boardListResponse.getBoardList().get(0).getBoardId()).isEqualTo(boardList[14].getId()),
-                    () -> assertThat(boardListResponse.getBoardList().get(0).getTitle()).isEqualTo(boardList[14].getTitle()),
-                    () -> assertThat(boardListResponse.getBoardList().get(0).getCategory()).isEqualTo(boardList[14].getCategory()),
-                    () -> assertThat(boardListResponse.getBoardList().get(0).getCategory()).isEqualTo(boardList[14].getCategory()),
-                    () -> assertThat(boardListResponse.getBoardList().get(0).getView()).isEqualTo(boardList[14].getView()),
-                    () -> assertThat(boardListResponse.getBoardList().get(0).getWriterId()).isEqualTo(boardList[14].getWriter().getId()),
-                    () -> assertThat(boardListResponse.getBoardList().get(0).getWriterNickname()).isEqualTo(boardList[14].getWriter().getNickname())
+                    () -> assertThat(boardListResponse.boardList().get(0).boardId()).isEqualTo(boardList[14].getId()),
+                    () -> assertThat(boardListResponse.boardList().get(0).title()).isEqualTo(boardList[14].getTitle()),
+                    () -> assertThat(boardListResponse.boardList().get(0).category()).isEqualTo(boardList[14].getCategory()),
+                    () -> assertThat(boardListResponse.boardList().get(0).view()).isEqualTo(boardList[14].getView()),
+                    () -> assertThat(boardListResponse.boardList().get(0).writerId()).isEqualTo(boardList[14].getWriter().getId()),
+                    () -> assertThat(boardListResponse.boardList().get(0).writerNickname()).isEqualTo(boardList[14].getWriter().getNickname())
             );
         }
     }

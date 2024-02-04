@@ -8,7 +8,6 @@ import hypevoice.hypevoiceback.board.dto.CustomBoardListResponse;
 import hypevoice.hypevoiceback.common.RepositoryTest;
 import hypevoice.hypevoiceback.member.domain.Member;
 import hypevoice.hypevoiceback.member.domain.MemberRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -67,12 +66,12 @@ class BoardListQueryRepositoryImplTest extends RepositoryTest {
 
         // then
         assertAll(
-                () -> assertThat(boardListOrderByTime.getBoardList().size()).isEqualTo(6),
-                () -> assertThat(boardListOrderByTime.getBoardList().get(0).getBoardId()).isEqualTo(boardList[14].getId()),
-                () -> assertThat(boardListOrderByTime.getBoardList().get(0).getTitle()).isEqualTo(boardList[14].getTitle()),
-                () -> assertThat(boardListOrderByTime.getBoardList().get(0).getView()).isEqualTo(boardList[14].getView()),
-                () -> assertThat(boardListOrderByTime.getBoardList().get(0).getWriterId()).isEqualTo(boardList[14].getWriter().getId()),
-                () -> assertThat(boardListOrderByTime.getBoardList().get(0).getWriterNickname()).isEqualTo(boardList[14].getWriter().getNickname())
+                () -> assertThat(boardListOrderByTime.boardList().size()).isEqualTo(6),
+                () -> assertThat(boardListOrderByTime.boardList().get(0).boardId()).isEqualTo(boardList[14].getId()),
+                () -> assertThat(boardListOrderByTime.boardList().get(0).title()).isEqualTo(boardList[14].getTitle()),
+                () -> assertThat(boardListOrderByTime.boardList().get(0).view()).isEqualTo(boardList[14].getView()),
+                () -> assertThat(boardListOrderByTime.boardList().get(0).writerId()).isEqualTo(boardList[14].getWriter().getId()),
+                () -> assertThat(boardListOrderByTime.boardList().get(0).writerNickname()).isEqualTo(boardList[14].getWriter().getNickname())
         );
     }
 
@@ -84,12 +83,12 @@ class BoardListQueryRepositoryImplTest extends RepositoryTest {
 
         // then
         assertAll(
-                () -> assertThat(boardListOrderByHit.getBoardList().size()).isEqualTo(10),
-                () -> assertThat(boardListOrderByHit.getBoardList().get(0).getBoardId()).isEqualTo(boardList[14].getId()),
-                () -> assertThat(boardListOrderByHit.getBoardList().get(0).getTitle()).isEqualTo(boardList[14].getTitle()),
-                () -> assertThat(boardListOrderByHit.getBoardList().get(0).getView()).isEqualTo(boardList[14].getView()),
-                () -> assertThat(boardListOrderByHit.getBoardList().get(0).getWriterId()).isEqualTo(boardList[14].getWriter().getId()),
-                () -> assertThat(boardListOrderByHit.getBoardList().get(0).getWriterNickname()).isEqualTo(boardList[14].getWriter().getNickname())
+                () -> assertThat(boardListOrderByHit.boardList().size()).isEqualTo(10),
+                () -> assertThat(boardListOrderByHit.boardList().get(0).boardId()).isEqualTo(boardList[14].getId()),
+                () -> assertThat(boardListOrderByHit.boardList().get(0).title()).isEqualTo(boardList[14].getTitle()),
+                () -> assertThat(boardListOrderByHit.boardList().get(0).view()).isEqualTo(boardList[14].getView()),
+                () -> assertThat(boardListOrderByHit.boardList().get(0).writerId()).isEqualTo(boardList[14].getWriter().getId()),
+                () -> assertThat(boardListOrderByHit.boardList().get(0).writerNickname()).isEqualTo(boardList[14].getWriter().getNickname())
         );
     }
 }

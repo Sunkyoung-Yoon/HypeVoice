@@ -33,15 +33,15 @@ public class BoardListService {
         }
 
         List<BoardList> boardLists = getSortedBoardList(boardList);
-        return new CustomBoardListResponse<>(boardList.getPageInfo(), boardLists);
+        return new CustomBoardListResponse<>(boardList.pageInfo(), boardLists);
     }
 
     private List<BoardList> getSortedBoardList(CustomBoardListResponse<BoardList> boardLists) {
-        List<BoardList> boardList1 = boardLists.getBoardList();
+        List<BoardList> boardList1 = boardLists.boardList();
         List<BoardList> boardListResponseList = new ArrayList<>();
 
         for (BoardList boardList : boardList1) {
-            Board board = boardFindService.findById(boardList.getBoardId());
+            Board board = boardFindService.findById(boardList.boardId());
             BoardList boardListResponse = BoardList.builder()
                     .boardId(board.getId())
                     .title(board.getTitle())
