@@ -89,11 +89,8 @@ public class CommentApiControllerTest extends ControllerTest {
         @DisplayName("Authorization Header에 AccessToken이 없으면 댓글 삭제에 실패한다")
         void withoutAccessToken() throws Exception {
             // when
-            final CommentRequest request = createCommentRequest();
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .delete(BASE_URL, COMMENT_ID)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .delete(BASE_URL, COMMENT_ID);
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
@@ -118,12 +115,9 @@ public class CommentApiControllerTest extends ControllerTest {
                     .delete(anyLong(), anyLong());
 
             // when
-            final CommentRequest request = createCommentRequest();
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .delete(BASE_URL, COMMENT_ID)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
 
             // then
             final CommentErrorCode expectedError = CommentErrorCode.USER_IS_NOT_COMMENT_WRITER;
@@ -148,12 +142,9 @@ public class CommentApiControllerTest extends ControllerTest {
                     .delete(anyLong(), anyLong());
 
             // when
-            final CommentRequest request = createCommentRequest();
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .delete(BASE_URL, COMMENT_ID)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
 
             // then
             mockMvc.perform(requestBuilder)

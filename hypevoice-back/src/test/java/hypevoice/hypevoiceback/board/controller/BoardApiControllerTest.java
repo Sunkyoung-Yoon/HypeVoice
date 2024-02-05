@@ -246,12 +246,9 @@ public class BoardApiControllerTest extends ControllerTest {
                     .delete(anyLong(), anyLong());
 
             // when
-            final BoardRequest request = createBoardRequest();
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .delete(BASE_URL, BOARD_ID)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
 
             // then
             final BoardErrorCode expectedError = BoardErrorCode.USER_IS_NOT_BOARD_WRITER;
@@ -276,12 +273,9 @@ public class BoardApiControllerTest extends ControllerTest {
                     .delete(anyLong(), anyLong());
 
             // when
-            final BoardRequest request = createBoardRequest();
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .delete(BASE_URL, BOARD_ID)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
 
             // then
             mockMvc.perform(requestBuilder)
