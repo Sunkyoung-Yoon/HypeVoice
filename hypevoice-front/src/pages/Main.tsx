@@ -1,4 +1,6 @@
-import { styled } from "styled-components";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { styled, keyframes } from "styled-components";
+import { useRecoilState } from "recoil";
 import HeaderComponent from "../components/HeaderComponent";
 import Footer from "../components/Footer";
 import LeftSide from "../components/LeftSide";

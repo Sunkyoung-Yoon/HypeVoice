@@ -1,7 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { voiceFilterCheckAtom } from "../recoil/VoiceFilterCheck";
-import CategoryFilter from "./CategoryFilter";
 import SearchComponent from "./SearchComponent";
 
 const HomeGridDiv = styled.div`
