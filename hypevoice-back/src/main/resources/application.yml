@@ -15,6 +15,6 @@ spring:
       username: sa
 
 
-  #application-oauth.yml
+  #application-secret.yml
   profiles:
-    include: oauth
+    include: secret
