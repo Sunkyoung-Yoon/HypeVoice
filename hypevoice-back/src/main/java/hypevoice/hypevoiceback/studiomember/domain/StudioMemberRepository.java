@@ -6,8 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface StudioMemberRepository extends JpaRepository<StudioMember,Long> {
+
+   Optional<StudioMember> findByMemberIdAndStudioId(Long memberId, Long studioid);
 
    boolean existsByMemberIdAndStudioId(Long memberId, Long studioId);
 

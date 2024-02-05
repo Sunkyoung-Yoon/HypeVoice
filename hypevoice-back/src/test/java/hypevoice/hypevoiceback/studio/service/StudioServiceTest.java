@@ -8,6 +8,7 @@ import hypevoice.hypevoiceback.studio.domain.Studio;
 import hypevoice.hypevoiceback.studio.dto.StudioRequest;
 import hypevoice.hypevoiceback.studio.dto.StudioResponse;
 import hypevoice.hypevoiceback.studio.exception.StudioErrorCode;
+import hypevoice.hypevoiceback.studiomember.domain.StudioMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -28,44 +29,57 @@ public class StudioServiceTest extends ServiceTest {
     private StudioFindService studioFindService;
     private Studio studio;
     private Member noMaster;
+    private Member master;
 
     @BeforeEach
     void setUp() {
-        noMaster = memberRepository.save(MemberFixture.SUNKYOUNG.toMember());
+        noMaster = memberRepository.save(MemberFixture.GABIN.toMember());
+        master = memberRepository.save(MemberFixture.SUNKYOUNG.toMember());
         studio = studioRepository.save(STUDIO_FIXTURE1.toStudio());
+
     }
 
     @Test
     @DisplayName("스튜디오 생성에 성공한다")
     void success() {
         // when
-        Long studioId = studio.getId();
-        // then
-        Studio findStudio = studioRepository.findById(studioId).orElseThrow();
+        StudioRequest studioRequest = new StudioRequest("title1", "intro1",6,0,null);
 
+        Long studioId = studioService.createStudio(master.getId(), studioRequest);
+        // then
+
+        Studio findStudio = studioRepository.findById(studioId).orElseThrow();
         assertAll(
 
-                () -> assertThat(findStudio.getId()).isEqualTo(studio.getId()),
-                () -> assertThat(findStudio.getSessionId()).isEqualTo(studio.getSessionId()),
-                () -> assertThat(findStudio.getTitle()).isEqualTo(studio.getTitle()),
-                () -> assertThat(findStudio.getIntro()).isEqualTo(studio.getIntro()),
-                () -> assertThat(findStudio.getMemberCount()).isEqualTo(studio.getMemberCount()),
-                () -> assertThat(findStudio.getLimitNumber()).isEqualTo(studio.getLimitNumber()),
-                () -> assertThat(findStudio.getIsPublic()).isEqualTo(studio.getIsPublic()),
-                () -> assertThat(findStudio.getOnAir()).isEqualTo(studio.getOnAir())
+                () -> assertThat(findStudio.getTitle()).isEqualTo(studioRequest.title()),
+                () -> assertThat(findStudio.getIntro()).isEqualTo(studioRequest.intro()),
+                () -> assertThat(findStudio.getLimitNumber()).isEqualTo(studioRequest.limitNumber()),
+                () -> assertThat(findStudio.getIsPublic()).isEqualTo(studioRequest.isPublic()),
+                () -> assertThat(findStudio.getPassword()).isEqualTo(studioRequest.password())
+
         );
     }
 
     @Nested
     @DisplayName("스튜디오 정보 수정")
     class update {
-
+        @Test
+        @DisplayName("방장이 아니면 수정 할 수 없다.")
+        void throwExceptionByMemberNotHost() {
+            studioMemberRepository.save(StudioMember.createStudioMember(noMaster,studio,0));
+            StudioRequest studioRequest = new StudioRequest("newTitle", "newIntro", 6, 0, null);
+            // when - then
+            assertThatThrownBy(() -> studioService.updateStudio(noMaster.getId(),studio.getId(), studioRequest))
+                    .isInstanceOf(BaseException.class)
+                    .hasMessage(StudioErrorCode.UNABLE_TO_UPDATE_STUDIO.getMessage());
+        }
         @Test
         @DisplayName("스튜디오 정보 수정에 성공한다")
         void success() {
             // given
+            studioMemberRepository.save(StudioMember.createStudioMember(master,studio,1));
             StudioRequest studioRequest = new StudioRequest("newTitle", "newIntro", 6, 0, null);
-            studioService.updateStudio(studio.getId(), studioRequest);
+            studioService.updateStudio(master.getId(), studio.getId(), studioRequest);
 
             // when
             Studio findStudio = studioFindService.findById(studio.getId());
@@ -86,10 +100,21 @@ public class StudioServiceTest extends ServiceTest {
     class delete {
 
         @Test
+        @DisplayName("방장이 아니면 삭제 할 수 없다.")
+        void throwExceptionByMemberNotHost() {
+            studioMemberRepository.save(StudioMember.createStudioMember(noMaster,studio,0));
+            // when - then
+            assertThatThrownBy(() -> studioService.deleteStudio(noMaster.getId(),studio.getId()))
+                    .isInstanceOf(BaseException.class)
+                    .hasMessage(StudioErrorCode.UNABLE_TO_DELETE_STUDIO.getMessage());
+        }
+
+        @Test
         @DisplayName("스튜디오 삭제에 성공한다")
         void success() {
             // given
-            studioService.deleteStudio(noMaster.getId(), studio.getId());
+            studioMemberRepository.save(StudioMember.createStudioMember(master,studio,1));
+            studioService.deleteStudio(master.getId(), studio.getId());
 
             // when - then
             assertThatThrownBy(() -> studioFindService.findById(studio.getId()))
@@ -105,7 +130,7 @@ public class StudioServiceTest extends ServiceTest {
         @DisplayName("스튜디오 상세 조회에 성공한다")
         void success() {
             // when
-            StudioResponse studioResponse = studioService.findOneStudio(studio.getId());
+            StudioResponse studioResponse = studioService.findOneStudio(1L, studio.getId());
 
             // then
             assertAll(

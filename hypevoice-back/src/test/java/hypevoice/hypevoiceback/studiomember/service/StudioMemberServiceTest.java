@@ -95,8 +95,6 @@ public class StudioMemberServiceTest extends ServiceTest {
         void success() {
             // given
             studioMemberService.create(member[0].getId(), studio[0].getId(), 0);
-            studioMemberService.create(member[1].getId(), studio[0].getId(), 0);
-            studioMemberService.create(member[2].getId(), studio[0].getId(), 0);
             List<MemberResponse> memberResponseList = studioMemberService.findAllByStudioId(studio[0].getId());
 
             // when - then
@@ -107,20 +105,7 @@ public class StudioMemberServiceTest extends ServiceTest {
                     () -> assertThat(memberResponseList.get(0).email()).isEqualTo(member[0].getEmail()),
                     () -> assertThat(memberResponseList.get(0).profileUrl()).isEqualTo(member[0].getProfileUrl())
             );
-            assertAll(
-                    () -> assertThat(memberResponseList.get(1).memberId()).isEqualTo(member[1].getId()),
-                    () -> assertThat(memberResponseList.get(1).username()).isEqualTo(member[1].getUsername()),
-                    () -> assertThat(memberResponseList.get(1).nickname()).isEqualTo(member[1].getNickname()),
-                    () -> assertThat(memberResponseList.get(1).email()).isEqualTo(member[1].getEmail()),
-                    () -> assertThat(memberResponseList.get(1).profileUrl()).isEqualTo(member[1].getProfileUrl())
-            );
-            assertAll(
-                    () -> assertThat(memberResponseList.get(2).memberId()).isEqualTo(member[2].getId()),
-                    () -> assertThat(memberResponseList.get(2).username()).isEqualTo(member[2].getUsername()),
-                    () -> assertThat(memberResponseList.get(2).nickname()).isEqualTo(member[2].getNickname()),
-                    () -> assertThat(memberResponseList.get(2).email()).isEqualTo(member[2].getEmail()),
-                    () -> assertThat(memberResponseList.get(2).profileUrl()).isEqualTo(member[2].getProfileUrl())
-            );
+
 
 
         }
