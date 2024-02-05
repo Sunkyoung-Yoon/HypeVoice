@@ -19,14 +19,14 @@ public class StudioController {
     // 등록
     @PostMapping
     public ResponseEntity<Long> createSession(@ExtractPayload Long loginId, @RequestBody @Valid StudioRequest studioRequest) {
-        Long studioId = studioService.createSession(studioRequest);
+        Long studioId = studioService.createStudio(loginId, studioRequest);
         return new ResponseEntity<>(studioId, HttpStatus.OK);
     }
 
     // 수정
     @PatchMapping("/{studioId}")
     public ResponseEntity<Void> update(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId, @RequestBody StudioRequest studioRequest) {
-        studioService.updateStudio(studioId, studioRequest);
+        studioService.updateStudio(loginId, studioId, studioRequest);
         return ResponseEntity.ok().build();
     }
 
@@ -39,7 +39,7 @@ public class StudioController {
 
     // 상세 조회
     @GetMapping("/{studioId}")
-    public ResponseEntity<StudioResponse> findOneStudio(@PathVariable("studioId") Long studioId) {
-        return ResponseEntity.status(HttpStatus.OK).body(studioService.findOneStudio(studioId));
+    public ResponseEntity<StudioResponse> findOneStudio(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId) {
+        return ResponseEntity.status(HttpStatus.OK).body(studioService.findOneStudio(loginId, studioId));
     }
 }

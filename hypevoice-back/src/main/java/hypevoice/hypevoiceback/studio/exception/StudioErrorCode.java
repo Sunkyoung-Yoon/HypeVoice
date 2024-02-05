@@ -13,6 +13,8 @@ public enum StudioErrorCode implements ErrorCode {
     STUDIO_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDIO_002", "스튜디오를 찾을 수 없습니다."),
     STUDIO_IS_FULL(HttpStatus.BAD_REQUEST, "STUDIO_003", "스튜디오의 인원이 다 찼습니다."),
     STUDIO_ALREADY_JOINED(HttpStatus.BAD_REQUEST, "STUDIO_004", "이미 참여중인 스튜디오가 있습니다."),
+    UNABLE_TO_UPDATE_STUDIO(HttpStatus.BAD_REQUEST, "STUDIO_005", "스튜디오을 수정 할 수 없습니다."),
+    UNABLE_TO_DELETE_STUDIO(HttpStatus.BAD_REQUEST, "STUDIO_006", "스튜디오를 삭제 할 수 없습니다."),
     STUDIO_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDIO_MEMBER_001", "스튜디오에 참여한 인원을 찾을 수 없습니다."),
     ;
 

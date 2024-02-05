@@ -19,5 +19,9 @@ public class StudioMemberFindService {
         return studioMemberRepository.findById(studioMemberId).orElseThrow(() -> BaseException.type(StudioErrorCode.STUDIO_MEMBER_NOT_FOUND));
     }
 
+    public StudioMember findByMemberIdAndStudioId(Long MemberId, Long StudioId){
+        return studioMemberRepository.findByMemberIdAndStudioId(MemberId, StudioId).orElseThrow(() -> BaseException.type(StudioErrorCode.STUDIO_MEMBER_NOT_FOUND));
+    }
+
 
 }

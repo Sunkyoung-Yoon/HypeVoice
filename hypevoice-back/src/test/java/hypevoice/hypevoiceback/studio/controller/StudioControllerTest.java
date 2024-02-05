@@ -60,7 +60,7 @@ public class StudioControllerTest extends ControllerTest {
             // given
             doReturn(1L)
                     .when(studioService)
-                    .createSession(createStudioRequest());
+                    .createStudio(1L, createStudioRequest());
 
             // when
             final StudioRequest request = createStudioRequest();
@@ -112,7 +112,7 @@ public class StudioControllerTest extends ControllerTest {
             // given
             doNothing()
                     .when(studioService)
-                    .updateStudio(anyLong(), any());
+                    .updateStudio(anyLong(), anyLong(), any());
 
             // when
             final StudioRequest request = createStudioRequest();
@@ -192,7 +192,7 @@ public class StudioControllerTest extends ControllerTest {
             // given
             doReturn(readStudioResponse())
                     .when(studioService)
-                    .findOneStudio(anyLong());
+                    .findOneStudio(anyLong(), anyLong());
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders

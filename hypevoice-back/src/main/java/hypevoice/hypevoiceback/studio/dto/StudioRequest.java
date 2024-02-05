@@ -1,5 +1,6 @@
 package hypevoice.hypevoiceback.studio.dto;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 
 public record StudioRequest(
@@ -17,6 +18,7 @@ public record StudioRequest(
         @Max(value = 1, message = "1 이하의 값만 설정 가능합니다.")
         int isPublic,
         @Size(max = 20, message = "비밀번호는 최대 20자 이내로 작성해주세요.")
+        @Nullable
         String password
 ) {
 

@@ -63,6 +63,7 @@ public class StudioMemberService {
 
     public StudioResponse findByMemberId(Long memberId) {
         Studio studio = studioMemberRepository.findByMemberId(memberId);
+
         return StudioResponse.builder().
                 studioId(studio.getId()).
                 title(studio.getTitle()).
