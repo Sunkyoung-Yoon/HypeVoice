@@ -2,6 +2,7 @@ package hypevoice.hypevoiceback.common;
 
 import hypevoice.hypevoiceback.auth.domain.TokenRepository;
 import hypevoice.hypevoiceback.board.domain.BoardRepository;
+import hypevoice.hypevoiceback.categoryInfo.domain.CategoryInfoRepository;
 import hypevoice.hypevoiceback.comment.domain.CommentRepository;
 import hypevoice.hypevoiceback.member.domain.MemberRepository;
 import hypevoice.hypevoiceback.studio.domain.StudioRepository;
@@ -43,6 +44,9 @@ public class ServiceTest {
 
     @Autowired
     protected StudioRepository studioRepository;
+
+    @Autowired
+    protected CategoryInfoRepository categoryInfoRepository;
 
     @Autowired
     protected StudioMemberRepository studioMemberRepository;

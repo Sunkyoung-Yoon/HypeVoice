@@ -20,7 +20,7 @@ export const CurrentMemberAtom = atom({
     nickname: "",
     accessToken: "",
   },
-  // effects_UNSTABLE: [persistAtom],
+  effects_UNSTABLE: [persistAtom],
   // 이 부분 주석처리하면 localstorage에 유지 X => 새로고침해서 테스트 해볼 수 있음!!
 });
 

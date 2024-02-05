@@ -1,17 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-// import { QueryClient, QueryClientProvider } from "react-query";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
-import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { RecoilRoot } from "recoil";
 import { Router, RouterProvider, createBrowserRouter } from "react-router-dom";
-import { styled, createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from "styled-components";
 import NanumGothicWoff2 from "../src/assets/fonts/NanumGothic-Bold.woff2";
 import routerFile from "./Router";
 
@@ -40,7 +34,13 @@ const GlobalStyle = createGlobalStyle`
 
 `;
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 20000,
+    },
+  },
+});
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -49,10 +49,6 @@ const root = ReactDOM.createRoot(
 root.render(
   // 오류 방지 레벨 높은 리액트
   <React.StrictMode>
-    {/* <style>
-      @import
-      url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@700&display=swap')
-    </style> */}
     <QueryClientProvider client={queryClient}>
       {/* 전역 상태 관리용 */}
       <RecoilRoot>
