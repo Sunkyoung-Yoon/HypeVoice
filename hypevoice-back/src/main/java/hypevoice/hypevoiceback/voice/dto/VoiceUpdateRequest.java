@@ -6,7 +6,6 @@ import lombok.Builder;
 public record VoiceUpdateRequest(
         Long memberId,
         String name,
-        String imageUrl,
         String intro,
         String email,
         String phone,

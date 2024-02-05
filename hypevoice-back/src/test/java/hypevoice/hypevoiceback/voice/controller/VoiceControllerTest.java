@@ -9,12 +9,14 @@ import hypevoice.hypevoiceback.voice.exception.VoiceErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.nio.charset.StandardCharsets;
+
 import static hypevoice.hypevoiceback.fixture.TokenFixture.ACCESS_TOKEN;
 import static hypevoice.hypevoiceback.fixture.TokenFixture.BEARER_TOKEN;
-import static hypevoice.hypevoiceback.fixture.VoiceFixture.VOICE_02;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -39,10 +41,19 @@ public class VoiceControllerTest extends ControllerTest {
         void withoutAccessToken() throws Exception {
             // when
             final VoiceUpdateRequest request = updateRequest();
+            MockMultipartFile file = new MockMultipartFile("file", null,
+                    "multipart/form-data", new byte[]{});
+            MockMultipartFile mockRequest = new MockMultipartFile("request", null,
+                    "application/json", convertObjectToJson(request).getBytes(StandardCharsets.UTF_8));
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .patch(BASE_URL, VOICE_ID)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .multipart(BASE_URL, VOICE_ID)
+                    .file(file)
+                    .file(mockRequest)
+                    .accept(APPLICATION_JSON)
+                    .with(request1 -> {
+                        request1.setMethod("PATCH");
+                        return request1;
+                    });
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
@@ -70,11 +81,20 @@ public class VoiceControllerTest extends ControllerTest {
 
             // when
             final VoiceUpdateRequest request = updateRequest();
+            MockMultipartFile file = new MockMultipartFile("file", null,
+                    "multipart/form-data", new byte[]{});
+            MockMultipartFile mockRequest = new MockMultipartFile("request", null,
+                    "application/json", convertObjectToJson(request).getBytes(StandardCharsets.UTF_8));
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .patch(BASE_URL, VOICE_ID)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .multipart(BASE_URL, VOICE_ID)
+                    .file(file)
+                    .file(mockRequest)
+                    .accept(APPLICATION_JSON)
+                    .with(request1 -> {
+                        request1.setMethod("PATCH");
+                        return request1;
+                    })
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
 
             // then
             final VoiceErrorCode expectedError = VoiceErrorCode.USER_IS_NOT_VOICE_MEMBER;
@@ -100,11 +120,20 @@ public class VoiceControllerTest extends ControllerTest {
 
             // when
             final VoiceUpdateRequest request = updateRequest();
+            MockMultipartFile file = new MockMultipartFile("file", null,
+                    "multipart/form-data", new byte[]{});
+            MockMultipartFile mockRequest = new MockMultipartFile("request", null,
+                    "application/json", convertObjectToJson(request).getBytes(StandardCharsets.UTF_8));
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .patch(BASE_URL, VOICE_ID)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .multipart(BASE_URL, VOICE_ID)
+                    .file(file)
+                    .file(mockRequest)
+                    .accept(APPLICATION_JSON)
+                    .with(request1 -> {
+                        request1.setMethod("PATCH");
+                        return request1;
+                    })
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
 
             // then
             mockMvc.perform(requestBuilder)
@@ -138,10 +167,10 @@ public class VoiceControllerTest extends ControllerTest {
     }
 
     private VoiceUpdateRequest updateRequest(){
-        return new VoiceUpdateRequest(updateVoice.MEMBER_ID, updateVoice.NAME,null,null,null,null,null);
+        return new VoiceUpdateRequest(updateVoice.MEMBER_ID, updateVoice.NAME,null,null,null,null);
     }
 
     private VoiceReadResponse readResponse(){
-        return new VoiceReadResponse(updateVoice.NAME,"image","intro","email","phone","addInfo",109);
+        return new VoiceReadResponse(updateVoice.NAME,null,"intro","email","phone","addInfo",109);
     }
 }

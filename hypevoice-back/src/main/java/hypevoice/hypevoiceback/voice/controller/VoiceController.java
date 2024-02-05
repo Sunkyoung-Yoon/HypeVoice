@@ -7,6 +7,7 @@ import hypevoice.hypevoiceback.voice.service.VoiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,17 +16,18 @@ public class VoiceController {
     private final VoiceService voiceService;
 
     @PatchMapping("/{voiceId}")
-    public ResponseEntity<Void> update(@ExtractPayload Long memberId,
-            @PathVariable Long voiceId, @RequestBody VoiceUpdateRequest voiceUpdateRequest) {
+    public ResponseEntity<Void> update(@ExtractPayload Long memberId, @PathVariable("voiceId") Long voiceId,
+                                       @RequestPart(value = "request") VoiceUpdateRequest voiceUpdateRequest,
+                                       @RequestPart(value = "file", required = false) MultipartFile multipartFile) {
         voiceService.updateVoice(
                 memberId,
                 voiceId,
                 voiceUpdateRequest.name(),
-                voiceUpdateRequest.imageUrl(),
                 voiceUpdateRequest.intro(),
                 voiceUpdateRequest.email(),
                 voiceUpdateRequest.phone(),
-                voiceUpdateRequest.addInfo());
+                voiceUpdateRequest.addInfo(),
+                multipartFile);
         return ResponseEntity.ok().build();
     }
 
