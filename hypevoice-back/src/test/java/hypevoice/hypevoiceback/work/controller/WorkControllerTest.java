@@ -90,7 +90,7 @@ public class WorkControllerTest extends ControllerTest {
 
         @Test
         @DisplayName("작업물 등록에 성공한다")
-        void registerSuccess() throws Exception {
+        void success() throws Exception {
             // given
             doNothing()
                     .when(workService)
@@ -171,7 +171,7 @@ public class WorkControllerTest extends ControllerTest {
 
         @Test
         @DisplayName("작업물 수정에 성공한다")
-        void updateSuccess() throws Exception {
+        void success() throws Exception {
             // given
             doNothing()
                     .when(workService)
@@ -253,7 +253,7 @@ public class WorkControllerTest extends ControllerTest {
 
         @Test
         @DisplayName("작업물 삭제에 성공한다")
-        void deleteSuccess() throws Exception {
+        void success() throws Exception {
             // given
             doNothing()
                     .when(workService)
@@ -280,11 +280,113 @@ public class WorkControllerTest extends ControllerTest {
 
         @Test
         @DisplayName("작업물 상세조회에 성공한다")
-        void readSuccess() throws Exception {
+        void success() throws Exception {
             // given
             doReturn(readWorkResponse())
                     .when(workService)
                     .readWork(anyLong(), anyLong());
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .get(BASE_URL, VOICE_ID, WORK_ID)
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(status().isOk());
+        }
+    }
+
+    @Nested
+    @DisplayName("스크립트 상세조회 API [GET /api/{voiceId}/works/{workId}/script]")
+    class getDetailWorkScript {
+        private static final String BASE_URL = "/api/voices/{voiceId}/works/{workId}/script";
+
+        @Test
+        @DisplayName("스크립트 상세조회에 성공한다")
+        void success() throws Exception {
+            // given
+            doReturn(readScriptResponse())
+                    .when(workService)
+                    .readScriptUrl(anyLong(), anyLong());
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .get(BASE_URL, VOICE_ID, WORK_ID)
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(status().isOk());
+        }
+    }
+
+    @Nested
+    @DisplayName("영상 상세조회 API [GET /api/{voiceId}/works/{workId}/video]")
+    class getDetailWorkVideo {
+        private static final String BASE_URL = "/api/voices/{voiceId}/works/{workId}/video";
+
+        @Test
+        @DisplayName("영상 상세조회에 성공한다")
+        void success() throws Exception {
+            // given
+            doReturn(readVideoResponse())
+                    .when(workService)
+                    .readVideoLink(anyLong(), anyLong());
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .get(BASE_URL, VOICE_ID, WORK_ID)
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(status().isOk());
+        }
+    }
+
+    @Nested
+    @DisplayName("작업물 대표 정보 수정 API [GET /api/{voiceId}/works/{workId}/video]")
+    class updateRepresentationWork {
+        private static final String BASE_URL = "/api/voices/{voiceId}/works/{workId}";
+
+        @Test
+        @DisplayName("다른 사람의 작업물의 대표정보를 수정할 수 없다")
+        void throwExceptionByMemberIsNotVoiceMember() throws Exception {
+            // given
+            doThrow(BaseException.type(WorkErrorCode.MEMBER_IS_NOT_VOICE_MEMBER))
+                    .when(workService)
+                    .updateRepresentationWork(anyLong(), anyLong(), anyLong());
+
+            // when
+            final WorkRequest request = createWorkRequest();
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .post(BASE_URL, VOICE_ID, WORK_ID)
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
+                    .contentType(APPLICATION_JSON)
+                    .content(convertObjectToJson(request));
+
+            // then
+            final WorkErrorCode expectedError = WorkErrorCode.MEMBER_IS_NOT_VOICE_MEMBER;
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(
+                            status().isBadRequest(),
+                            jsonPath("$.status").exists(),
+                            jsonPath("$.status").value(expectedError.getStatus().value()),
+                            jsonPath("$.errorCode").exists(),
+                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
+                            jsonPath("$.message").exists(),
+                            jsonPath("$.message").value(expectedError.getMessage())
+                    );
+        }
+
+        @Test
+        @DisplayName("작업물 대표정보 수정에 성공한다.")
+        void success() throws Exception {
+            // given
+            doNothing()
+                    .when(workService)
+                    .updateRepresentationWork(anyLong(), anyLong(), anyLong());
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -303,5 +405,13 @@ public class WorkControllerTest extends ControllerTest {
 
     private WorkResponse readWorkResponse() {
         return new WorkResponse(VOICE_ID, WORK_ID, WORK_01.getTitle(), WORK_01.getVideoLink(), WORK_01.getPhotoUrl(), WORK_01.getScriptUrl(), WORK_01.getRecordUrl(), WORK_01.getInfo(), WORK_01.getIsRep());
+    }
+
+    private String readScriptResponse() {
+        return WORK_01.getScriptUrl();
+    }
+
+    private String readVideoResponse() {
+        return WORK_01.getVideoLink();
     }
 }

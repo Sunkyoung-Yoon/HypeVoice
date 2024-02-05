@@ -39,4 +39,22 @@ public class WorkController {
         WorkResponse workResponse = workService.readWork(voiceId, workId);
         return new ResponseEntity<>(workResponse, HttpStatus.OK);
     }
+
+    @GetMapping("/{workId}/script")
+    public ResponseEntity<String> readScriptUrl(@PathVariable("voiceId") Long voiceId, @PathVariable("workId") Long workId) {
+        String scriptUrl = workService.readScriptUrl(voiceId, workId);
+        return new ResponseEntity<>(scriptUrl, HttpStatus.OK);
+    }
+
+    @GetMapping("/{workId}/video")
+    public ResponseEntity<String> readVideoLink(@PathVariable("voiceId") Long voiceId, @PathVariable("workId") Long workId) {
+        String videoLink = workService.readVideoLink(voiceId, workId);
+        return new ResponseEntity<>(videoLink, HttpStatus.OK);
+    }
+
+    @PostMapping("/{workId}")
+    public ResponseEntity<Void> updateRepresentationWork(@ExtractPayload Long memberId, @PathVariable("voiceId") Long voiceId, @PathVariable("workId") Long workId) {
+        workService.updateRepresentationWork(memberId, voiceId, workId);
+        return ResponseEntity.ok().build();
+    }
 }

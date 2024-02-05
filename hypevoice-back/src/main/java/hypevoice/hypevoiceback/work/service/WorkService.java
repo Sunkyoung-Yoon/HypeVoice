@@ -33,6 +33,7 @@ public class WorkService {
     @Transactional
     public void updateWork(Long memberId, Long voiceId, Long workId, String title, String videoLink, String photoUrl, String scriptUrl, String recordUrl, String info, int isRep) {
         validateMember(voiceId, memberId);
+        validateVoice(voiceId, workId);
 
         Work work = workFindService.findById(workId);
 
@@ -42,12 +43,15 @@ public class WorkService {
     @Transactional
     public void deleteWork(Long memberId, Long voiceId, Long workId) {
         validateMember(voiceId, memberId);
+
         workRepository.deleteById(workId);
     }
 
+    @Transactional
     public WorkResponse readWork(Long voiceId, Long workId) {
-        validateVoice(voiceId,workId);
+        validateVoice(voiceId, workId);
         Work work = workFindService.findById(workId);
+
         return WorkResponse.builder()
                 .voiceId(voiceId)
                 .workId(workId)
@@ -61,9 +65,35 @@ public class WorkService {
                 .build();
     }
 
-    // 유튜브 링크 조회
 
-    // 대본 조회
+    // 대본 클릭시
+    @Transactional
+    public String readScriptUrl(Long voiceId, Long workId) {
+        validateVoice(voiceId, workId);
+        Work work = workFindService.findById(workId);
+
+        return work.getScriptUrl();
+    }
+
+    // 유튜브 링크 클릭시
+    @Transactional
+    public String readVideoLink(Long voiceId, Long workId) {
+        validateVoice(voiceId, workId);
+        Work work = workFindService.findById(workId);
+
+        return work.getVideoLink();
+    }
+
+    // 대표 작업물 설정
+    @Transactional
+    public void updateRepresentationWork(Long memberId, Long voiceId, Long workId) {
+        validateMember(voiceId, memberId);
+        validateVoice(voiceId, workId);
+
+        Work work = workFindService.findById(workId);
+
+        work.updateRep();
+    }
 
     private void validateMember(Long voiceId, Long memberId) {
         Voice voice = voiceFindService.findById(voiceId);
