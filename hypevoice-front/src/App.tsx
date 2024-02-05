@@ -1,13 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
-import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil";
-import styled from "styled-components";
-import { LoginState } from "./recoil/Auth";
-import { loadavg } from "os";
 import "./App.css";
 import Main from "./pages/Main";
 
+// 차후 사이트의 확장성을 위해서 한 번 거쳐감
 function App() {
   return <Main />;
 }

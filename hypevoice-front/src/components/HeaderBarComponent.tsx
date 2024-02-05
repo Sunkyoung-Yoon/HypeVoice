@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Box, AppBar, Toolbar, Button } from "@mui/material";
-import LogoComponent from "./LogoComponent";
 import { LoginState } from "../recoil/Auth";
 import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu"; // 햄버거 아이콘
 import { useRecoilState } from "recoil";
+import useRequireLogin from "../hooks/useRequireLogin";
 
 const HeaderButtonComponent = styled(Button)`
   color: black;
@@ -61,7 +61,7 @@ export default function HeaderBarComponent() {
     // 로그인 상태면 로그아웃 (확인 창 한 번 띄워서 의사 한 번 더 체크!)
     // 비로그인 상태면 로그인 페이지로 이동
     if (loginState) {
-      if (window.confirm("정말로 로그아웃하시겠습니까?")) {
+      if (window.confirm("정말로 로그아웃 하시겠습니까?")) {
         setLoginState(!loginState);
       }
     } else {
@@ -74,12 +74,14 @@ export default function HeaderBarComponent() {
     setMenuOpen(false);
   };
 
+  const checkLoginAndNavigate = useRequireLogin();
+
   return (
     <Box
       sx={{ flexGrow: 1 }}
       style={{
         backgroundColor: "white",
-        borderBottom: "3px solid black",
+        // borderBottom: "3px solid black",
       }}
     >
       <AppBar
@@ -113,12 +115,14 @@ export default function HeaderBarComponent() {
               onClick={() => navigation("/")}
               style={{ height: "50px", alignItems: "center" }}
             />
-            <HeaderButtonComponent
-              variant="text"
-              onClick={() => navigation("/voice")}
-            >
-              내 보이스
-            </HeaderButtonComponent>
+            {loginState && (
+              <HeaderButtonComponent
+                variant="text"
+                onClick={() => checkLoginAndNavigate("/voice")}
+              >
+                내 보이스
+              </HeaderButtonComponent>
+            )}
             <HeaderButtonComponent
               variant="text"
               onClick={() => navigation("/community")}
@@ -143,7 +147,7 @@ export default function HeaderBarComponent() {
             {loginState && (
               <HeaderButtonComponent
                 variant="text"
-                onClick={() => navigation("/myPage")}
+                onClick={() => checkLoginAndNavigate("/myPage")}
               >
                 마이 페이지
               </HeaderButtonComponent>
@@ -153,6 +157,7 @@ export default function HeaderBarComponent() {
             </HeaderButtonComponent>
             <HamburgerButtonComponent onClick={handleMenuClick} />
           </div>
+          {/* /////////////////////////////////////////////////////////////////////// */}
           {menuOpen && (
             <div
               id="menu"
@@ -170,7 +175,10 @@ export default function HeaderBarComponent() {
               {/* <div id="menu" style={{ position: "absolute", top: "100%", left: 0, width: "100%", backgroundColor: "white" }}> */}
               <Button
                 variant="text"
-                onClick={() => navigateAndCloseMenu("/voice")}
+                onClick={() => {
+                  checkLoginAndNavigate("/voice");
+                  setMenuOpen(false); // 메뉴를 닫습니다.
+                }}
               >
                 내 보이스
               </Button>
@@ -189,7 +197,11 @@ export default function HeaderBarComponent() {
               {loginState && (
                 <Button
                   variant="text"
-                  onClick={() => navigateAndCloseMenu("/myPage")}
+                  // onClick={() => checkLoginAndNavigate("/myPage")}
+                  onClick={() => {
+                    checkLoginAndNavigate("/myPage");
+                    setMenuOpen(false); // 메뉴를 닫습니다.
+                  }}
                 >
                   마이 페이지
                 </Button>
