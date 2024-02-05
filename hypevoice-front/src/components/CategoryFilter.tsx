@@ -41,6 +41,7 @@ type VoiceFilterCheckState = {
 
 type CategoryFilterProps = {
   onCheckChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onConfirm: (filters: VoiceFilterCheckState) => void;
 };
 
 export default function CategoryFilter({

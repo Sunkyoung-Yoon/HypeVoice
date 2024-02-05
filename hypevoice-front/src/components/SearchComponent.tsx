@@ -176,6 +176,7 @@ export default function SearchComponent() {
           );
         })}
       </TagContainer>
+      <Button onClick={handleConfirm}>확인</Button>
     </VoiceFilteringComponent>
   );
 }
