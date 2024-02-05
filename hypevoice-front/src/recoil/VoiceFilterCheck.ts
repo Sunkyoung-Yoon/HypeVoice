@@ -12,12 +12,33 @@ const { persistAtom } = recoilPersist({
   converter: JSON,
 });
 
-// OptionState 옵션마다 체크되어 있는 지 아닌 지에 따라서 체크!
-export interface OptionState {
+// Categories 타입 정의
+export interface Categories {
+  [key: string]: string[];
+}
+
+// InitialState 타입 정의
+export interface InitialState {
   [key: string]: {
     [key: string]: boolean;
   };
 }
+
+const categories: Categories = {
+  미디어: ["오디오드라마", "외화", "게임", "애니메이션", "내래이션", "기타"],
+  목소리톤: ["저음", "중음", "고음", "기타"],
+  목소리스타일: [
+    "밝은",
+    "따뜻한",
+    "귀여운",
+    "어두운",
+    "차가운",
+    "권위있는",
+    "기타",
+  ],
+  성별: ["남성", "여성", "기타"],
+  연령: ["유아", "아동", "청소년", "청년", "중장년", "노년"],
+};
 
 /*
 Object.keys(categories) => ["미디어", "목소리톤", "목소리스타일", "성별", "연령"]

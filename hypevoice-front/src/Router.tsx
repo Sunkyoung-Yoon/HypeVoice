@@ -24,7 +24,7 @@ const router = createBrowserRouter([
       },
       {
         path: "myPage",
-        element: <Main />,
+        element: <MyInfo />,
         errorElement: <ErrorComponent />,
       },
       {
