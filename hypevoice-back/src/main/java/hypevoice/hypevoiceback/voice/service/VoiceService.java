@@ -54,6 +54,7 @@ public class VoiceService {
         Voice voiceDetail = voiceFindService.findById(voiceId);
 
         return VoiceReadResponse.builder()
+                .memberId(voiceDetail.getId())
                 .name(voiceDetail.getName())
                 .imageUrl(voiceDetail.getImageUrl())
                 .intro(voiceDetail.getIntro())
