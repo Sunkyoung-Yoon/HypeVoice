@@ -1,7 +1,15 @@
-import React from "react";
+// import React from "react";
+import MyInfo from "./MyInfo";
+import WorkGrid from "./WorkGrid";
 
 function Voice() {
-  return <div>내 보이스 컴포넌트</div>;
+  return (
+    <>
+      <MyInfo />
+      <hr />
+      <WorkGrid />
+    </>
+  )
 }
 
 export default Voice;
