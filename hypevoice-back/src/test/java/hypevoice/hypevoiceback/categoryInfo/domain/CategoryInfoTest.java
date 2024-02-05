@@ -1,4 +1,4 @@
-package hypevoice.hypevoiceback.categoryInfo;
+package hypevoice.hypevoiceback.categoryInfo.domain;
 
 import hypevoice.hypevoiceback.categoryInfo.domain.*;
 import hypevoice.hypevoiceback.member.domain.Member;
