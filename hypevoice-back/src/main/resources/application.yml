@@ -4,15 +4,16 @@ spring:
       enabled: true
 
   jpa:
-    show_sql: true
+    hibernate:
+      ddl-auto: update
     properties:
-      hibernate: dialect=org.hibernate.dialect.MySQL8Dialect
-      dialect:
-        storage_engine: innodb
+      show_sql: true
+      dialect: dialect=org.hibernate.dialect.MySQL8Dialect
   datasource:
-    hikari:
-      jdbc-url: jdbc:h2:mem:testdb;MODE=MYSQL
-      username: sa
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${EC2_HOST}:3306/hypevoice
+    username: ${EC2_USERNAME}
+    password: ${EC2_PASSWORD}
 
 
   #application-secret.yml
