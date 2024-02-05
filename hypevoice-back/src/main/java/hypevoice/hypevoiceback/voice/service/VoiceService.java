@@ -1,5 +1,6 @@
 package hypevoice.hypevoiceback.voice.service;
 
+import hypevoice.hypevoiceback.file.service.FileService;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.member.domain.Member;
 import hypevoice.hypevoiceback.member.service.MemberFindService;
@@ -10,6 +11,7 @@ import hypevoice.hypevoiceback.voice.exception.VoiceErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -22,6 +24,8 @@ public class VoiceService {
 
     private final VoiceRepository voiceRepository;
 
+    private final FileService fileService;
+
     @Transactional
     public void createVoice(Long memberId, String name) {
         Member member = memberFindService.findById(memberId);
@@ -30,11 +34,19 @@ public class VoiceService {
     }
 
     @Transactional
-    public void updateVoice(Long memberId, Long voiceId, String name, String imageUrl, String intro, String email, String phone, String addInfo) {
+    public void updateVoice(Long memberId, Long voiceId, String name, String intro, String email,
+                            String phone, String addInfo, MultipartFile file) {
         validateMember(voiceId, memberId);
         Voice voiceUpdate = voiceFindService.findById(voiceId);
 
-        voiceUpdate.updateVoice(name, imageUrl, intro, email, phone, addInfo);
+        String profileImageUrl = null;
+        if (file != null)
+            profileImageUrl = fileService.uploadVoiceFiles(file);
+
+        if(voiceUpdate.getImageUrl() != null)
+            fileService.deleteFiles(voiceUpdate.getImageUrl());
+
+        voiceUpdate.updateVoice(name, profileImageUrl, intro, email, phone, addInfo);
     }
 
     @Transactional

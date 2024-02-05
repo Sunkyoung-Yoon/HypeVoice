@@ -43,12 +43,12 @@ public class VoiceServiceTest extends ServiceTest {
         // when
         voiceService.updateVoice(member.getId(), voice.getId(), "변경이름", "변경이미지",
                 "변경소개글", "변경이메일", "변경전화번호",
-                "변경추가정보");
+                null);
 
         // then
         assertAll(
                 () -> assertThat(voice.getName()).isEqualTo("변경이름"),
-                () -> assertThat(voice.getImageUrl()).isEqualTo("변경이미지"),
+                () -> assertThat(voice.getImageUrl()).isNull(),
                 () -> assertThat(voice.getIntro()).isEqualTo("변경소개글"),
                 () -> assertThat(voice.getEmail()).isEqualTo("변경이메일"),
                 () -> assertThat(voice.getPhone()).isEqualTo("변경전화번호"),
