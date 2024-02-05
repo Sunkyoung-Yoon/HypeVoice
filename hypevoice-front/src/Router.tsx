@@ -9,12 +9,12 @@ import MyInfo from "./components/MyInfo";
 import ErrorComponent from "./components/ErrorComponent";
 import StudioList from "./components/StudioList";
 import HomeGrid from "./components/HomeGrid";
-import Community from "./components/Community";
 import Voice from "./components/Voice";
+import CommunityComponent from "./components/CommunityComponent";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/*",
     element: <App />, // App 은 UMD 여서 React import 필요!
     children: [
       {
@@ -44,7 +44,7 @@ const router = createBrowserRouter([
       },
       {
         path: "community",
-        element: <Community />,
+        element: <CommunityComponent />,
         errorElement: <ErrorComponent />,
       },
     ],

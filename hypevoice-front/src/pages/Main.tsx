@@ -1,7 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { styled, keyframes } from "styled-components";
-import { useRecoilState } from "recoil";
-import Header from "../components/Header";
+import { styled } from "styled-components";
+import HeaderComponent from "../components/HeaderComponent";
 import Footer from "../components/Footer";
 import LeftSide from "../components/LeftSide";
 import RightSide from "../components/RightSide";
@@ -10,18 +8,17 @@ import { Route, Routes } from "react-router-dom";
 import StudioList from "../components/StudioList";
 import HomeGrid from "../components/HomeGrid";
 import Voice from "../components/Voice";
-import Community from "../components/Community";
+import CommunityComponent from "../components/CommunityComponent";
 
 const Container = styled.div`
-  height: 110vh;
-  position: static;
-  overflow: hidden;
+  height: 100vh;
+  // position: static;
 `;
 
 function Main() {
   return (
     <Container>
-      <Header />
+      <HeaderComponent />
       <LeftSide />
       <RightSide />
       <Routes>
@@ -42,7 +39,7 @@ function Main() {
           }
         />
         <Route
-          path="/Voice"
+          path="/voice"
           element={
             <Center>
               <Voice />
@@ -50,15 +47,14 @@ function Main() {
           }
         />
         <Route
-          path="/Community"
+          path="/community"
           element={
             <Center>
-              <Community />
+              <CommunityComponent />
             </Center>
           }
         />
       </Routes>
-
       <Footer />
     </Container>
   );
