@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,19 +18,24 @@ public class WorkController {
     private final WorkService workService;
 
     @PostMapping
-    public ResponseEntity<Void> createWork(@ExtractPayload Long memberId, @PathVariable("voiceId") Long voiceId, @RequestBody WorkRequest request) {
-        workService.registerWork(memberId, voiceId, request.title(), request.videoLink(), request.photoUrl(), request.scriptUrl(), request.recordUrl(), request.info(), request.isRep());
+    public ResponseEntity<Void> createWork(@ExtractPayload Long memberId, @PathVariable("voiceId") Long voiceId,
+                                           @RequestPart(value = "request") WorkRequest request,
+                                           @RequestPart(value = "files", required = false) MultipartFile[] multipartFiles) {
+        workService.registerWork(memberId, voiceId, request.title(), request.videoLink(), request.info(), request.isRep(), multipartFiles);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{workId}")
-    public ResponseEntity<Void> updateWork(@ExtractPayload Long memberId, @PathVariable("voiceId") Long voiceId, @PathVariable("workId") Long workId, @RequestBody WorkRequest request) {
-        workService.updateWork(memberId, voiceId, workId, request.title(), request.videoLink(), request.photoUrl(), request.scriptUrl(), request.recordUrl(), request.info(), request.isRep());
+    public ResponseEntity<Void> updateWork(@ExtractPayload Long memberId, @PathVariable("voiceId") Long voiceId,
+                                           @PathVariable("workId") Long workId, @RequestPart(value = "request") WorkRequest request,
+                                           @RequestPart(value = "files", required = false) MultipartFile[] multipartFiles) {
+        workService.updateWork(memberId, voiceId, workId, request.title(), request.videoLink(), request.info(), request.isRep(), multipartFiles);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{workId}")
-    public ResponseEntity<Void> deleteWork(@ExtractPayload Long memberId, @PathVariable("voiceId") Long voiceId, @PathVariable("workId") Long workId) {
+    public ResponseEntity<Void> deleteWork(@ExtractPayload Long memberId, @PathVariable("voiceId") Long voiceId,
+                                           @PathVariable("workId") Long workId) {
         workService.deleteWork(memberId, voiceId, workId);
         return ResponseEntity.ok().build();
     }

@@ -1,5 +1,6 @@
 package hypevoice.hypevoiceback.work.service;
 
+import hypevoice.hypevoiceback.file.service.FileService;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.voice.domain.Voice;
 import hypevoice.hypevoiceback.voice.exception.VoiceErrorCode;
@@ -11,6 +12,7 @@ import hypevoice.hypevoiceback.work.exception.WorkErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -19,25 +21,56 @@ public class WorkService {
     private final WorkRepository workRepository;
     private final WorkFindService workFindService;
     private final VoiceFindService voiceFindService;
+    private final FileService fileService;
 
     @Transactional
-    public void registerWork(Long memberId, Long voiceId, String title, String videoLink, String photoUrl, String scriptUrl, String recordUrl, String info, int isRep) {
+    public void registerWork(Long memberId, Long voiceId, String title, String videoLink, String info, int isRep, MultipartFile[] multipartFiles) {
         validateMember(voiceId, memberId);
 
         Voice voice = voiceFindService.findById(voiceId);
-        Work work = Work.createWork(voice, title, videoLink, photoUrl, scriptUrl, recordUrl, info, isRep);
+        String[] fileUrlList = new String[3];
+        if(multipartFiles != null){
+            for(int i=0; i<multipartFiles.length; i++) {
+                MultipartFile file = multipartFiles[i];
+                String fileUrl = null;
+                if (file != null)
+                    fileUrl = fileService.uploadWorkFiles(file);
 
+                fileUrlList[i] = fileUrl;
+            }
+        }
+
+        Work work = Work.createWork(voice, title, videoLink, fileUrlList[0], fileUrlList[1], fileUrlList[2], info, isRep);
         workRepository.save(work);
     }
 
     @Transactional
-    public void updateWork(Long memberId, Long voiceId, Long workId, String title, String videoLink, String photoUrl, String scriptUrl, String recordUrl, String info, int isRep) {
+    public void updateWork(Long memberId, Long voiceId, Long workId, String title, String videoLink, String info, int isRep, MultipartFile[] multipartFiles) {
         validateMember(voiceId, memberId);
         validateVoice(voiceId, workId);
 
         Work work = workFindService.findById(workId);
 
-        work.updateWork(title, videoLink, photoUrl, scriptUrl, recordUrl, info, isRep);
+        String[] fileUrlList = new String[3];
+        if(multipartFiles != null){
+            for(int i=0; i<multipartFiles.length; i++) {
+                MultipartFile file = multipartFiles[i];
+                String fileUrl = null;
+                if (file != null)
+                    fileUrl = fileService.uploadWorkFiles(file);
+
+                fileUrlList[i] = fileUrl;
+            }
+        }
+
+        if(work.getPhotoUrl() != null)
+            fileService.deleteFiles(work.getPhotoUrl());
+        if(work.getScriptUrl() != null)
+            fileService.deleteFiles(work.getScriptUrl());
+        if(work.getRecordUrl() != null)
+            fileService.deleteFiles(work.getRecordUrl());
+
+        work.updateWork(title, videoLink, fileUrlList[0], fileUrlList[1], fileUrlList[2], info, isRep);
     }
 
     @Transactional

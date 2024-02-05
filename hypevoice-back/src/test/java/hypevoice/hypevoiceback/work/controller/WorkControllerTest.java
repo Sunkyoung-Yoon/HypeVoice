@@ -9,8 +9,11 @@ import hypevoice.hypevoiceback.work.exception.WorkErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.nio.charset.StandardCharsets;
 
 import static hypevoice.hypevoiceback.fixture.TokenFixture.ACCESS_TOKEN;
 import static hypevoice.hypevoiceback.fixture.TokenFixture.BEARER_TOKEN;
@@ -38,11 +41,16 @@ public class WorkControllerTest extends ControllerTest {
         void withoutAccessToken() throws Exception {
             // when
             final WorkRequest request = createWorkRequest();
-
+            MockMultipartFile[] files = new MockMultipartFile[1];
+            files[0] = new MockMultipartFile("files", null,
+                    "multipart/form-data", new byte[]{});
+            MockMultipartFile mockRequest = new MockMultipartFile("request", null,
+                    "application/json", convertObjectToJson(request).getBytes(StandardCharsets.UTF_8));
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL, VOICE_ID)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .multipart(BASE_URL, VOICE_ID)
+                    .file(files[0])
+                    .file(mockRequest)
+                    .accept(APPLICATION_JSON);
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
@@ -64,15 +72,21 @@ public class WorkControllerTest extends ControllerTest {
             // given
             doThrow(BaseException.type(WorkErrorCode.MEMBER_IS_NOT_VOICE_MEMBER))
                     .when(workService)
-                    .registerWork(anyLong(), anyLong(), any(), any(), any(), any(), any(), any(), anyInt());
+                    .registerWork(anyLong(), anyLong(), any(), any(), any(), anyInt(), any());
 
             // when
             final WorkRequest request = createWorkRequest();
+            MockMultipartFile[] files = new MockMultipartFile[1];
+            files[0] = new MockMultipartFile("files", null,
+                    "multipart/form-data", new byte[]{});
+            MockMultipartFile mockRequest = new MockMultipartFile("request", null,
+                    "application/json", convertObjectToJson(request).getBytes(StandardCharsets.UTF_8));
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL, VOICE_ID)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .multipart(BASE_URL, VOICE_ID)
+                    .file(files[0])
+                    .file(mockRequest)
+                    .accept(APPLICATION_JSON)
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
 
             // then
             final WorkErrorCode expectedError = WorkErrorCode.MEMBER_IS_NOT_VOICE_MEMBER;
@@ -94,15 +108,21 @@ public class WorkControllerTest extends ControllerTest {
             // given
             doNothing()
                     .when(workService)
-                    .registerWork(anyLong(), anyLong(), any(), any(), any(), any(), any(), any(), anyInt());
+                    .registerWork(anyLong(), anyLong(), any(), any(), any(), anyInt(), any());
 
             // when
             final WorkRequest request = createWorkRequest();
+            MockMultipartFile[] files = new MockMultipartFile[1];
+            files[0] = new MockMultipartFile("files", null,
+                    "multipart/form-data", new byte[]{});
+            MockMultipartFile mockRequest = new MockMultipartFile("request", null,
+                    "application/json", convertObjectToJson(request).getBytes(StandardCharsets.UTF_8));
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL, VOICE_ID)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .multipart(BASE_URL, VOICE_ID)
+                    .file(files[0])
+                    .file(mockRequest)
+                    .accept(APPLICATION_JSON)
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
 
             // then
             mockMvc.perform(requestBuilder)
@@ -120,10 +140,20 @@ public class WorkControllerTest extends ControllerTest {
         void withoutAccessToken() throws Exception {
             // when
             final WorkRequest request = createWorkRequest();
+            MockMultipartFile[] files = new MockMultipartFile[1];
+            files[0] = new MockMultipartFile("files", null,
+                    "multipart/form-data", new byte[]{});
+            MockMultipartFile mockRequest = new MockMultipartFile("request", null,
+                    "application/json", convertObjectToJson(request).getBytes(StandardCharsets.UTF_8));
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .patch(BASE_URL, VOICE_ID, WORK_ID)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .multipart(BASE_URL, VOICE_ID, WORK_ID)
+                    .file(files[0])
+                    .file(mockRequest)
+                    .accept(APPLICATION_JSON)
+                    .with(request1 -> {
+                        request1.setMethod("PATCH");
+                        return request1;
+                    });
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
@@ -145,15 +175,25 @@ public class WorkControllerTest extends ControllerTest {
             // given
             doThrow(BaseException.type(WorkErrorCode.MEMBER_IS_NOT_VOICE_MEMBER))
                     .when(workService)
-                    .updateWork(anyLong(), anyLong(), anyLong(), any(), any(), any(), any(), any(), any(), anyInt());
+                    .updateWork(anyLong(), anyLong(), anyLong(), any(), any(), any(), anyInt(), any());
 
             // when
             final WorkRequest request = createWorkRequest();
+            MockMultipartFile[] files = new MockMultipartFile[1];
+            files[0] = new MockMultipartFile("files", null,
+                    "multipart/form-data", new byte[]{});
+            MockMultipartFile mockRequest = new MockMultipartFile("request", null,
+                    "application/json", convertObjectToJson(request).getBytes(StandardCharsets.UTF_8));
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .patch(BASE_URL, VOICE_ID, WORK_ID)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .multipart(BASE_URL, VOICE_ID, WORK_ID)
+                    .file(files[0])
+                    .file(mockRequest)
+                    .accept(APPLICATION_JSON)
+                    .with(request1 -> {
+                        request1.setMethod("PATCH");
+                        return request1;
+                    })
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
 
             // then
             final WorkErrorCode expectedError = WorkErrorCode.MEMBER_IS_NOT_VOICE_MEMBER;
@@ -175,16 +215,26 @@ public class WorkControllerTest extends ControllerTest {
             // given
             doNothing()
                     .when(workService)
-                    .updateWork(anyLong(), anyLong(), anyLong(), any(), any(), any(), any(), any(), any(), anyInt());
+                    .updateWork(anyLong(), anyLong(), anyLong(), any(), any(), any(), anyInt(), any());
 
 
             // when
             final WorkRequest request = createWorkRequest();
+            MockMultipartFile[] files = new MockMultipartFile[1];
+            files[0] = new MockMultipartFile("files", null,
+                    "multipart/form-data", new byte[]{});
+            MockMultipartFile mockRequest = new MockMultipartFile("request", null,
+                    "application/json", convertObjectToJson(request).getBytes(StandardCharsets.UTF_8));
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .patch(BASE_URL, VOICE_ID, WORK_ID)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .multipart(BASE_URL, VOICE_ID, WORK_ID)
+                    .file(files[0])
+                    .file(mockRequest)
+                    .accept(APPLICATION_JSON)
+                    .with(request1 -> {
+                        request1.setMethod("PATCH");
+                        return request1;
+                    })
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
 
             // then
             mockMvc.perform(requestBuilder)
@@ -201,11 +251,8 @@ public class WorkControllerTest extends ControllerTest {
         @DisplayName("Authorization Header에 AccessToken이 없으면 작업물 삭제에 실패한다")
         void withoutAccessToken() throws Exception {
             // when
-            final WorkRequest request = createWorkRequest();
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .delete(BASE_URL, VOICE_ID, WORK_ID)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .delete(BASE_URL, VOICE_ID, WORK_ID);
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
@@ -230,12 +277,9 @@ public class WorkControllerTest extends ControllerTest {
                     .deleteWork(anyLong(), anyLong(), anyLong());
 
             // when
-            final WorkRequest request = createWorkRequest();
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .delete(BASE_URL, VOICE_ID, WORK_ID)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
 
             // then
             final WorkErrorCode expectedError = WorkErrorCode.MEMBER_IS_NOT_VOICE_MEMBER;
@@ -260,12 +304,9 @@ public class WorkControllerTest extends ControllerTest {
                     .deleteWork(anyLong(), anyLong(), anyLong());
 
             // when
-            final WorkRequest request = createWorkRequest();
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .delete(BASE_URL, VOICE_ID, WORK_ID)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
 
             // then
             mockMvc.perform(requestBuilder)
@@ -400,7 +441,7 @@ public class WorkControllerTest extends ControllerTest {
     }
 
     private WorkRequest createWorkRequest() {
-        return new WorkRequest(WORK_01.getTitle(), WORK_01.getVideoLink(), WORK_01.getPhotoUrl(), WORK_01.getScriptUrl(), WORK_01.getRecordUrl(), WORK_01.getInfo(), WORK_01.getIsRep());
+        return new WorkRequest(WORK_01.getTitle(), WORK_01.getVideoLink(), WORK_01.getInfo(), WORK_01.getIsRep());
     }
 
     private WorkResponse readWorkResponse() {
