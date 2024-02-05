@@ -41,6 +41,7 @@ public class BoardRepositoryTest extends RepositoryTest {
                 () -> assertThat(findBoard.getTitle()).isEqualTo(BOARD_0.getTitle()),
                 () -> assertThat(findBoard.getContent()).isEqualTo(BOARD_0.getContent()),
                 () -> assertThat(findBoard.getView()).isEqualTo(0),
+                () -> assertThat(findBoard.getRecordUrl()).isNull(),
                 () -> assertThat(findBoard.getCategory()).isEqualTo(BOARD_0.getCategory())
         );
     }

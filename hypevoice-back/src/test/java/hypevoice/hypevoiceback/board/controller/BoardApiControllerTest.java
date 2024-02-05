@@ -10,9 +10,13 @@ import hypevoice.hypevoiceback.global.exception.BaseException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
 import static hypevoice.hypevoiceback.fixture.BoardFixture.BOARD_0;
@@ -38,11 +42,17 @@ public class BoardApiControllerTest extends ControllerTest {
         void withoutAccessToken() throws Exception {
             // when
             final BoardRequest request = createBoardRequest();
+            MockMultipartFile file = new MockMultipartFile("file", null,
+                    "multipart/form-data", new byte[]{});
+            MockMultipartFile mockRequest = new MockMultipartFile("request", null,
+                    "application/json", objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8));
+
 
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .multipart(BASE_URL)
+                    .file(file)
+                    .file(mockRequest)
+                    .accept(APPLICATION_JSON);
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
@@ -64,15 +74,22 @@ public class BoardApiControllerTest extends ControllerTest {
             // given
             doReturn(1L)
                     .when(boardService)
-                    .create(anyLong(), any(), any(), any());
+                    .create(anyLong(), any(), any(), any(), any());
 
             // when
             final BoardRequest request = createBoardRequest();
+            MockMultipartFile file = new MockMultipartFile("file", null,
+                    "multipart/form-data", new byte[]{});
+            MockMultipartFile mockRequest = new MockMultipartFile("request", null,
+                    "application/json", objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8));
+
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .multipart(BASE_URL)
+                    .file(file)
+                    .file(mockRequest)
+                    .accept(APPLICATION_JSON)
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
+
 
             // then
             mockMvc.perform(requestBuilder)
@@ -91,10 +108,20 @@ public class BoardApiControllerTest extends ControllerTest {
         void withoutAccessToken() throws Exception {
             // when
             final BoardRequest request = createBoardRequest();
+            MockMultipartFile file = new MockMultipartFile("file", null,
+                    "multipart/form-data", new byte[]{});
+            MockMultipartFile mockRequest = new MockMultipartFile("request", null,
+                    "application/json", objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8));
+
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .patch(BASE_URL, BOARD_ID)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .multipart(BASE_URL, BOARD_ID)
+                    .file(file)
+                    .file(mockRequest)
+                    .accept(APPLICATION_JSON)
+                    .with(request1 -> {
+                        request1.setMethod("PATCH");
+                        return request1;
+                    });
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
@@ -116,15 +143,25 @@ public class BoardApiControllerTest extends ControllerTest {
             // given
             doThrow(BaseException.type(BoardErrorCode.USER_IS_NOT_BOARD_WRITER))
                     .when(boardService)
-                    .update(anyLong(), anyLong(), any(), any());
+                    .update(anyLong(), anyLong(), any(), any(), any());
 
             // when
             final BoardRequest request = createBoardRequest();
+            MockMultipartFile file = new MockMultipartFile("file", null,
+                    "multipart/form-data", new byte[]{});
+            MockMultipartFile mockRequest = new MockMultipartFile("request", null,
+                    "application/json", objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8));
+
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .patch(BASE_URL, BOARD_ID)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .multipart(BASE_URL, BOARD_ID)
+                    .file(file)
+                    .file(mockRequest)
+                    .accept(APPLICATION_JSON)
+                    .with(request1 -> {
+                        request1.setMethod("PATCH");
+                        return request1;
+                    })
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
 
             // then
             final BoardErrorCode expectedError = BoardErrorCode.USER_IS_NOT_BOARD_WRITER;
@@ -146,15 +183,25 @@ public class BoardApiControllerTest extends ControllerTest {
             // given
             doNothing()
                     .when(boardService)
-                    .update(anyLong(), anyLong(), any(), any());
+                    .update(anyLong(), anyLong(), any(), any(), any());
 
             // when
             final BoardRequest request = createBoardRequest();
+            MockMultipartFile file = new MockMultipartFile("file", null,
+                    "multipart/form-data", new byte[]{});
+            MockMultipartFile mockRequest = new MockMultipartFile("request", null,
+                    "application/json", objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8));
+
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .patch(BASE_URL, BOARD_ID)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .multipart(BASE_URL, BOARD_ID)
+                    .file(file)
+                    .file(mockRequest)
+                    .accept(APPLICATION_JSON)
+                    .with(request1 -> {
+                        request1.setMethod("PATCH");
+                        return request1;
+                    })
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
 
             // then
             mockMvc.perform(requestBuilder)
@@ -273,7 +320,7 @@ public class BoardApiControllerTest extends ControllerTest {
     }
 
     private BoardResponse readBoardResponse() {
-        return new BoardResponse(2L, BOARD_0.getTitle(), BOARD_0.getContent(), 0, "feedback",
+        return new BoardResponse(2L, BOARD_0.getTitle(), BOARD_0.getContent(), 0, null,"feedback",
                 LocalDate.of(2024, 1, 30).atTime(1, 1), 1L, "voice123");
     }
 }

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,15 +19,17 @@ public class BoardApiController {
 
     @PostMapping
     public ResponseEntity<Long> create(@ExtractPayload Long writerId,
-                                       @RequestBody @Valid BoardRequest request) {
-        Long boardId = boardService.create(writerId, request.title(), request.content(), request.category());
+                                       @RequestPart(value = "request") @Valid BoardRequest request,
+                                       @RequestPart(value = "file", required = false) MultipartFile multipartFile) {
+        Long boardId = boardService.create(writerId, request.title(), request.content(), request.category(), multipartFile);
         return new ResponseEntity<>(boardId, HttpStatus.OK);
     }
 
     @PatchMapping("/{boardId}")
     public ResponseEntity<Void> update(@ExtractPayload Long writerId, @PathVariable("boardId") Long boardId,
-                                       @RequestBody @Valid BoardRequest request) {
-        boardService.update(writerId, boardId, request.title(), request.content());
+                                       @RequestPart(value = "request") @Valid BoardRequest request,
+                                       @RequestPart(value = "file", required = false) MultipartFile multipartFile) {
+        boardService.update(writerId, boardId, request.title(), request.content(), multipartFile);
         return ResponseEntity.ok().build();
     }
 

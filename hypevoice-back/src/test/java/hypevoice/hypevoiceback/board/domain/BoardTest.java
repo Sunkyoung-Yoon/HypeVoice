@@ -35,6 +35,7 @@ public class BoardTest {
                 () -> assertThat(board.getTitle()).isEqualTo(BOARD_0.getTitle()),
                 () -> assertThat(board.getContent()).isEqualTo(BOARD_0.getContent()),
                 () -> assertThat(board.getView()).isEqualTo(0),
+                () -> assertThat(board.getRecordUrl()).isNull(),
                 () -> assertThat(board.getCategory()).isEqualTo(Category.FEEDBACK)
         );
     }
@@ -43,12 +44,13 @@ public class BoardTest {
     @DisplayName("Board 제목과 내용을 변경한다")
     void updateTitleAndContent() {
         // when
-        board.updateBoard("제목변경", "내용변경");
+        board.updateBoard("제목변경", "내용변경", null);
 
         // then
         assertAll(
                 () -> assertThat(board.getTitle()).isEqualTo("제목변경"),
-                () -> assertThat(board.getContent()).isEqualTo("내용변경")
+                () -> assertThat(board.getContent()).isEqualTo("내용변경"),
+                () -> assertThat(board.getRecordUrl()).isEqualTo(null)
         );
     }
 

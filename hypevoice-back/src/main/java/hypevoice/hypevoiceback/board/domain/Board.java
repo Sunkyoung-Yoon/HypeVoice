@@ -31,6 +31,8 @@ public class Board extends BaseTimeEntity {
 
     private int view;
 
+    private String recordUrl;
+
     @Convert(converter = Category.CategoryConverter.class)
     private Category category;
 
@@ -41,21 +43,23 @@ public class Board extends BaseTimeEntity {
     @OneToMany(mappedBy = "board", cascade = PERSIST, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
-    private Board(Member writer, String title, String content, Category category) {
+    private Board(Member writer, String title, String content, String recordUrl, Category category) {
         this.writer = writer;
         this.title = title;
         this.content = content;
+        this.recordUrl = recordUrl;
         this.view = 0;
         this.category = category;
     }
 
-    public static Board createBoard(Member writer, String title, String content, Category category) {
-        return new Board(writer, title, content, category);
+    public static Board createBoard(Member writer, String title, String content, String recordUrl, Category category) {
+        return new Board(writer, title, content, recordUrl, category);
     }
 
-    public void updateBoard(String title, String content) {
+    public void updateBoard(String title, String content, String recordUrl) {
         this.title = title;
         this.content = content;
+        this.recordUrl = recordUrl;
     }
 
     public void addComment(Member writer, String content, String voice_comment_url) {

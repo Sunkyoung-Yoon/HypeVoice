@@ -46,7 +46,7 @@ public class BoardServiceTest extends ServiceTest {
     @DisplayName("게시글 등록에 성공한다")
     void success() {
         // when
-        Long boardId = boardService.create(writer.getId(), "제목", "내용", "feedback");
+        Long boardId = boardService.create(writer.getId(), "제목", "내용", "feedback", null);
 
         // then
         Board findBoard = boardRepository.findById(boardId).orElseThrow();
@@ -55,6 +55,7 @@ public class BoardServiceTest extends ServiceTest {
                 () -> assertThat(findBoard.getTitle()).isEqualTo("제목"),
                 () -> assertThat(findBoard.getContent()).isEqualTo("내용"),
                 () -> assertThat(findBoard.getView()).isEqualTo(0),
+                () -> assertThat(findBoard.getRecordUrl()).isEqualTo(null),
                 () -> assertThat(findBoard.getCategory()).isEqualTo(board.getCategory()),
                 () -> assertThat(findBoard.getCreatedDate().format(formatter)).isEqualTo(LocalDateTime.now().format(formatter)),
                 () -> assertThat(findBoard.getModifiedDate().format(formatter)).isEqualTo(LocalDateTime.now().format(formatter))
@@ -68,7 +69,7 @@ public class BoardServiceTest extends ServiceTest {
         @DisplayName("다른 사람의 게시글은 수정할 수 없다")
         void throwExceptionByUserNotBoardWriter() {
             // when - then
-            assertThatThrownBy(() -> boardService.update(notWriter.getId(),board.getId(), "제목2", "내용2"))
+            assertThatThrownBy(() -> boardService.update(notWriter.getId(),board.getId(), "제목2", "내용2", null))
                     .isInstanceOf(BaseException.class)
                     .hasMessage(BoardErrorCode.USER_IS_NOT_BOARD_WRITER.getMessage());
         }
@@ -77,7 +78,7 @@ public class BoardServiceTest extends ServiceTest {
         @DisplayName("게시글 수정에 성공한다")
         void success() {
             // given
-            boardService.update(writer.getId(), board.getId(), "제목2", "내용2");
+            boardService.update(writer.getId(), board.getId(), "제목2", "내용2",null);
 
             // when
             Board findBoard = boardFindService.findById(board.getId());
@@ -86,6 +87,7 @@ public class BoardServiceTest extends ServiceTest {
             assertAll(
                     () -> assertThat(findBoard.getTitle()).isEqualTo("제목2"),
                     () -> assertThat(findBoard.getContent()).isEqualTo("내용2"),
+                    () -> assertThat(findBoard.getRecordUrl()).isEqualTo(null),
                     () -> assertThat(findBoard.getModifiedDate().format(formatter)).isEqualTo(LocalDateTime.now().format(formatter))
             );
         }
@@ -131,6 +133,7 @@ public class BoardServiceTest extends ServiceTest {
                     () -> assertThat(boardResponse.title()).isEqualTo(board.getTitle()),
                     () -> assertThat(boardResponse.content()).isEqualTo(board.getContent()),
                     () -> assertThat(boardResponse.view()).isEqualTo(1),
+                    () -> assertThat(boardResponse.recordUrl()).isEqualTo(null),
                     () -> assertThat(boardResponse.category()).isEqualTo(board.getCategory().getValue()),
                     () -> assertThat(boardResponse.createdDate()).isEqualTo(board.getCreatedDate()),
                     () -> assertThat(boardResponse.writerId()).isEqualTo(board.getWriter().getId()),

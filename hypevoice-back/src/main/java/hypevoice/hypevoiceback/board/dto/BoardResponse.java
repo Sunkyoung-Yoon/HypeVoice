@@ -10,6 +10,7 @@ public record BoardResponse(
         String title,
         String content,
         int view,
+        String recordUrl,
         String category,
         LocalDateTime createdDate,
         Long writerId,
