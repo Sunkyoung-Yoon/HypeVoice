@@ -1,9 +1,15 @@
-import InlineHeader from "./InlineHeader";
+// import React from "react";
+import MyInfo from "./MyInfo";
+import WorkGrid from "./WorkGrid";
 
 function Voice() {
   return (
-    <InlineHeader title={"인라인헤더 제목"} worksCnt={0} storageSpace={0} />
-    );
+    <>
+      <MyInfo />
+      <hr />
+      <WorkGrid />
+    </>
+  )
 }
 
 export default Voice;
