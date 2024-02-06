@@ -33,7 +33,6 @@ public class VoiceControllerTest extends ControllerTest {
     class updateVoice {
         private static final String BASE_URL = "/api/voices/{voiceId}";
         private static final Long VOICE_ID = 1L;
-        private static final Long MEMBER_ID = 1L;
         private  static final String NAME = "NAME";
 
         @Test
@@ -167,10 +166,10 @@ public class VoiceControllerTest extends ControllerTest {
     }
 
     private VoiceUpdateRequest updateRequest(){
-        return new VoiceUpdateRequest(updateVoice.MEMBER_ID, updateVoice.NAME,null,null,null,null);
+        return new VoiceUpdateRequest(updateVoice.NAME,null,null,null,null);
     }
 
     private VoiceReadResponse readResponse(){
-        return new VoiceReadResponse(updateVoice.NAME,null,"intro","email","phone","addInfo",109);
+        return new VoiceReadResponse(1L, updateVoice.NAME,null,"intro","email","phone","addInfo",109);
     }
 }

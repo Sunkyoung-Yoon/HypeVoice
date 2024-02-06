@@ -11,10 +11,6 @@ public record WorkRequest(
         @Size(max = 50, message = "제목은 최대 20자 이내로 작성해주세요.")
         String title,
         String videoLink,
-        String photoUrl,
-        String scriptUrl,
-        String recordUrl,
-
         @Size(max = 2000, message = "소개는 최대 2000자 이내로 작성해주세요.")
         String info,
         int isRep

@@ -41,9 +41,8 @@ public class VoiceServiceTest extends ServiceTest {
     @DisplayName("보이스 정보를 수정한다")
     void updateVoice() {
         // when
-        voiceService.updateVoice(member.getId(), voice.getId(), "변경이름", "변경이미지",
-                "변경소개글", "변경이메일", "변경전화번호",
-                null);
+        voiceService.updateVoice(member.getId(), voice.getId(), "변경이름",
+                "변경소개글", "변경이메일", "변경전화번호", "변경추가정보", null);
 
         // then
         assertAll(
@@ -67,6 +66,7 @@ public class VoiceServiceTest extends ServiceTest {
 
         // then
         assertAll(
+                () -> assertThat(voiceReadResponse.memberId()).isEqualTo(voice.getId()),
                 () -> assertThat(voiceReadResponse.name()).isEqualTo(voice.getName()),
                 () -> assertThat(voiceReadResponse.imageUrl()).isEqualTo(voice.getImageUrl()),
                 () -> assertThat(voiceReadResponse.intro()).isEqualTo(voice.getIntro()),

@@ -105,10 +105,9 @@ public class MemberApiControllerTest extends ControllerTest {
     class deleteMember {
         private static final String BASE_URL = "/api/members";
         @Test
-        @DisplayName("Authorization Header에 AccessToken이 없으면 회원 정보 수정에 실패한다")
+        @DisplayName("Authorization Header에 AccessToken이 없으면 회원 탈퇴에 실패한다")
         void withoutAccessToken() throws Exception {
             // when
-            final MemberUpdateRequest request = updateMemberRequest();
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .delete(BASE_URL);
 

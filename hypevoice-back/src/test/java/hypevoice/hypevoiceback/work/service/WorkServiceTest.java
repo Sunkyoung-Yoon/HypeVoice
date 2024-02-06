@@ -55,9 +55,9 @@ public class WorkServiceTest extends ServiceTest {
         assertAll(
                 () -> assertThat(findWork.getTitle()).isEqualTo("제목1"),
                 () -> assertThat(findWork.getVideoLink()).isEqualTo("vLink1"),
-                () -> assertThat(findWork.getPhotoUrl()).isEqualTo("pLink1"),
-                () -> assertThat(findWork.getScriptUrl()).isEqualTo("sUrl1"),
-                () -> assertThat(findWork.getRecordUrl()).isEqualTo("rUrl1"),
+                () -> assertThat(findWork.getPhotoUrl()).isEqualTo(null),
+                () -> assertThat(findWork.getScriptUrl()).isEqualTo(null),
+                () -> assertThat(findWork.getRecordUrl()).isEqualTo(null),
                 () -> assertThat(findWork.getInfo()).isEqualTo("디테일소개1"),
                 () -> assertThat(findWork.getIsRep()).isEqualTo(1),
                 () -> assertThat(findWork.getCreatedDate().format(formatter)).isEqualTo(LocalDateTime.now().format(formatter)),
@@ -73,7 +73,7 @@ public class WorkServiceTest extends ServiceTest {
         @DisplayName("다른 사람의 작업물은 수정할 수 없다")
         void throwExceptionByMemberNotWorkMember() {
             // when - then
-            assertThatThrownBy(() -> workService.updateWork(notMember.getId(), voice.getId(), work.getId(), "제목2", "vLink2", "pLink2", "sUrl2", "rUrl2", "디테일소개2", 1))
+            assertThatThrownBy(() -> workService.updateWork(notMember.getId(), voice.getId(), work.getId(), "제목2", "vLink2", "디테일소개2", 1, null))
                     .isInstanceOf(BaseException.class)
                     .hasMessage(WorkErrorCode.MEMBER_IS_NOT_VOICE_MEMBER.getMessage());
         }
@@ -82,7 +82,7 @@ public class WorkServiceTest extends ServiceTest {
         @DisplayName("작업물 수정에 성공한다")
         void success() {
             // given
-            workService.updateWork(member.getId(), voice.getId(), work.getId(), "제목2", "vLink2", "pLink2", "sUrl2", "rUrl2", "디테일소개2", 0);
+            workService.updateWork(member.getId(), voice.getId(), work.getId(), "제목2", "vLink2", "디테일소개2",  0, null);
 
             // when
             Work findWork = workFindService.findById(work.getId());
@@ -91,9 +91,9 @@ public class WorkServiceTest extends ServiceTest {
             assertAll(
                     () -> assertThat(findWork.getTitle()).isEqualTo("제목2"),
                     () -> assertThat(findWork.getVideoLink()).isEqualTo("vLink2"),
-                    () -> assertThat(findWork.getPhotoUrl()).isEqualTo("pLink2"),
-                    () -> assertThat(findWork.getScriptUrl()).isEqualTo("sUrl2"),
-                    () -> assertThat(findWork.getRecordUrl()).isEqualTo("rUrl2"),
+                    () -> assertThat(findWork.getPhotoUrl()).isEqualTo(null),
+                    () -> assertThat(findWork.getScriptUrl()).isEqualTo(null),
+                    () -> assertThat(findWork.getRecordUrl()).isEqualTo(null),
                     () -> assertThat(findWork.getInfo()).isEqualTo("디테일소개2"),
                     () -> assertThat(findWork.getIsRep()).isEqualTo(0),
                     () -> assertThat(findWork.getModifiedDate().format(formatter)).isEqualTo(LocalDateTime.now().format(formatter))

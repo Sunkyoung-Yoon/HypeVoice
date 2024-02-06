@@ -138,11 +138,8 @@ public class StudioControllerTest extends ControllerTest {
         @DisplayName("Authorization Header에 AccessToken이 없으면 스튜디오 삭제에 실패한다")
         void withoutAccessToken() throws Exception {
             // when
-            final StudioRequest request = createStudioRequest();
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .delete(BASE_URL, STUDIO_ID)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .delete(BASE_URL, STUDIO_ID);
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
@@ -167,12 +164,9 @@ public class StudioControllerTest extends ControllerTest {
                     .deleteStudio(anyLong(), anyLong());
 
             // when
-            final StudioRequest request = createStudioRequest();
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .delete(BASE_URL, STUDIO_ID)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
 
             // then
             mockMvc.perform(requestBuilder)
