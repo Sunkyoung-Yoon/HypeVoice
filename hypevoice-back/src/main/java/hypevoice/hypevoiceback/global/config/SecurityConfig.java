@@ -1,5 +1,6 @@
 package hypevoice.hypevoiceback.global.config;
 
+import hypevoice.hypevoiceback.auth.security.CookieAuthorizationRequestRepository;
 import hypevoice.hypevoiceback.auth.security.CustomOAuth2UserService;
 import hypevoice.hypevoiceback.auth.security.OAuth2LoginSuccessHandler;
 import hypevoice.hypevoiceback.auth.security.OAuthLoginFailureHandler;
@@ -40,6 +41,8 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
+    private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers("/h2-console/**", "/error", "/favicon.ico", "/api/auth/logout/**", "/");
@@ -51,7 +54,7 @@ public class SecurityConfig {
             CorsConfiguration config = new CorsConfiguration();
             config.setAllowedHeaders(Collections.singletonList("*"));
             config.setAllowedMethods(Collections.singletonList("*"));
-            config.setAllowedOriginPatterns(Collections.singletonList("http//localhost:3000")); // 허용할 origin
+            config.setAllowedOriginPatterns(Collections.singletonList("http//localhost:5173")); // 허용할 origin
             config.setAllowCredentials(true);
             return config;
         };
@@ -89,16 +92,19 @@ public class SecurityConfig {
                 )
                 .oauth2Login(configure  ->
                         configure
+                                .authorizationEndpoint(authorizationEndpointConfig ->
+                                        authorizationEndpointConfig.authorizationRequestRepository(cookieAuthorizationRequestRepository))
                                 .userInfoEndpoint(config  ->
                                         config.userService(customOAuth2UserService)
                                 )
                                 .successHandler(oAuth2LoginSuccessHandler)
                                 .failureHandler(oAuthLoginFailureHandler)
                 )
+                //Authorization request와 관련된 state가 저장됨
+
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, memberFindService), UsernamePasswordAuthenticationFilter.class);
 
 
         return http.build();
     }
-
 }
