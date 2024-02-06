@@ -15,6 +15,9 @@ public enum StudioErrorCode implements ErrorCode {
     STUDIO_ALREADY_JOINED(HttpStatus.BAD_REQUEST, "STUDIO_004", "이미 참여중인 스튜디오가 있습니다."),
     UNABLE_TO_UPDATE_STUDIO(HttpStatus.BAD_REQUEST, "STUDIO_005", "스튜디오을 수정 할 수 없습니다."),
     UNABLE_TO_DELETE_STUDIO(HttpStatus.BAD_REQUEST, "STUDIO_006", "스튜디오를 삭제 할 수 없습니다."),
+    INCORRECT_PASSWORD(HttpStatus.BAD_REQUEST, "STUDIO_007", "패스워드를 틀렸습니다."),
+    NULL_PASSWORD_OF_STUDIO_OR_REQUEST(HttpStatus.BAD_REQUEST, "STUDIO_008", "비공개 방에 패스워드가 설정되지 않았습니다."),
+    UNABLE_CONNECT_PRIVATE_ROOM(HttpStatus.BAD_REQUEST, "STUDIO_009", "비공개방에 접근 할 수 없습니다."),
     STUDIO_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDIO_MEMBER_001", "스튜디오에 참여한 인원을 찾을 수 없습니다."),
     ;
 

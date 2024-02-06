@@ -19,6 +19,8 @@ public class StudioMember {
 
     private int isHost;
 
+    private String connectionId;
+
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "member_id", referencedColumnName = "member_id")
     private Member member;
@@ -27,14 +29,15 @@ public class StudioMember {
     @JoinColumn(name = "studio_id", referencedColumnName = "studio_id")
     private Studio studio;
 
-    private StudioMember(Member member, Studio studio, int isHost) {
+    private StudioMember(Member member, Studio studio, int isHost, String connectionId) {
         this.member = member;
         this.studio = studio;
         this.isHost = isHost;
+        this.connectionId = connectionId;
     }
 
-    public static StudioMember createStudioMember(Member member, Studio studio, int isHost) {
-        return new StudioMember(member, studio, isHost);
+    public static StudioMember createStudioMember(Member member, Studio studio, int isHost, String connectionId) {
+        return new StudioMember(member, studio, isHost, connectionId);
     }
 
 }
