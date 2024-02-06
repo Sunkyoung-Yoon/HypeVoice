@@ -1,6 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { styled, keyframes } from "styled-components";
-import { useRecoilState } from "recoil";
+import { styled } from "styled-components";
 import HeaderComponent from "../components/HeaderComponent";
 import Footer from "../components/Footer";
 import LeftSide from "../components/LeftSide";
@@ -13,24 +11,10 @@ import Voice from "../components/Voice";
 import CommunityComponent from "../components/CommunityComponent";
 import MyInfo from "../components/MyInfo";
 
-// const Container = styled.div`
-//   height: 100vh;
-//   // position: static;
-// `;
-
-// const Body = styled.div`
-//   display: flex;
-//   flex-direction: row;
-//   flex-gr ow: 1;
-//   overflow-x: hidden;
-//   min-width: 60%;
-// `;
-
 const MainGrid = styled.div`
   display: grid;
   grid-template-rows: auto 1fr auto;
   grid-template-columns: 10% 1fr 15%;
-  // height: calc(100vh - 60px);
   overflow: auto;
   grid-gap: 0;
   padding-top: 60px;
@@ -80,7 +64,7 @@ function Main() {
       <CenterGrid>
         <Routes>
           <Route
-            path="/"
+            path="/*"
             element={
               <Center>
                 <HomeGrid />

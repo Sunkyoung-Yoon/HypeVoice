@@ -7,6 +7,8 @@ import naverLogo from "../assets/naverIcon.jpg";
 import { useNavigate } from "react-router-dom";
 import { LoginState } from "../recoil/Auth";
 import { useRedirectionWhenLoggedIn } from "../hooks/useRedirectionWhenLoggedIn";
+import { KaKaoUser, NaverUser } from "../components/type";
+import axios from "axios";
 
 const Container = styled.div`
   height: 80vh;
@@ -24,9 +26,9 @@ const OuterContainer = styled.div`
 
 const LogoComponentContainer = styled.div`
   align-items: absolute;
-  left : 50%
-  transfrom : translateX(-50%);
-  align-items : center;
+  left: 50%;
+  transfrom: translateX(-50%);
+  align-items: center;
   display: flex;
   justify-content: center;
   width: 100%;
@@ -115,13 +117,25 @@ const Logo = styled("img")`
   margin-right: 5px;
 `;
 
+// const doKakaoLogin = async () => {
+//   const loginResult: KaKaoUser = await axios.get<KaKaoUser>("/api/studios");
+//   return loginResult.data;
+// };
+
+function doNaverLogin() {
+  console.log("before");
+  alert("로그인 시도!");
+  // window.location.href = "/oauth2/authorization/naver"; // proxy 쓸 경우
+  window.location.href = "http://localhost:8080/oauth2/authorization/naver";
+  // const data = axios.get(위 주소);
+  alert("로그인 완료!");
+  console.log("after");
+}
+
 function Login() {
   // const [id, setId] = useState();
   // const [password, setPassword] = useState();
-  const navigation = useNavigate();
-
   useRedirectionWhenLoggedIn();
-
   return (
     <OuterContainer>
       <LogoComponentContainer>
@@ -145,13 +159,13 @@ function Login() {
             모든 목소리를 만나보세요!
           </h2>
           <LoginButtonContainer>
-            <KakaoLoginButton>
+            <KakaoLoginButton onClick={doNaverLogin}>
               <LogoContainer>
                 <Logo src={kakaoLogo} />
               </LogoContainer>
               <TextContainer>카카오로 로그인하기</TextContainer>
             </KakaoLoginButton>
-            <NaverLoginButton>
+            <NaverLoginButton onClick={doNaverLogin}>
               <LogoContainer>
                 <Logo src={naverLogo} />
               </LogoContainer>

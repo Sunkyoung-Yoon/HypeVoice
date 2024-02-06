@@ -1,9 +1,11 @@
-import InlineHeader from "./InlineHeader";
+import styled from "styled-components";
+
+const VoiceComponentDiv = styled.div`
+  height: 90vh;
+`;
 
 function Voice() {
-  return (
-    <InlineHeader title={"인라인헤더 제목"} worksCnt={0} storageSpace={0} />
-    );
+  return <VoiceComponentDiv>내 보이스 컴포넌트</VoiceComponentDiv>;
 }
 
 export default Voice;

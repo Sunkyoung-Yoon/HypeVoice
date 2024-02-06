@@ -11,6 +11,9 @@ import StudioList from "./components/StudioList";
 import HomeGrid from "./components/HomeGrid";
 import Voice from "./components/Voice";
 import CommunityComponent from "./components/CommunityComponent";
+import path from "path";
+import KakaoLogin from "./pages/KakaoLogin";
+import NaverLogin from "./pages/NaverLogin";
 
 const router = createBrowserRouter([
   {
@@ -20,35 +23,47 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <Main />,
-        errorElement: <ErrorComponent />,
-      },
-      {
-        path: "myPage",
-        element: <MyInfo />,
-        errorElement: <ErrorComponent />,
-      },
-      {
-        path: "studioList",
-        element: <StudioList />,
-        errorElement: <ErrorComponent />,
-      },
-      {
-        path: "homeGrid",
-        element: <HomeGrid />,
-        errorElement: <ErrorComponent />,
-      },
-      {
-        path: "voice",
-        element: <Voice />,
-        errorElement: <ErrorComponent />,
-      },
-      {
-        path: "community",
-        element: <CommunityComponent />,
-        errorElement: <ErrorComponent />,
+        children: [
+          {
+            path: "myPage",
+            element: <MyInfo />,
+            errorElement: <ErrorComponent />,
+          },
+          {
+            path: "studioList",
+            element: <StudioList />,
+            errorElement: <ErrorComponent />,
+          },
+          {
+            path: "homeGrid",
+            element: <HomeGrid />,
+            errorElement: <ErrorComponent />,
+          },
+          {
+            path: "voice",
+            element: <Voice />,
+            errorElement: <ErrorComponent />,
+          },
+          {
+            path: "community",
+            element: <CommunityComponent />,
+            errorElement: <ErrorComponent />,
+          },
+        ],
+        errorElement: <NotFound />,
       },
     ],
-    errorElement: <NotFound />,
+    errorElement: <ErrorComponent />,
+  },
+  {
+    path: "kakao-login",
+    element: <KakaoLogin />,
+    errorElement: <ErrorComponent />,
+  },
+  {
+    path: "naver-login",
+    element: <NaverLogin />,
+    errorElement: <ErrorComponent />,
   },
   {
     path: "login",

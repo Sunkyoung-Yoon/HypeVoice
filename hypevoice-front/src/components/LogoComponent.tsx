@@ -1,5 +1,3 @@
-import { Box } from "@mui/material";
-import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
@@ -18,13 +16,11 @@ const LogoImg = styled.img`
   display: block;
 `;
 
-const LogoComponent = () => {
+export default function LogoComponent() {
   const navigate = useNavigate();
   return (
-    <LogoContainer onClick={() => navigate("/", { state: { wantToGo: "/" } })}>
-      <LogoImg src="src/assets/HYPE_VOICE_IMG.png" alt="HypeVoice Logo" />
+    <LogoContainer onClick={() => navigate("/")}>
+      <LogoImg src="/src/assets/HYPE_VOICE_IMG.png" alt="HypeVoice Logo" />
     </LogoContainer>
   );
-};
-
-export default LogoComponent;
+}
