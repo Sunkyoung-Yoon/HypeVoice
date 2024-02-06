@@ -25,8 +25,8 @@ public class JwtProvider {
     // 만료시간 - 1시간
     private final long accessExp = 1000L * 60 * 60;
 
-    // 만료시간 - 1일
-    private final long refreshExp = 1000L * 60 * 60 * 24;
+    // 만료시간 - 15일
+    private final long refreshExp = 1000L * 60 * 60 * 24 * 15;
 
     private final CustomUserDetailService customUserDetailService;
 
