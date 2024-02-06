@@ -19,6 +19,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class FileService {
+    private static final String MEMBER = "member";
     private static final String BOARD = "board";
     private static final String VOICE = "voice";
     private static final String WORK = "work";
@@ -27,6 +28,12 @@ public class FileService {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
+
+    public String uploadMemberFiles(MultipartFile file) {
+        validateFileExists(file);
+        validateContentType(file); // 회원의 프로필 이미지만 업로드 가능
+        return uploadFile(MEMBER, file);
+    }
 
     public String uploadBoardFiles(MultipartFile file) {
         validateFileExists(file);
@@ -86,6 +93,7 @@ public class FileService {
         String uuidName = UUID.randomUUID() + "_" + originalFileName;
 
         return switch (dir) {
+            case MEMBER -> String.format("member/%s", uuidName);
             case BOARD -> String.format("board/%s", uuidName);
             case VOICE -> String.format("voice/%s", uuidName);
             case WORK -> String.format("work/%s", uuidName);

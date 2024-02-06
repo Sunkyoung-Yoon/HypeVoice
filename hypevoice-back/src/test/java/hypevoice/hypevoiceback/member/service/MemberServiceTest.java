@@ -45,7 +45,7 @@ public class MemberServiceTest extends ServiceTest {
             memberService.update(member1.getId(), "닉네임체인지", null);
 
             // when - then
-            assertThatThrownBy(() -> memberService.update(member2.getId(), "닉네임체인지", "프로필이미지Url"))
+            assertThatThrownBy(() -> memberService.update(member2.getId(), "닉네임체인지", null))
                     .isInstanceOf(BaseException.class)
                     .hasMessage(MemberErrorCode.DUPLICATE_NICKNAME.getMessage());
         }
@@ -54,7 +54,7 @@ public class MemberServiceTest extends ServiceTest {
         @DisplayName("회원 정보 변경에 성공한다.")
         void success() {
             // given
-            memberService.update(member1.getId(), "닉네임체인지", "프로필이미지Url");
+            memberService.update(member1.getId(), "닉네임체인지", null);
 
             // when
             Member findMember = memberFindService.findById(member1.getId());
@@ -62,7 +62,7 @@ public class MemberServiceTest extends ServiceTest {
             // then
             assertAll(
                     () -> assertThat(findMember.getNickname()).isEqualTo("닉네임체인지"),
-                    () -> assertThat(findMember.getProfileUrl()).isEqualTo("프로필이미지Url")
+                    () -> assertThat(findMember.getProfileUrl()).isNull()
             );
         }
     }

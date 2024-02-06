@@ -7,8 +7,11 @@ import hypevoice.hypevoiceback.member.dto.MemberUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.nio.charset.StandardCharsets;
 
 import static hypevoice.hypevoiceback.fixture.TokenFixture.ACCESS_TOKEN;
 import static hypevoice.hypevoiceback.fixture.TokenFixture.BEARER_TOKEN;
@@ -34,10 +37,19 @@ public class MemberApiControllerTest extends ControllerTest {
         void withoutAccessToken() throws Exception {
             // when
             final MemberUpdateRequest request = updateMemberRequest();
+            MockMultipartFile file = new MockMultipartFile("file", null,
+                    "multipart/form-data", new byte[]{});
+            MockMultipartFile mockRequest = new MockMultipartFile("request", null,
+                    "application/json", convertObjectToJson(request).getBytes(StandardCharsets.UTF_8));
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .patch(BASE_URL)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .multipart(BASE_URL)
+                    .file(file)
+                    .file(mockRequest)
+                    .accept(APPLICATION_JSON)
+                    .with(request1 -> {
+                        request1.setMethod("PATCH");
+                        return request1;
+                    });
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
@@ -64,11 +76,20 @@ public class MemberApiControllerTest extends ControllerTest {
 
             // when
             final MemberUpdateRequest request = updateMemberRequest();
+            MockMultipartFile file = new MockMultipartFile("file", null,
+                    "multipart/form-data", new byte[]{});
+            MockMultipartFile mockRequest = new MockMultipartFile("request", null,
+                    "application/json", convertObjectToJson(request).getBytes(StandardCharsets.UTF_8));
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .patch(BASE_URL)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .multipart(BASE_URL)
+                    .file(file)
+                    .file(mockRequest)
+                    .accept(APPLICATION_JSON)
+                    .with(request1 -> {
+                        request1.setMethod("PATCH");
+                        return request1;
+                    })
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
 
             // then
             mockMvc.perform(requestBuilder)
@@ -147,7 +168,7 @@ public class MemberApiControllerTest extends ControllerTest {
     }
 
     private MemberUpdateRequest updateMemberRequest() {
-        return new MemberUpdateRequest("voice123", "프로필이미지Url");
+        return new MemberUpdateRequest("voice123");
     }
 
     private MemberResponse readMemberResponse() {

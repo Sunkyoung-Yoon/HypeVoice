@@ -10,8 +10,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static hypevoice.hypevoiceback.fixture.TokenFixture.BEARER_TOKEN;
 import static hypevoice.hypevoiceback.fixture.TokenFixture.REFRESH_TOKEN;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,7 +20,6 @@ public class AuthApiControllerTest extends ControllerTest {
     @DisplayName("로그아웃 API [GET /api/user/logout]")
     class logout {
         private static final String BASE_URL = "/api/auth/logout";
-        private static final Long MEMBER_ID = 1L;
 
         @Test
         @DisplayName("Authorization Header에 AccessToken이 없으면 로그아웃에 실패한다")
@@ -48,10 +45,6 @@ public class AuthApiControllerTest extends ControllerTest {
         @Test
         @DisplayName("로그아웃에 성공한다")
         void success() throws Exception {
-            // given
-            given(jwtProvider.validateToken(anyString())).willReturn(true);
-            given(jwtProvider.getId(anyString())).willReturn(MEMBER_ID);
-
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .get(BASE_URL)

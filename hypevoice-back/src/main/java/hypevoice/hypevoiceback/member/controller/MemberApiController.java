@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,8 +17,9 @@ public class MemberApiController {
     private final MemberService memberService;
 
     @PatchMapping
-    public ResponseEntity<Long> update(@ExtractPayload Long memberId, @RequestBody MemberUpdateRequest memberRequest) {
-        memberService.update(memberId, memberRequest.nickname(), memberRequest.profileUrl());
+    public ResponseEntity<Long> update(@ExtractPayload Long memberId, @RequestPart(value = "request") MemberUpdateRequest memberRequest,
+                                       @RequestPart(value = "file", required = false) MultipartFile multipartFiles) {
+        memberService.update(memberId, memberRequest.nickname(), multipartFiles);
         return new ResponseEntity<>(memberId, HttpStatus.OK);
     }
 

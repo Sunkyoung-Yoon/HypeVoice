@@ -1,12 +1,10 @@
 package hypevoice.hypevoiceback.auth.service;
 
-import com.fasterxml.jackson.annotation.JacksonInject;
 import hypevoice.hypevoiceback.auth.domain.Token;
 import hypevoice.hypevoiceback.auth.dto.LoginResponse;
 import hypevoice.hypevoiceback.auth.security.jwt.JwtProvider;
 import hypevoice.hypevoiceback.common.ServiceTest;
 import hypevoice.hypevoiceback.member.domain.Member;
-import hypevoice.hypevoiceback.member.service.MemberFindService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,11 +24,7 @@ public class AuthServiceTest extends ServiceTest {
     @Autowired
     private JwtProvider jwtProvider;
 
-    @Autowired
-    private MemberFindService memberFindService;
-
     private Member member;
-    private Token token;
 
     @BeforeEach
     void setUp() {

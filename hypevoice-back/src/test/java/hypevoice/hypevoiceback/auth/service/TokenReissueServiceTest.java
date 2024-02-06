@@ -7,7 +7,6 @@ import hypevoice.hypevoiceback.auth.security.jwt.JwtProvider;
 import hypevoice.hypevoiceback.common.ServiceTest;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.member.domain.Member;
-import hypevoice.hypevoiceback.member.domain.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
