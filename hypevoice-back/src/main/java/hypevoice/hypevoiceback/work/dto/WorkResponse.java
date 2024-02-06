@@ -1,5 +1,6 @@
 package hypevoice.hypevoiceback.work.dto;
 
+import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoResponse;
 import lombok.Builder;
 
 @Builder
@@ -12,7 +13,9 @@ public record WorkResponse(
         String scriptUrl,
         String recordUrl,
         String info,
-        int isRep
+        int isRep,
+        CategoryInfoResponse categoryInfoResponse
+
 ) {
 
 }

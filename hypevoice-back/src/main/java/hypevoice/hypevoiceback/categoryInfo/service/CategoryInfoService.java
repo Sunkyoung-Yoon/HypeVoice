@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -62,6 +64,18 @@ public class CategoryInfoService {
                 .genderValue(categoryInfo.getGender().getValue())
                 .ageValue(categoryInfo.getAge().getValue())
                 .build();
+    }
+
+    @Transactional
+    public List<Long> getWorkIdList(String mediaClassification, String voiceTone, String voiceStyle, String gender, String age) {
+        MediaClassification findMediaClassification = MediaClassification.from(mediaClassification);
+        VoiceTone findVoiceTone = VoiceTone.from(voiceTone);
+        VoiceStyle findVoiceStyle = VoiceStyle.from(voiceStyle);
+        Gender findGender = Gender.from(gender);
+        Age findAge = Age.from(age);
+        List<Long> workIdList = categoryInfoFindService.findWorkIdByCategory(findMediaClassification, findVoiceTone, findVoiceStyle, findGender, findAge);
+
+        return workIdList;
     }
 
     private void validateMember(Long workId, Long memberId) {

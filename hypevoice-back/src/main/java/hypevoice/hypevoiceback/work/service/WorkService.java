@@ -1,5 +1,10 @@
 package hypevoice.hypevoiceback.work.service;
 
+import hypevoice.hypevoiceback.categoryInfo.domain.CategoryInfo;
+import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoListResponse;
+import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoResponse;
+import hypevoice.hypevoiceback.categoryInfo.service.CategoryInfoFindService;
+import hypevoice.hypevoiceback.categoryInfo.service.CategoryInfoService;
 import hypevoice.hypevoiceback.file.service.FileService;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.voice.domain.Voice;
@@ -7,12 +12,16 @@ import hypevoice.hypevoiceback.voice.exception.VoiceErrorCode;
 import hypevoice.hypevoiceback.voice.service.VoiceFindService;
 import hypevoice.hypevoiceback.work.domain.Work;
 import hypevoice.hypevoiceback.work.domain.WorkRepository;
+import hypevoice.hypevoiceback.work.dto.WorkList;
 import hypevoice.hypevoiceback.work.dto.WorkResponse;
 import hypevoice.hypevoiceback.work.exception.WorkErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,9 +31,11 @@ public class WorkService {
     private final WorkFindService workFindService;
     private final VoiceFindService voiceFindService;
     private final FileService fileService;
+    private final CategoryInfoService categoryInfoService;
+    private final CategoryInfoFindService categoryInfoFindService;
 
     @Transactional
-    public void registerWork(Long memberId, Long voiceId, String title, String videoLink, String info, int isRep, MultipartFile[] multipartFiles) {
+    public Long registerWork(Long memberId, Long voiceId, String title, String videoLink, String info, int isRep, MultipartFile[] multipartFiles) {
         validateMember(voiceId, memberId);
 
         Voice voice = voiceFindService.findById(voiceId);
@@ -41,7 +52,7 @@ public class WorkService {
         }
 
         Work work = Work.createWork(voice, title, videoLink, fileUrlList[0], fileUrlList[1], fileUrlList[2], info, isRep);
-        workRepository.save(work);
+        return workRepository.save(work).getId();
     }
 
     @Transactional
@@ -84,20 +95,60 @@ public class WorkService {
     public WorkResponse readWork(Long voiceId, Long workId) {
         validateVoice(voiceId, workId);
         Work work = workFindService.findById(workId);
+        CategoryInfo categoryInfo = categoryInfoFindService.findByWorkId(workId);
 
-        return WorkResponse.builder()
-                .voiceId(voiceId)
-                .workId(workId)
-                .title(work.getTitle())
-                .videoLink(work.getVideoLink())
-                .photoUrl(work.getPhotoUrl())
-                .scriptUrl(work.getScriptUrl())
-                .recordUrl(work.getRecordUrl())
-                .info(work.getInfo())
-                .isRep(work.getIsRep())
-                .build();
+        return new WorkResponse(
+                voiceId, workId, work.getTitle(), work.getVideoLink(), work.getPhotoUrl(), work.getScriptUrl(), work.getRecordUrl(), work.getInfo(), work.getIsRep(),
+                new CategoryInfoResponse(
+                        workId,
+                        categoryInfo.getMediaClassification().getValue(),
+                        categoryInfo.getVoiceTone().getValue(),
+                        categoryInfo.getVoiceStyle().getValue(),
+                        categoryInfo.getGender().getValue(),
+                        categoryInfo.getAge().getValue()
+                )
+        );
     }
 
+    @Transactional
+    public List<WorkResponse> readAllWork(Long voiceId) {
+        List<WorkList> workLists = workRepository.findAllByVoiceId(voiceId);
+        List<WorkResponse> workResponseList = new ArrayList<>();
+        for (WorkList wl : workLists) {
+            CategoryInfoListResponse categoryInfoList = categoryInfoFindService.findCategoryInfoListByWorkId(wl.workId());
+            workResponseList.add(
+                    new WorkResponse(
+                            voiceId, wl.workId(), wl.title(), wl.videoLink(), wl.photoUrl(), wl.scriptUrl(), wl.recordUrl(), wl.info(), wl.isRep(),
+                            new CategoryInfoResponse(
+                                    wl.workId(), categoryInfoList.mediaClassification().getValue(), categoryInfoList.voiceTone().getValue(), categoryInfoList.voiceStyle().getValue(), categoryInfoList.gender().getValue(), categoryInfoList.age().getValue()
+                            )
+                    )
+            );
+        }
+
+        return workResponseList;
+    }
+
+    // 카테고리를 이용한 조회
+    @Transactional
+    public List<WorkResponse> readCategoryWork(Long voiceId, String mediaClassificationValue, String voiceToneValue, String voiceStyleValue, String genderValue, String ageValue) {
+        List<Long> workIdList = categoryInfoService.getWorkIdList(mediaClassificationValue, voiceToneValue, voiceStyleValue, genderValue, ageValue);
+        List<WorkResponse> findWorkResponse = new ArrayList<>();
+
+        for (Long workId : workIdList) {
+            Work work = workFindService.findById(workId);
+            findWorkResponse.add(
+                    new WorkResponse(
+                            voiceId, workId, work.getTitle(), work.getVideoLink(), work.getPhotoUrl(), work.getScriptUrl(), work.getRecordUrl(), work.getInfo(), work.getIsRep(),
+                            new CategoryInfoResponse(
+                                    workId, mediaClassificationValue, voiceToneValue, voiceStyleValue, genderValue, ageValue
+                            )
+                    )
+            );
+        }
+
+        return findWorkResponse;
+    }
 
     // 대본 클릭시
     @Transactional
