@@ -19,7 +19,7 @@ function InlineHeader( props:OwnProps ) {
   return (
     <div style={{margin: "10px"}}>
       <div style={{ margin: "0px 5px 0px 5px", display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
-        <div style={{ justifyContent: "left", fontSize: "22px" }}>{props.title}</div>
+        <div style={{ justifyContent: "left", fontSize: "30px" }}>{props.title}</div>
         <div style={{ display: "flex", justifyContent: "right", fontSize: "16px" }}>
           {props.worksCnt > 0 && <div style={{marginRight: "5px"}}>작업물:{props.worksCnt}개</div>}
           {props.storageSpace > 0 && <div>저장 공간:{ props.storageSpace }MB</div>}
