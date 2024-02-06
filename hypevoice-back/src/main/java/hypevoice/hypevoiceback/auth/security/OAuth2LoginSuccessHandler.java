@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.Optional;
 
-import static hypevoice.hypevoiceback.auth.security.CookieAuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
+import static hypevoice.hypevoiceback.auth.security.OAuth2AuthorizationRequestBasedOnCookieRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ACCESS_TOKEN;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.REFRESH_TOKEN;
 
@@ -34,13 +34,14 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
     public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(15);
     public static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(1);
+
     private final MemberFindService memberFindService;
     private final MemberService memberService;
 
     private final AuthService authService;
     private final VoiceService voiceService;
 
-    private final CookieAuthorizationRequestRepository authorizationRequestRepository;
+    private final OAuth2AuthorizationRequestBasedOnCookieRepository oAuth2AuthorizationRequestBasedOnCookieRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response
@@ -109,6 +110,6 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     //인증정보 요청 내역에서 쿠키를 삭제
     protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
         super.clearAuthenticationAttributes(request);
-        authorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
+        oAuth2AuthorizationRequestBasedOnCookieRepository.removeAuthorizationRequestCookies(request, response);
     }
 }
