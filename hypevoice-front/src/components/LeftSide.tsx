@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const LeftSideDiv = styled.div`
   height: 90vh;
-  width: 10%;
+  width: 100%;
   background-color: #f5f5f5;
   float: left;
 `;
