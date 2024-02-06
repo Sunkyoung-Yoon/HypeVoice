@@ -5,7 +5,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Button } from "@mui/material";
 import CategoryFilter, { SmallIcon, IconKey } from "./CategoryFilter";
-import { voiceFilterCheckAtom } from "../recoil/voiceFilterCheck";
+import { VoiceFilterCheckAtom } from "../recoil/VoiceFilterCheck";
+import { MainCurrentKeyword } from "../recoil/CurrentKeyword/MainCurrentKeyword";
 
 // 검색용 박스 전체 (검색 + 카테고리 선택 + 선택한 카테고리 태그)
 const VoiceFilteringComponent = styled.div`

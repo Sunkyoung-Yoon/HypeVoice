@@ -1,6 +1,6 @@
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
-import { categories } from "../components/Category";
+// import { categories } from "../components/Category";
 
 // recoilPersist 함수를 호출하고 그 결과로 반환되는 객체에서
 // persistAtome 이라는 함수를 추출
