@@ -113,7 +113,7 @@ function WorkGrid() {
       <Container sx={{ py: 8 }} maxWidth="md">
         <Grid container spacing={4}>
           {WorkDatas.map((work) => (
-            <Work work={work} />
+            <Work key={work.workId} work={work} />
           ))}
         </Grid>
       </Container>
