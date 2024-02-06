@@ -1,6 +1,7 @@
 package hypevoice.hypevoiceback.member.service;
 
 import hypevoice.hypevoiceback.auth.service.AuthService;
+import hypevoice.hypevoiceback.file.service.FileService;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.member.domain.Member;
 import hypevoice.hypevoiceback.member.domain.MemberRepository;
@@ -10,6 +11,7 @@ import hypevoice.hypevoiceback.member.exception.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional(readOnly = true)
@@ -18,11 +20,20 @@ public class MemberService {
     private final MemberFindService memberFindService;
     private final MemberRepository memberRepository;
     private final AuthService authService;
+    private final FileService fileService;
 
     @Transactional
-    public void update(Long memberId, String nickname, String profileUrl) {
+    public void update(Long memberId, String nickname, MultipartFile file) {
         Member member = memberFindService.findById(memberId);
         validateDuplicateNickname(nickname);
+
+        String profileUrl = null;
+        if (file != null)
+            profileUrl = fileService.uploadMemberFiles(file);
+
+        if(member.getProfileUrl() != null)
+            fileService.deleteFiles(member.getProfileUrl());
+
         member.update(nickname, profileUrl);
     }
 
