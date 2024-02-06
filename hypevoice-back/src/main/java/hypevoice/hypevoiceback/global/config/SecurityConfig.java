@@ -1,17 +1,22 @@
 package hypevoice.hypevoiceback.global.config;
 
-import hypevoice.hypevoiceback.auth.security.CookieAuthorizationRequestRepository;
+// import hypevoice.hypevoiceback.auth.security.CookieAuthorizationRequestRepository;
 import hypevoice.hypevoiceback.auth.security.CustomOAuth2UserService;
+import hypevoice.hypevoiceback.auth.security.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import hypevoice.hypevoiceback.auth.security.OAuth2LoginSuccessHandler;
 import hypevoice.hypevoiceback.auth.security.OAuthLoginFailureHandler;
 import hypevoice.hypevoiceback.auth.security.jwt.JwtAccessDeniedHandler;
 import hypevoice.hypevoiceback.auth.security.jwt.JwtAuthenticationEntryPoint;
 import hypevoice.hypevoiceback.auth.security.jwt.JwtAuthenticationFilter;
 import hypevoice.hypevoiceback.auth.security.jwt.JwtProvider;
+import hypevoice.hypevoiceback.auth.service.AuthService;
 import hypevoice.hypevoiceback.member.service.MemberFindService;
+import hypevoice.hypevoiceback.member.service.MemberService;
+import hypevoice.hypevoiceback.voice.service.VoiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -32,8 +37,6 @@ import java.util.Collections;
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
-    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
-    private final OAuthLoginFailureHandler oAuthLoginFailureHandler;
 
     private final JwtProvider jwtProvider;
     private final MemberFindService memberFindService;
@@ -41,7 +44,9 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-    private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
+    private final MemberService memberService;
+    private final AuthService authService;
+    private final VoiceService voiceService;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -93,18 +98,39 @@ public class SecurityConfig {
                 .oauth2Login(configure  ->
                         configure
                                 .authorizationEndpoint(authorizationEndpointConfig ->
-                                        authorizationEndpointConfig.authorizationRequestRepository(cookieAuthorizationRequestRepository))
+                                        authorizationEndpointConfig.authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository()))
+                                .successHandler(oAuth2LoginSuccessHandler())
+                                .failureHandler(oAuthLoginFailureHandler())
                                 .userInfoEndpoint(config  ->
                                         config.userService(customOAuth2UserService)
                                 )
-                                .successHandler(oAuth2LoginSuccessHandler)
-                                .failureHandler(oAuthLoginFailureHandler)
                 )
-                //Authorization request와 관련된 state가 저장됨
-
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, memberFindService), UsernamePasswordAuthenticationFilter.class);
 
-
         return http.build();
+    }
+
+    // Oauth 인증 성공 핸들러
+    @Bean
+    public OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler() {
+        return new OAuth2LoginSuccessHandler(
+                memberFindService,
+                memberService,
+                authService,
+                voiceService,
+                oAuth2AuthorizationRequestBasedOnCookieRepository()
+        );
+    }
+
+    // Oauth 인증 실패 핸들러
+    @Bean
+    public OAuthLoginFailureHandler oAuthLoginFailureHandler() {
+        return new OAuthLoginFailureHandler(oAuth2AuthorizationRequestBasedOnCookieRepository());
+    }
+
+    // 쿠키 기반 인가 repository, 인가 응답을 연계 하고 검증할 때 사용
+    @Bean
+    public OAuth2AuthorizationRequestBasedOnCookieRepository oAuth2AuthorizationRequestBasedOnCookieRepository() {
+        return new OAuth2AuthorizationRequestBasedOnCookieRepository();
     }
 }

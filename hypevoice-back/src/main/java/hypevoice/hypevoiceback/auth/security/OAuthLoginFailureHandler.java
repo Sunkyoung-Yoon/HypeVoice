@@ -14,16 +14,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 
-import static hypevoice.hypevoiceback.auth.security.CookieAuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
+import static hypevoice.hypevoiceback.auth.security.OAuth2AuthorizationRequestBasedOnCookieRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class OAuthLoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
-    private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
 
+    private final OAuth2AuthorizationRequestBasedOnCookieRepository oAuth2AuthorizationRequestBasedOnCookieRepository;
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
         String targetUrl = CookieUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue)
                 .orElse(("/"));
@@ -34,7 +34,7 @@ public class OAuthLoginFailureHandler extends SimpleUrlAuthenticationFailureHand
                 .queryParam("error", exception.getLocalizedMessage())
                 .build().toUriString();
 
-        cookieAuthorizationRequestRepository.removeAuthorizationRequest(request, response);
+        oAuth2AuthorizationRequestBasedOnCookieRepository.removeAuthorizationRequest(request, response);
 
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
