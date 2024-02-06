@@ -23,7 +23,7 @@ const CommunityStyleDiv = styled.div`
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		width: 95%;
+		width: 98%;
 		padding: 10px;
 		margin-left: auto;
 		margin-right: auto;
@@ -61,18 +61,22 @@ const CommunityStyleDiv = styled.div`
 		width: 25%;
 		display: inline-block;
 		text-align: center;
+		margin: 0px 3px;
 	}
 
 	.community-post-header-boardid {
-		flex-basis: 8%;
+		flex-basis: 9%;
+		/* background-color: aliceblue; */
 	}
 
 	.community-post-header-category {
-		flex-basis: 8%;
+		flex-basis: 9%;
+		/* background-color: antiquewhite; */
 	}
 
 	.community-post-header-title {
-		flex-basis: 56%;
+		flex-basis: 50%;
+		/* background-color: aqua; */
 	}
 
 	.community-post-header-title a {
@@ -84,15 +88,18 @@ const CommunityStyleDiv = styled.div`
 	}
 
 	.community-post-header-memberid {
-		flex-basis: 15%;
+		flex-basis: 14%;
+		/* background-color: aquamarine; */
 	}
 
 	.community-post-header-view {
-		flex-basis: 8%;
+		flex-basis: 9%;
+		/* background-color: azure; */
 	}
 
 	.community-post-header-date {
-		flex-basis: 15%;
+		flex-basis: 9%;
+		/* background-color: beige; */
 	}
 
 	.pagination {
@@ -104,12 +111,10 @@ const CommunityStyleDiv = styled.div`
 	.community-post-container {
 		display: flex;
 		flex-direction: column;
-		align-items: flex-start;
+		align-items: center;
 		width: 100%;
 		text-align: center;
-	}
-
-	.community-post * {
+		font-size: 85%;
 	}
 
 	.community-post {
@@ -124,23 +129,27 @@ const CommunityStyleDiv = styled.div`
 		width: 25%;
 		display: inline-block;
 		text-align: center;
+		margin: 0px 3px;
 	}
 
 	.community-post-boardid {
-		flex-basis: 8%;
+		flex-basis: 9%;
+		/* background-color: aliceblue; */
 	}
 
 	.community-post-category {
-		flex-basis: 8%;
+		flex-basis: 9%;
+		/* background-color: antiquewhite; */
 	}
 
 	.community-post-title {
-		flex-basis: 56%;
+		flex-basis: 50%;
+		/* background-color: aqua; */
 	}
 
 	.community-post-title a {
 		text-decoration: none;
-		color: #333333;
+		color: #000000;
 		transition: color 0.3s ease;
 	}
 
@@ -149,21 +158,31 @@ const CommunityStyleDiv = styled.div`
 	}
 
 	.community-post-memberid {
-		flex-basis: 15%;
+		flex-basis: 14%;
+		/* background-color: aquamarine; */
 	}
 
 	.community-post-view {
-		flex-basis: 8%;
+		flex-basis: 9%;
+		/* background-color: azure; */
 	}
 
 	.community-post-date {
-		flex-basis: 15%;
+		flex-basis: 9%;
+		/* background-color: beige; */
 	}
 
 	.pagination {
-		margin-top: 1rem;
 		display: flex;
 		justify-content: center;
+		margin-top: 1rem;
+	}
+
+	.search-bar {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin: 20px 0px;
 	}
 `;
 
@@ -368,7 +387,7 @@ const CommunityComponent: React.FC = () => {
 						<Button
 							variant="contained"
 							sx={{ m: 1 }}
-							onClick={() => navigation('/write')}
+							onClick={() => navigation('/community/write')}
 						>
 							글쓰기
 						</Button>
@@ -434,14 +453,16 @@ const CommunityComponent: React.FC = () => {
 						variant="standard"
 						sx={{ m: 1 }}
 					/>
-					<button
+					<Button
+						variant="contained"
+						size="small"
 						onClick={() => {
 							handleSearchClick();
 							ScrollToTopComponent();
 						}}
 					>
 						검색
-					</button>
+					</Button>
 				</div>
 			</div>
 		</CommunityStyleDiv>

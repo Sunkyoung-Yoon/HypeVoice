@@ -1,43 +1,42 @@
-import { atom } from "recoil";
-import { recoilPersist } from "recoil-persist";
-import { categories } from "../components/Category";
+import { atom } from 'recoil';
+import { recoilPersist } from 'recoil-persist';
 
 // recoilPersist 함수를 호출하고 그 결과로 반환되는 객체에서
 // persistAtome 이라는 함수를 추출
 // 프로퍼티가 하나 밖에 없지만서도 일종의 구조 분해 할당
 // JSON 형태로 localStorage에 저장하겠다는 의미! => 새로고침시에도 안 날라감
 const { persistAtom } = recoilPersist({
-  key: "recoil-persist",
-  storage: localStorage,
-  converter: JSON,
+	key: 'recoil-persist',
+	storage: localStorage,
+	converter: JSON,
 });
 
 // Categories 타입 정의
 export interface Categories {
-  [key: string]: string[];
+	[key: string]: string[];
 }
 
 // InitialState 타입 정의
 export interface InitialState {
-  [key: string]: {
-    [key: string]: boolean;
-  };
+	[key: string]: {
+		[key: string]: boolean;
+	};
 }
 
 const categories: Categories = {
-  미디어: ["오디오드라마", "외화", "게임", "애니메이션", "내래이션", "기타"],
-  목소리톤: ["저음", "중음", "고음", "기타"],
-  목소리스타일: [
-    "밝은",
-    "따뜻한",
-    "귀여운",
-    "어두운",
-    "차가운",
-    "권위있는",
-    "기타",
-  ],
-  성별: ["남성", "여성", "기타"],
-  연령: ["유아", "아동", "청소년", "청년", "중장년", "노년"],
+	미디어: ['오디오드라마', '외화', '게임', '애니메이션', '내래이션', '기타'],
+	목소리톤: ['저음', '중음', '고음', '기타'],
+	목소리스타일: [
+		'밝은',
+		'따뜻한',
+		'귀여운',
+		'어두운',
+		'차가운',
+		'권위있는',
+		'기타',
+	],
+	성별: ['남성', '여성', '기타'],
+	연령: ['유아', '아동', '청소년', '청년', '중장년', '노년'],
 };
 
 /*
@@ -80,20 +79,20 @@ for (let category in categories)
 */
 
 const defaultState = Object.keys(categories).reduce<OptionState>(
-  (newCategories, category) => {
-    newCategories[category] = categories[category].reduce<{
-      [key: string]: boolean;
-    }>((newCategory, option) => {
-      newCategory[option] = false;
-      return newCategory;
-    }, {});
-    return newCategories;
-  },
-  {}
+	(newCategories, category) => {
+		newCategories[category] = categories[category].reduce<{
+			[key: string]: boolean;
+		}>((newCategory, option) => {
+			newCategory[option] = false;
+			return newCategory;
+		}, {});
+		return newCategories;
+	},
+	{},
 );
 
 export const VoiceFilterCheckAtom = atom({
-  key: "VoiceFilterCheckAtom",
-  default: defaultState,
-  // effects_UNSTABLE: [persistAtom],
+	key: 'VoiceFilterCheckAtom',
+	default: defaultState,
+	// effects_UNSTABLE: [persistAtom],
 });

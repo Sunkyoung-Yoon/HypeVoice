@@ -12,6 +12,7 @@ import HomeGrid from './components/HomeGrid';
 import Voice from './components/Voice';
 import CommunityComponent from './components/CommunityComponent';
 import PostComponent from './components/PostComponent';
+import PostWriteComponent from './components/PostWriteComponent';
 
 const router = createBrowserRouter([
 	{
@@ -51,6 +52,11 @@ const router = createBrowserRouter([
 			{
 				path: 'community/:id',
 				element: <PostComponent />,
+				errorElement: <ErrorComponent />,
+			},
+			{
+				path: 'community/write',
+				element: <PostWriteComponent />,
 				errorElement: <ErrorComponent />,
 			},
 		],

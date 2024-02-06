@@ -6,7 +6,7 @@ import CommentListComponent from './CommentListComponent';
 import CommentInputComponent from './CommentInputComponent';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { Post, PostInputType } from './CommunityComponent';
+import { Post, TestPostType } from './CommunityComponent';
 import LoadingComponent from './LoadingComponent';
 
 const PostStyleDiv = styled.div`
@@ -22,12 +22,14 @@ const PostStyleDiv = styled.div`
 
 	.post-header {
 		width: 95%;
-		border: 2px solid #bbb;
+		/* border: 2px solid #bbb; */
 		border-radius: 5px;
 		margin-left: auto;
 		margin-right: auto;
 		padding-top: 5px;
 		padding-bottom: 5px;
+		background-color: #e0e0e0;
+		box-shadow: 2px 2px 2px;
 	}
 
 	.post-header-upper {
@@ -43,7 +45,7 @@ const PostStyleDiv = styled.div`
 		font-weight: bold;
 		font-size: 20px;
 		color: #555;
-		margin-right: 15px;
+		margin-right: 5px;
 	}
 
 	.post-title {
@@ -66,6 +68,9 @@ const PostStyleDiv = styled.div`
 	.post-header-lower-divline {
 		margin-left: 15px;
 		margin-right: 15px;
+		font-size: 14px;
+		text-align: left;
+		color: #c0c0c0;
 	}
 
 	.post-header-lower-left {
@@ -77,12 +82,6 @@ const PostStyleDiv = styled.div`
 		font-size: 14px;
 		text-align: left;
 		color: #868686;
-	}
-
-	.post-header-lower-divline {
-		font-size: 14px;
-		text-align: left;
-		color: #c0c0c0;
 	}
 
 	.post-date {
@@ -148,7 +147,7 @@ const PostComponent: React.FC = () => {
 
 	// ▼ 외부 API에서 받아온 데이터를 우리 프로젝트에 맞게 처리하는 부분임
 	// (나중에는 필요없음) ▼
-	const rawData: PostInputType = data?.data;
+	const rawData: TestPostType = data?.data;
 	let category = '자유';
 	if (rawData.id % 4 === 1) {
 		category = '피드백';
@@ -194,7 +193,6 @@ const PostComponent: React.FC = () => {
 			<div className="post-component">
 				<Button
 					variant="contained"
-					sx={{ m: 1 }}
 					className="post-tolist-button"
 					onClick={() => {
 						navigation('/community');
