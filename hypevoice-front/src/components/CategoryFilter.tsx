@@ -3,14 +3,14 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { categories } from "./Category";
-import { Box, Button, FormControl, FormLabel } from "@mui/material";
+import { Box, FormControl, FormLabel } from "@mui/material";
 import { useRecoilState } from "recoil";
 import ageGroupIcon from "../assets/ageGroupIcon.svg";
 import mediaIcon from "../assets/mediaIcon.svg";
 import sexIcon from "../assets/sexIcon.svg";
 import styleIcon from "../assets/styleIcon.svg";
 import toneIcon from "../assets/toneIcon.svg";
-import { VoiceFilterCheckAtom } from "../recoil/VoiceFilterCheck";
+import { MainCurrentFilterAtom } from "../recoil/CurrentFilter/MainCurrentFilter";
 
 // 분류 타입
 // Recoil에 정의된 상태 중 key만을 가져옴
@@ -48,7 +48,7 @@ export default function CategoryFilter({
   onCheckChange,
   onConfirm,
 }: CategoryFilterProps) {
-  const [filterState, setFilterState] = useRecoilState(VoiceFilterCheckAtom);
+  const [filterState, setFilterState] = useRecoilState(MainCurrentFilterAtom);
   // 카테고리 선택 박스에서 '확인' 버튼을 눌렀을 때
   const handleConfirm = () => {
     onConfirm(filterState);
@@ -74,9 +74,7 @@ export default function CategoryFilter({
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-start",
-        // border: "1px solid black",
-        // borderRadius: "10px",
-        padding: "10px",
+        // padding: "10px",
       }}
     >
       {Object.entries(categories).map(([category, values]) => (

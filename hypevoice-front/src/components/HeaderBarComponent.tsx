@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu"; // 햄버거 아이콘
 import { useRecoilState } from "recoil";
 import useRequireLogin from "../hooks/useRequireLogin";
+import logo from "@/assets/HYPE_VOICE_IMG.png";
 
 const HeaderButtonComponent = styled(Button)`
   color: black;
@@ -35,7 +36,7 @@ const HamburgerButtonComponent = styled(MenuIcon)`
   }
 `;
 
-const LogoImg = styled.img`
+export const LogoImg = styled.img`
   cursor: pointer;
   transition: opacity 0.3s ease, border 0.3s ease;
   border: 0 solid transparent;
@@ -110,7 +111,8 @@ export default function HeaderBarComponent() {
             }}
           >
             <LogoImg
-              src="src/assets/HYPE_VOICE_IMG.png"
+              // src="../src/assets/HYPE_VOICE_IMG.png"
+              src={logo}
               alt="HypeVoice Logo"
               onClick={() => navigation("/")}
               style={{ height: "50px", alignItems: "center" }}

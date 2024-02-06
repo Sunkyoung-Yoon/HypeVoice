@@ -6,6 +6,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Button } from "@mui/material";
 import CategoryFilter, { SmallIcon, IconKey } from "./CategoryFilter";
 import { VoiceFilterCheckAtom } from "../recoil/VoiceFilterCheck";
+import { MainCurrentFilterAtom } from "../recoil/CurrentFilter/MainCurrentFilter";
 import { MainCurrentKeyword } from "../recoil/CurrentKeyword/MainCurrentKeyword";
 
 // 검색용 박스 전체 (검색 + 카테고리 선택 + 선택한 카테고리 태그)
@@ -15,7 +16,6 @@ const VoiceFilteringComponent = styled.div`
   border-radius: 10px;
   display: flex;
   flex-direction: column;
-  // padding: 10px;
 `;
 
 // 검색용
@@ -23,9 +23,6 @@ export const SearchBar = styled.div`
   display: flex;
   align-items: center;
   padding: 10px;
-  // border-bottom: 1px solid gray;
-  // border-top-left-radius: 10px; // 왼쪽 위 둥근 모서리 적용
-  // border-top-right-radius: 10px; // 오른쪽 위 둥근 모서리 적용
 `;
 
 // 검색어 입력란
@@ -50,6 +47,14 @@ const CategoryContainer = styled.div`
 
 // 카테고리 버튼
 const CategoryButton = styled.button`
+  display: flex;
+  align-items: center;
+  border: 2px solid;
+  background: none;
+`;
+
+// 카테고리 필터 공간
+const CategoryFilterDiv = styled.div`
   display: flex;
   align-items: center;
   border: 2px solid;
@@ -87,8 +92,10 @@ export type InitialState = {
 
 export default function SearchComponent() {
   // 고른 것들 전역으로 관리
-  const [voiceFilterCheck, setVoiceFilterCheck] =
-    useRecoilState(VoiceFilterCheckAtom);
+  const [voiceFilterCheck, setVoiceFilterCheck] = useRecoilState(
+    MainCurrentFilterAtom
+  );
+  // 필터링 된 결과 관리
   const [filteredResults, setFilteredResults] = useState([]);
   // 검색어 관리
   const [searchText, setSearchText] =
@@ -104,13 +111,15 @@ export default function SearchComponent() {
   // 확인 버튼 눌렀을 때 전역으로 관리되는 필터링 상태를 가지고
   // 조회한 대표작업물들의 결과를 가지고 저장.
   const handleConfirm = (filterState) => {
-    const results = filterState; // 예시로 filterState를 그대로 사용합니다.
+    const results = filterState; // 예시로 filterState
 
     // 필터링된 결과를 상태에 저장합니다.
-    setFilteredResults(results);
+    // setFilteredResults(results);
 
     // 팝업을 닫습니다.
-    toggleDropdown();
+    if (showDropdown) {
+      toggleDropdown();
+    }
   };
 
   // 체크한 옵션 바꾸기
@@ -144,7 +153,6 @@ export default function SearchComponent() {
           <SearchIcon />
         </Button>
       </SearchBar>
-
       <CategoryContainer>
         <CategoryButton onClick={toggleDropdown}>
           <span>카테고리</span>
@@ -153,10 +161,12 @@ export default function SearchComponent() {
       </CategoryContainer>
       {/* 카테고리 필터 여는 상태면 카테고리 필터 표시 */}
       {showDropdown && (
-        <CategoryFilter
-          onCheckChange={handleCheckChange}
-          onConfirm={handleConfirm}
-        />
+        <CategoryFilterDiv>
+          <CategoryFilter
+            onCheckChange={handleCheckChange}
+            onConfirm={handleConfirm}
+          />
+        </CategoryFilterDiv>
       )}
       <TagContainer>
         {Object.entries(voiceFilterCheck).map(([category, options], index) => {

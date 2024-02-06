@@ -1,21 +1,21 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 type OwnProps = {
-  title: string,
-  worksCnt: number,
-  storageSpace : number
-}
+  title: string;
+  worksCnt?: number;
+  storageSpace?: number;
+};
 
 const Hr = styled.hr`
   height: 5px;
-  border : none;
+  width: 100%;
+  border: none;
   background-color: black;
   margin: 3px 5px 3px 5px;
 `;
-
 // worksCnt로 1 이상의 number가 전달되면 작업물 개수가 표시되고, storageSpace로 1 이상의 number가 전달되면 용량이 MB 단위로 표시됨
 // 필요한 곳에서 <InlineHeader title={"인라인헤더 제목"} worksCnt={0} storageSpace={0} /> 형태로 사용
-function InlineHeader( props:OwnProps ) {
+function InlineHeader(props: OwnProps) {
   return (
     <div style={{margin: "10px"}}>
       <div style={{ margin: "0px 5px 0px 5px", display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
@@ -29,5 +29,4 @@ function InlineHeader( props:OwnProps ) {
     </div>
   );
 }
-
 export default InlineHeader;
