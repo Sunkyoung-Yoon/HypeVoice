@@ -1,6 +1,5 @@
 package hypevoice.hypevoiceback.global.config;
 
-// import hypevoice.hypevoiceback.auth.security.CookieAuthorizationRequestRepository;
 import hypevoice.hypevoiceback.auth.security.CustomOAuth2UserService;
 import hypevoice.hypevoiceback.auth.security.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import hypevoice.hypevoiceback.auth.security.OAuth2LoginSuccessHandler;
@@ -16,7 +15,6 @@ import hypevoice.hypevoiceback.voice.service.VoiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -24,9 +22,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.Collections;
 
@@ -54,15 +54,15 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        return request -> {
-            CorsConfiguration config = new CorsConfiguration();
-            config.setAllowedHeaders(Collections.singletonList("*"));
-            config.setAllowedMethods(Collections.singletonList("*"));
-            config.setAllowedOriginPatterns(Collections.singletonList("http//localhost:5173")); // 허용할 origin
-            config.setAllowCredentials(true);
-            return config;
-        };
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedHeaders(Collections.singletonList("*"));
+        config.setAllowedMethods(Collections.singletonList("*"));
+        config.setAllowedOriginPatterns(Collections.singletonList("http://localhost:3000")); // 허용할 origin
+        config.setAllowCredentials(true);
+        source.registerCorsConfiguration("/**",config);
+        return new CorsFilter(source);
     }
 
     @Bean
@@ -105,6 +105,7 @@ public class SecurityConfig {
                                         config.userService(customOAuth2UserService)
                                 )
                 )
+                .addFilterBefore(corsFilter(), SecurityContextPersistenceFilter.class)
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, memberFindService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
