@@ -1,5 +1,6 @@
 package hypevoice.hypevoiceback.work.domain;
 
+import hypevoice.hypevoiceback.categoryInfo.domain.CategoryInfo;
 import hypevoice.hypevoiceback.global.BaseTimeEntity;
 import hypevoice.hypevoiceback.voice.domain.Voice;
 import jakarta.persistence.*;
@@ -7,12 +8,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static jakarta.persistence.CascadeType.PERSIST;
+
 
 @Getter
 @Entity
 @NoArgsConstructor
 @Table(name = "work")
-
 public class Work extends BaseTimeEntity {
 
     @Id
@@ -33,6 +35,9 @@ public class Work extends BaseTimeEntity {
     private String recordUrl;
     private String info;
     private int isRep;
+
+    @OneToOne(mappedBy = "work", cascade = PERSIST, orphanRemoval = true)
+    private CategoryInfo categoryInfo;
 
     @Builder
     private Work(Voice voice, String title, String videoLink, String photoUrl, String scriptUrl, String recordUrl, String info, int isRep) {
@@ -69,7 +74,3 @@ public class Work extends BaseTimeEntity {
         }
     }
 }
-
-
-
-

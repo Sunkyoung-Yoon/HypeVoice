@@ -1,7 +1,7 @@
 package hypevoice.hypevoiceback.categoryInfo.service;
 
 import hypevoice.hypevoiceback.categoryInfo.domain.*;
-import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoResponse;
+import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoValue;
 import hypevoice.hypevoiceback.common.ServiceTest;
 import hypevoice.hypevoiceback.member.domain.Member;
 import hypevoice.hypevoiceback.voice.domain.Voice;
@@ -91,7 +91,7 @@ public class CategoryInfoServiceTest extends ServiceTest {
         @DisplayName("카테고리 선택에 성공한다")
         void success() {
             // when
-            CategoryInfoResponse categoryInfoResponse = categoryInfoService.readCategoryInfo(categoryInfo.getWork().getId());
+            CategoryInfoValue categoryInfoResponse = categoryInfoService.readCategoryInfo(categoryInfo.getWork().getId());
 
             // then
             assertAll(

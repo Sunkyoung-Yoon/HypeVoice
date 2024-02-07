@@ -1,7 +1,7 @@
 package hypevoice.hypevoiceback.categoryInfo.service;
 
 import hypevoice.hypevoiceback.categoryInfo.domain.*;
-import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoResponse;
+import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoValue;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.voice.exception.VoiceErrorCode;
 import hypevoice.hypevoiceback.work.domain.Work;
@@ -9,6 +9,8 @@ import hypevoice.hypevoiceback.work.service.WorkFindService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -51,10 +53,10 @@ public class CategoryInfoService {
     }
 
     @Transactional
-    public CategoryInfoResponse readCategoryInfo(Long workId) {
+    public CategoryInfoValue readCategoryInfo(Long workId) {
         CategoryInfo categoryInfo = categoryInfoFindService.findByWorkId(workId);
 
-        return CategoryInfoResponse.builder()
+        return CategoryInfoValue.builder()
                 .workId(workId)
                 .mediaClassificationValue(categoryInfo.getMediaClassification().getValue())
                 .voiceToneValue(categoryInfo.getVoiceTone().getValue())
@@ -62,6 +64,18 @@ public class CategoryInfoService {
                 .genderValue(categoryInfo.getGender().getValue())
                 .ageValue(categoryInfo.getAge().getValue())
                 .build();
+    }
+
+    @Transactional
+    public List<Long> getWorkIdList(String mediaClassification, String voiceTone, String voiceStyle, String gender, String age) {
+        MediaClassification findMediaClassification = MediaClassification.from(mediaClassification);
+        VoiceTone findVoiceTone = VoiceTone.from(voiceTone);
+        VoiceStyle findVoiceStyle = VoiceStyle.from(voiceStyle);
+        Gender findGender = Gender.from(gender);
+        Age findAge = Age.from(age);
+        List<Long> workIdList = categoryInfoFindService.findWorkIdByCategory(findMediaClassification, findVoiceTone, findVoiceStyle, findGender, findAge);
+
+        return workIdList;
     }
 
     private void validateMember(Long workId, Long memberId) {

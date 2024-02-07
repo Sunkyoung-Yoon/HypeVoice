@@ -1,13 +1,18 @@
 package hypevoice.hypevoiceback.voice.controller;
 
+import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoRequest;
 import hypevoice.hypevoiceback.global.annotation.ExtractPayload;
+import hypevoice.hypevoiceback.voice.dto.VoiceCardListResponse;
 import hypevoice.hypevoiceback.voice.dto.VoiceReadResponse;
 import hypevoice.hypevoiceback.voice.dto.VoiceUpdateRequest;
 import hypevoice.hypevoiceback.voice.service.VoiceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,8 +37,23 @@ public class VoiceController {
     }
 
     @GetMapping("/{voiceId}")
-    public ResponseEntity<VoiceReadResponse> read(@PathVariable("voiceId") Long voiceId){
-        VoiceReadResponse voiceReadResponse = voiceService.readDetailVoice(voiceId);
-        return ResponseEntity.ok(voiceReadResponse);
+    public ResponseEntity<VoiceReadResponse> read(@PathVariable("voiceId") Long voiceId) {
+        return new ResponseEntity<>(voiceService.readDetailVoice(voiceId), HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<VoiceCardListResponse>> readAll() {
+        return new ResponseEntity<>(voiceService.readAllVoice(), HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<VoiceCardListResponse>> searchVoice(@RequestParam("keyword") String keyword) {
+        return new ResponseEntity<>(voiceService.searchVoice(keyword), HttpStatus.OK);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<VoiceCardListResponse>> filterVoiceByCategory(@RequestBody CategoryInfoRequest request) {
+        List<VoiceCardListResponse> findVoiceByCategory = voiceService.filterVoiceByCategory(request.mediaClassification(), request.voiceTone(), request.voiceStyle(), request.gender(), request.age());
+        return new ResponseEntity<>(findVoiceByCategory, HttpStatus.OK);
     }
 }

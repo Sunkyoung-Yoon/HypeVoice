@@ -29,6 +29,8 @@ public enum Age implements EnumStandard {
     }
 
     public static Age from(String value) {
+        if(value == null) return null;
+
         return Arrays.stream(values())
                 .filter(Age -> Age.value.equals(value))
                 .findFirst()

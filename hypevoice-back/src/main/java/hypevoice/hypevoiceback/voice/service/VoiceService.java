@@ -1,30 +1,37 @@
 package hypevoice.hypevoiceback.voice.service;
 
+import hypevoice.hypevoiceback.categoryInfo.service.CategoryInfoService;
 import hypevoice.hypevoiceback.file.service.FileService;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.member.domain.Member;
 import hypevoice.hypevoiceback.member.service.MemberFindService;
 import hypevoice.hypevoiceback.voice.domain.Voice;
 import hypevoice.hypevoiceback.voice.domain.VoiceRepository;
+import hypevoice.hypevoiceback.voice.dto.VoiceCard;
+import hypevoice.hypevoiceback.voice.dto.VoiceCardListResponse;
 import hypevoice.hypevoiceback.voice.dto.VoiceReadResponse;
 import hypevoice.hypevoiceback.voice.exception.VoiceErrorCode;
+import hypevoice.hypevoiceback.work.domain.Work;
+import hypevoice.hypevoiceback.work.service.WorkFindService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-@Service
 public class VoiceService {
 
-    private final VoiceFindService voiceFindService;
-
-    private final MemberFindService memberFindService;
-
     private final VoiceRepository voiceRepository;
-
+    private final VoiceFindService voiceFindService;
+    private final MemberFindService memberFindService;
     private final FileService fileService;
+    private final WorkFindService workFindService;
+    private final CategoryInfoService categoryInfoService;
 
     @Transactional
     public void createVoice(Long memberId, String name) {
@@ -43,7 +50,7 @@ public class VoiceService {
         if (file != null)
             profileImageUrl = fileService.uploadVoiceFiles(file);
 
-        if(voiceUpdate.getImageUrl() != null)
+        if (voiceUpdate.getImageUrl() != null)
             fileService.deleteFiles(voiceUpdate.getImageUrl());
 
         voiceUpdate.updateVoice(name, profileImageUrl, intro, email, phone, addInfo);
@@ -63,6 +70,91 @@ public class VoiceService {
                 .phone(voiceDetail.getPhone())
                 .likes(voiceDetail.getLikes())
                 .build();
+    }
+
+    @Transactional
+    public List<VoiceCardListResponse> readAllVoice() {
+        List<Voice> voiceList = voiceRepository.findAll();
+        List<VoiceCard> voiceCardList = new ArrayList<>();
+
+        for (Voice v : voiceList) {
+            Work work = workFindService.findRepWorkByVoiceId(v.getId());
+            if (work != null) {
+                voiceCardList.add(
+                        VoiceCard.builder()
+                                .voiceId(v.getId())
+                                .photoUrl(work.getPhotoUrl())
+                                .categoryInfo(work.getCategoryInfo())
+                                .title(work.getTitle())
+                                .recordUrl(work.getRecordUrl())
+                                .profileUrl(work.getPhotoUrl())
+                                .name(v.getName())
+                                .likes(v.getLikes())
+                                .build()
+                );
+            }
+        }
+        return getVoiceCardListResponses(voiceCardList);
+    }
+
+    @Transactional
+    public List<VoiceCardListResponse> searchVoice(String keyword) {
+        List<VoiceCard> voiceList = voiceFindService.findByKeyword(keyword);
+        return getVoiceCardListResponses(voiceList);
+    }
+
+    // 카테고리를 이용한 조회
+    @Transactional
+    public List<VoiceCardListResponse> filterVoiceByCategory(String mediaClassificationValue, String voiceToneValue, String voiceStyleValue, String genderValue, String ageValue) {
+        List<VoiceCardListResponse> voiceCardListResponseList = this.readAllVoice();
+        List<Long> workIdList = categoryInfoService.getWorkIdList(mediaClassificationValue, voiceToneValue, voiceStyleValue, genderValue, ageValue);
+        List<VoiceCard> voiceCardList = new ArrayList<>();
+
+
+        for (VoiceCardListResponse v : voiceCardListResponseList) {
+            for (Long workId : workIdList) {
+                Work w = workFindService.findRepWorkByVoiceId(v.voiceId());
+                if (w != null && w.getId().equals(workId)) {
+                    voiceCardList.add(
+                            VoiceCard.builder()
+                                    .voiceId(v.voiceId())
+                                    .photoUrl(w.getPhotoUrl())
+                                    .categoryInfo(w.getCategoryInfo())
+                                    .title(w.getTitle())
+                                    .recordUrl(w.getRecordUrl())
+                                    .profileUrl(w.getPhotoUrl())
+                                    .name(v.name())
+                                    .likes(v.likes())
+                                    .build()
+                    );
+                }
+            }
+        }
+
+        return getVoiceCardListResponses(voiceCardList);
+    }
+
+    private List<VoiceCardListResponse> getVoiceCardListResponses(List<VoiceCard> voiceList) {
+        List<VoiceCardListResponse> searchVoiceCardListResponseList = new ArrayList<>();
+        for (VoiceCard vcr : voiceList) {
+            searchVoiceCardListResponseList.add(
+                    new VoiceCardListResponse(
+                            vcr.voiceId(),
+                            vcr.photoUrl(),
+                            vcr.categoryInfo().getMediaClassification().getValue(),
+                            vcr.categoryInfo().getVoiceTone().getValue(),
+                            vcr.categoryInfo().getVoiceStyle().getValue(),
+                            vcr.categoryInfo().getGender().getValue(),
+                            vcr.categoryInfo().getAge().getValue(),
+                            vcr.title(),
+                            vcr.recordUrl(),
+                            vcr.profileUrl(),
+                            vcr.name(),
+                            vcr.likes()
+                    )
+            );
+        }
+        return searchVoiceCardListResponseList;
     }
 
     private void validateMember(Long voiceId, Long memberId) {

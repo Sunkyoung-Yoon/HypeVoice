@@ -1,5 +1,7 @@
 package hypevoice.hypevoiceback.work.controller;
 
+import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoRequest;
+import hypevoice.hypevoiceback.categoryInfo.service.CategoryInfoService;
 import hypevoice.hypevoiceback.global.annotation.ExtractPayload;
 import hypevoice.hypevoiceback.work.dto.WorkRequest;
 import hypevoice.hypevoiceback.work.dto.WorkResponse;
@@ -10,18 +12,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/voices/{voiceId}/works")
 public class WorkController {
 
     private final WorkService workService;
+    private final CategoryInfoService categoryInfoService;
 
     @PostMapping
     public ResponseEntity<Void> createWork(@ExtractPayload Long memberId, @PathVariable("voiceId") Long voiceId,
                                            @RequestPart(value = "request") WorkRequest request,
                                            @RequestPart(value = "files", required = false) MultipartFile[] multipartFiles) {
-        workService.registerWork(memberId, voiceId, request.title(), request.videoLink(), request.info(), request.isRep(), multipartFiles);
+        Long workId = workService.registerWork(memberId, voiceId, request.title(), request.videoLink(), request.info(), request.isRep(), multipartFiles);
+        categoryInfoService.createCategoryInfo(memberId, workId, request.categoryInfoRequest().mediaClassification(), request.categoryInfoRequest().voiceTone(), request.categoryInfoRequest().voiceStyle(), request.categoryInfoRequest().gender(), request.categoryInfoRequest().age());
         return ResponseEntity.ok().build();
     }
 
@@ -30,6 +36,7 @@ public class WorkController {
                                            @PathVariable("workId") Long workId, @RequestPart(value = "request") WorkRequest request,
                                            @RequestPart(value = "files", required = false) MultipartFile[] multipartFiles) {
         workService.updateWork(memberId, voiceId, workId, request.title(), request.videoLink(), request.info(), request.isRep(), multipartFiles);
+        categoryInfoService.updateCategoryInfo(memberId, workId, request.categoryInfoRequest().mediaClassification(), request.categoryInfoRequest().voiceTone(), request.categoryInfoRequest().voiceStyle(), request.categoryInfoRequest().gender(), request.categoryInfoRequest().age());
         return ResponseEntity.ok().build();
     }
 
@@ -62,5 +69,17 @@ public class WorkController {
     public ResponseEntity<Void> updateRepresentationWork(@ExtractPayload Long memberId, @PathVariable("voiceId") Long voiceId, @PathVariable("workId") Long workId) {
         workService.updateRepresentationWork(memberId, voiceId, workId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<WorkResponse>> readAllWork(@PathVariable("voiceId") Long voiceId) {
+        List<WorkResponse> workResponseList = workService.readAllWork(voiceId);
+        return new ResponseEntity<>(workResponseList, HttpStatus.OK);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<WorkResponse>> readWorkByCategory(@PathVariable("voiceId") Long voiceId, @RequestBody CategoryInfoRequest request) {
+        List<WorkResponse> findWorkListByCategory = workService.readCategoryWork(voiceId, request.mediaClassification(), request.voiceTone(), request.voiceStyle(), request.gender(), request.age());
+        return new ResponseEntity<>(findWorkListByCategory, HttpStatus.OK);
     }
 }
