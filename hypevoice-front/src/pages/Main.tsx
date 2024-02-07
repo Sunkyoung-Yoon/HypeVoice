@@ -9,8 +9,8 @@ import StudioList from "../components/StudioList";
 import HomeGrid from "../components/HomeGrid";
 import Voice from "../components/Voice";
 import CommunityComponent from "../components/CommunityComponent";
-import MyInfo from "../components/MyInfo";
 import PostComponent from "@/components/PostComponent";
+import MyPage from "./MyPage";
 
 const MainGrid = styled.div`
   display: grid;
@@ -76,7 +76,7 @@ function Main() {
             path="/myPage"
             element={
               <Center>
-                <MyInfo />
+                <MyPage />
               </Center>
             }
           />
