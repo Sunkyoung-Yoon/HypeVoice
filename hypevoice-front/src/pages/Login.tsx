@@ -2,49 +2,42 @@ import React, { useEffect, useState } from "react";
 import { Box, AppBar, Toolbar, Button } from "@mui/material";
 import LogoComponent from "../components/LogoComponent";
 import styled from "styled-components";
-import kakaoLogo from "../assets/kakaoIcon.png";
-import naverLogo from "../assets/naverIcon.jpg";
+import kakaoLogo from "@/assets/kakaoIcon.png";
+import naverLogo from "@/assets/naverIcon.jpg";
 import { useNavigate } from "react-router-dom";
 import { LoginState } from "../recoil/Auth";
 import { useRedirectionWhenLoggedIn } from "../hooks/useRedirectionWhenLoggedIn";
-import { KaKaoUser, NaverUser } from "../components/type";
 import axios from "axios";
-
-const Container = styled.div`
-  height: 80vh;
-  position: relative;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: 1fr 7fr;
-  justify-items: center;
-  padding: 5vh;
-`;
 
 const OuterContainer = styled.div`
   display: flex;
-`;
-
-const LogoComponentContainer = styled.div`
-  align-items: absolute;
-  left: 50%;
-  transfrom: translateX(-50%);
+  justify-content: space-around;
   align-items: center;
-  display: flex;
-  justify-content: center;
+  align-content: center;
   width: 100%;
-
-  @media (max-width: 768px) {
-    display: none;
+  height: 100vh;
+  min-height: 300px;
+  @media (max-width: 900px) {
+    flex-direction: column;
+    justify-content: space-around;
   }
 `;
 
 const StyledLogoComponent = styled(LogoComponent)`
   width: 10vw;
   height: 10vw;
+  /* margin-inline: 100px; */
+`;
 
-  @media (max-width: 768px) {
-    width: 20vw;
-    // height: 20vw;
+const H2 = styled.h2`
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  font-size: xx-large;
+  text-align: center;
+  white-space: nowrap;
+  margin-bottom: 20px;
+  @media (max-height: 500px) and (max-width: 900px) {
+    display: none;
   }
 `;
 
@@ -52,23 +45,26 @@ const AboutLogin = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  margin: 2em;
+  align-items: center;
+  align-content: center;
+  width: 20vw;
 `;
 
 const LoginButtonContainer = styled.div`
   display: flex;
+  align-items: center;
   flex-direction: column;
   justify-content: space-between;
-  margin: 2em;
+  width: 100%;
 `;
 
 const KakaoLoginButton = styled.button`
-  background-color: yellow;
+  background-color: #fbe300;
   color: black;
   text-decoration: none;
   border-radius: 10px;
   margin-bottom: 2em;
-  height: 60px; // 세로 크기 조절
+  height: 50px; // 세로 크기 조절
   overflow: hidden; // 내용이 넘칠 경우 숨기기
   border: none; // 테두리 없애기
   display: flex;
@@ -77,16 +73,16 @@ const KakaoLoginButton = styled.button`
   :hover {
     opacity: 70%;
   }
-  width: 100%;
+  padding-right: 10%;
 `;
 
 const NaverLoginButton = styled.button`
-  background-color: #03c75a;
+  background-color: #00bf19;
   color: black;
   text-decoration: none;
   border-radius: 10px;
   margin-bottom: 2em;
-  height: 60px; // 세로 크기 조절
+  height: 50px; // 세로 크기 조절
   overflow: hidden; // 내용이 넘칠 경우 숨기기
   border: none; // 테두리 없애기
   display: flex;
@@ -95,7 +91,7 @@ const NaverLoginButton = styled.button`
   :hover {
     opacity: 70%;
   }
-  width: 100%;
+  padding-right: 10%;
 `;
 
 const LogoContainer = styled.div`
@@ -107,73 +103,54 @@ const LogoContainer = styled.div`
 const TextContainer = styled.div`
   flex: 4;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   white-space: nowrap; // 줄바꿈 없애기
 `;
 
 const Logo = styled("img")`
-  width: 60px;
-  height: 60px;
-  margin-right: 5px;
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
 `;
 
-// const doKakaoLogin = async () => {
-//   const loginResult: KaKaoUser = await axios.get<KaKaoUser>("/api/studios");
-//   return loginResult.data;
-// };
-
 function doNaverLogin() {
-  console.log("before");
-  alert("로그인 시도!");
-  // window.location.href = "/oauth2/authorization/naver"; // proxy 쓸 경우
-  window.location.href = "http://localhost:8080/oauth2/authorization/naver";
-  // const data = axios.get(위 주소);
-  alert("로그인 완료!");
-  console.log("after");
+  console.log("네이버로 로그인");
+  window.location.href =
+    "http://localhost:8080/oauth2/authorization/naver?redirect_uri=http://localhost:5173/after-login";
+}
+
+function doKakaoLogin() {
+  console.log("카카오로 로그인");
+  // window.location.href = "http://localhost:8080/oauth2/authorization/naver?redirect_uri=http://localhost:5173/after-login";
 }
 
 function Login() {
-  // const [id, setId] = useState();
-  // const [password, setPassword] = useState();
   useRedirectionWhenLoggedIn();
   return (
     <OuterContainer>
-      <LogoComponentContainer>
-        <StyledLogoComponent />
-      </LogoComponentContainer>
-      <Container>
-        <div></div>
-        <AboutLogin>
-          <h2
-            style={{
-              textAlign: "center",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              whiteSpace: "balance",
-            }}
-          >
-            HYPE VOICE에서
-            <div style={{ height: "20px" }}></div>
-            모든 목소리를 만나보세요!
-          </h2>
-          <LoginButtonContainer>
-            <KakaoLoginButton onClick={doNaverLogin}>
-              <LogoContainer>
-                <Logo src={kakaoLogo} />
-              </LogoContainer>
-              <TextContainer>카카오로 로그인하기</TextContainer>
-            </KakaoLoginButton>
-            <NaverLoginButton onClick={doNaverLogin}>
-              <LogoContainer>
-                <Logo src={naverLogo} />
-              </LogoContainer>
-              <TextContainer>네이버로 로그인하기</TextContainer>
-            </NaverLoginButton>
-          </LoginButtonContainer>
-        </AboutLogin>
-      </Container>
+      <StyledLogoComponent />
+      <AboutLogin>
+        <H2>
+          <br />
+          HYPE VOICE에서 <br />
+          모든 목소리를 만나보세요!
+          <br />
+        </H2>
+        <LoginButtonContainer>
+          <KakaoLoginButton onClick={doKakaoLogin}>
+            <LogoContainer>
+              <Logo src={kakaoLogo} />
+            </LogoContainer>
+            <TextContainer>카카오로 로그인하기</TextContainer>
+          </KakaoLoginButton>
+          <NaverLoginButton onClick={doNaverLogin}>
+            <LogoContainer>
+              <Logo src={naverLogo} />
+            </LogoContainer>
+            <TextContainer>네이버로 로그인하기</TextContainer>
+          </NaverLoginButton>
+        </LoginButtonContainer>
+      </AboutLogin>
     </OuterContainer>
   );
 }

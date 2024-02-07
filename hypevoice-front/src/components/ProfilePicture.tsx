@@ -4,7 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { MemberInfo } from "./type";
 
 const fetchMemberInfo = async (id: string): Promise<MemberInfo> => {
-  const response = await axios.get<MemberInfo>(`/api/members/${id}`);
+  const response = await axios.get<MemberInfo>(
+    `http://localhost:8080/api/members/${id}`
+  );
   return response.data;
 };
 

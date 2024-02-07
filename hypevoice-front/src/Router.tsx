@@ -14,7 +14,7 @@ import CommunityComponent from "./components/CommunityComponent";
 import path from "path";
 import KakaoLogin from "./pages/KakaoLogin";
 import NaverLogin from "./pages/NaverLogin";
-import PostComponent from "./components/PostComponent";
+import AfterLogin from "./pages/AfterLogin";
 
 const router = createBrowserRouter([
   {
@@ -50,25 +50,25 @@ const router = createBrowserRouter([
             element: <CommunityComponent />,
             errorElement: <ErrorComponent />,
           },
-          {
-            path: 'community/:id',
-            element: <PostComponent />,
-            errorElement: <ErrorComponent />,
-          },
         ],
         errorElement: <NotFound />,
       },
     ],
     errorElement: <ErrorComponent />,
   },
+  // {
+  //   path: "kakao-login",
+  //   element: <KakaoLogin />,
+  //   errorElement: <ErrorComponent />,
+  // },
+  // {
+  //   path: "naver-login",
+  //   element: <NaverLogin />,
+  //   errorElement: <ErrorComponent />,
+  // },
   {
-    path: "kakao-login",
-    element: <KakaoLogin />,
-    errorElement: <ErrorComponent />,
-  },
-  {
-    path: "naver-login",
-    element: <NaverLogin />,
+    path: "after-login",
+    element: <AfterLogin />,
     errorElement: <ErrorComponent />,
   },
   {

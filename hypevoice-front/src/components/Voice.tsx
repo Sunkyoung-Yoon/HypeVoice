@@ -1,19 +1,11 @@
-// import React from "react";
-import AddInfo from "./AddInfo";
-import InlineHeader from "./InlineHeader";
-import MyInfo from "./MyInfo";
-import WorkGrid from "./WorkGrid";
+import styled from "styled-components";
+
+const VoiceComponentDiv = styled.div`
+  height: 90vh;
+`;
 
 function Voice() {
-  return (
-    <>
-      <MyInfo />
-      <InlineHeader title={"작업물"} worksCnt={9} storageSpace={17} />
-      <WorkGrid />
-      <InlineHeader title={"추가 정보"} worksCnt={0} storageSpace={0} />
-      <AddInfo />
-    </>
-  )
+  return <VoiceComponentDiv>내 보이스 컴포넌트</VoiceComponentDiv>;
 }
 
 export default Voice;
