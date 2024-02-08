@@ -108,7 +108,8 @@ export default function StudioList() {
     StudioListCurrentKeywordAtom
   );
 
-  // 검색 버튼 누를 시 해당 검색어로 보이스 검색
+  // 검색 버튼 누를 시 해당 검색어로 방 검색
+  // 방 제목으로만 검색 가능!
   const handleSearch = () => {
     console.log(searchText + "로 검색한 결과");
   };
@@ -151,7 +152,7 @@ export default function StudioList() {
       <SearchBar>
         <SearchInput
           maxLength={20}
-          placeholder="닉네임으로 검색하세요. (최대 20자)"
+          placeholder="방 제목으로 검색하세요. (최대 20자)"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
         />
@@ -166,6 +167,12 @@ export default function StudioList() {
       ) : isError ? (
         <div style={{ marginLeft: "10px" }}>방 정보를 불러올 수 없습니다.</div>
       ) : (
+        /*
+        [스튜디오 리스트 == 방 목록]
+        방 목록이 null 이 아니면 방 목록이 하나라도 있는 거
+        slice() 메서드는 어떤 배열의 begin 부터 end 까지(end 미포함)에 대한 얕은 복사본을 새로운 배열 객체로 반환(원본 배열 안 바뀜!)
+
+        */
         <StudiosContainer>
           {studioList &&
             studioList

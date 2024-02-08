@@ -1,5 +1,8 @@
 import InlineHeader from "@/components/InlineHeader";
+import { LoginState } from "@/recoil/Auth";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 
 const StyledDiv = styled.div`
@@ -106,9 +109,9 @@ const StyledButton3 = styled.button`
 `;
 
 type OwnProps = {
-  nickname: string;
-  email: string;
-  profileImg: string;
+  nickname?: string;
+  email?: string;
+  profileImg?: string;
 };
 
 function MyPage(props: OwnProps) {
@@ -117,11 +120,28 @@ function MyPage(props: OwnProps) {
   const [avatar, setAvatar] = useState(props.profileImg || "");
   const [isChanged, setIsChanged] = useState(false);
 
+  const navigate = useNavigate();
+  const isLoggedIn = useRecoilValue(LoginState); // 로그인 상태
+  // const [isConfirmShown, setIsConfirmShown] = useState(false);
+
   useEffect(() => {
+    if (
+      !isLoggedIn // && !isConfirmShown
+    ) {
+      // setIsConfirmShown(true);
+      if (
+        window.confirm("로그인이 필요한 서비스입니다. 로그인 하시겠습니까?")
+      ) {
+        navigate("/login");
+      } else navigate("/");
+    } else {
+      //setIsConfirmShown(false);
+    }
+
     setNickname("윤선경");
     setEmail("yskjdh@gmail.com");
     setAvatar(`https://randomuser.me/api/portraits/women/${Math.floor(Math.random() * 100)}.jpg`);
-  }, []);
+  }, [isLoggedIn]);
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
