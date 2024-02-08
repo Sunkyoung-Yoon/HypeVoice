@@ -1,8 +1,9 @@
+import React from "react";
 import styled from "styled-components";
 
 const RightSideDiv = styled.div`
   height: 90vh;
-  width: 100%;
+  width: 15%;
   background-color: #f5f5f5;
   float: right;
 `;

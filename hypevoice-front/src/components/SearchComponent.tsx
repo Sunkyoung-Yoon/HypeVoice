@@ -5,7 +5,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Button } from "@mui/material";
 import CategoryFilter, { SmallIcon, IconKey } from "./CategoryFilter";
-import { VoiceFilterCheckAtom } from "../recoil/VoiceFilterCheck";
 import { MainCurrentFilterAtom } from "../recoil/CurrentFilter/MainCurrentFilter";
 import { MainCurrentKeyword } from "../recoil/CurrentKeyword/MainCurrentKeyword";
 

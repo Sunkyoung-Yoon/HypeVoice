@@ -9,8 +9,7 @@ import StudioList from "../components/StudioList";
 import HomeGrid from "../components/HomeGrid";
 import Voice from "../components/Voice";
 import CommunityComponent from "../components/CommunityComponent";
-import PostComponent from "@/components/PostComponent";
-import MyPage from "./MyPage";
+import MyInfo from "../components/MyInfo";
 
 const MainGrid = styled.div`
   display: grid;
@@ -18,7 +17,7 @@ const MainGrid = styled.div`
   grid-template-columns: 10% 1fr 15%;
   overflow: auto;
   grid-gap: 0;
-  padding-top: 60px;
+  padding-top: 10vh;
   border: none;
 `;
 
@@ -76,7 +75,7 @@ function Main() {
             path="/myPage"
             element={
               <Center>
-                <MyPage />
+                <MyInfo />
               </Center>
             }
           />
@@ -101,14 +100,6 @@ function Main() {
             element={
               <Center>
                 <CommunityComponent />
-              </Center>
-            }
-          />
-                    <Route
-            path="/community/:id"
-            element={
-              <Center>
-                <PostComponent />
               </Center>
             }
           />

@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import ScrollToTopComponent from './ScrollToTopComponent';
+import React from "react";
+import styled from "styled-components";
 
 const CenterStyleDiv = styled.div`
   width: 100%;
@@ -9,8 +9,7 @@ const CenterStyleDiv = styled.div`
 `;
 
 function Center({ children }) {
-	ScrollToTopComponent();
-	return <CenterStyleDiv>{children}</CenterStyleDiv>;
+  return <CenterStyleDiv>{children}</CenterStyleDiv>;
 }
 
 export default Center;

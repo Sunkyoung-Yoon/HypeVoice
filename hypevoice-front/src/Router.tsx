@@ -5,6 +5,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Main from "./pages/Main";
 import Studio from "./components/Studio";
+import MyInfo from "./components/MyInfo";
 import ErrorComponent from "./components/ErrorComponent";
 import StudioList from "./components/StudioList";
 import HomeGrid from "./components/HomeGrid";
@@ -13,8 +14,7 @@ import CommunityComponent from "./components/CommunityComponent";
 import path from "path";
 import KakaoLogin from "./pages/KakaoLogin";
 import NaverLogin from "./pages/NaverLogin";
-import PostComponent from "./components/PostComponent";
-import MyPage from "./pages/MyPage";
+import AfterLogin from "./pages/AfterLogin";
 
 const router = createBrowserRouter([
   {
@@ -27,7 +27,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: "myPage",
-            element: <MyPage />,
+            element: <MyInfo />,
             errorElement: <ErrorComponent />,
           },
           {
@@ -50,25 +50,25 @@ const router = createBrowserRouter([
             element: <CommunityComponent />,
             errorElement: <ErrorComponent />,
           },
-          {
-            path: 'community/:id',
-            element: <PostComponent />,
-            errorElement: <ErrorComponent />,
-          },
         ],
         errorElement: <NotFound />,
       },
     ],
     errorElement: <ErrorComponent />,
   },
+  // {
+  //   path: "kakao-login",
+  //   element: <KakaoLogin />,
+  //   errorElement: <ErrorComponent />,
+  // },
+  // {
+  //   path: "naver-login",
+  //   element: <NaverLogin />,
+  //   errorElement: <ErrorComponent />,
+  // },
   {
-    path: "kakao-login",
-    element: <KakaoLogin />,
-    errorElement: <ErrorComponent />,
-  },
-  {
-    path: "naver-login",
-    element: <NaverLogin />,
+    path: "after-login",
+    element: <AfterLogin />,
     errorElement: <ErrorComponent />,
   },
   {
