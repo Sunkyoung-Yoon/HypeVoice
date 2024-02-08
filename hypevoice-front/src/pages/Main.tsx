@@ -11,6 +11,7 @@ import Voice from "../components/Voice";
 import CommunityComponent from "../components/CommunityComponent";
 import PostComponent from "@/components/PostComponent";
 import MyPage from "./MyPage";
+import PostCreateComponent from "@/components/PostCreateComponent";
 
 const MainGrid = styled.div`
   display: grid;
@@ -18,7 +19,7 @@ const MainGrid = styled.div`
   grid-template-columns: 10% 1fr 15%;
   overflow: auto;
   grid-gap: 0;
-  padding-top: 60px;
+  padding-top: 10vh;
   border: none;
 `;
 
@@ -76,7 +77,7 @@ function Main() {
             path="/myPage"
             element={
               <Center>
-                <MyPage />
+                <MyPage  />
               </Center>
             }
           />
@@ -109,6 +110,14 @@ function Main() {
             element={
               <Center>
                 <PostComponent />
+              </Center>
+            }
+          />
+                              <Route
+            path="/community/write"
+            element={
+              <Center>
+                <PostCreateComponent />
               </Center>
             }
           />

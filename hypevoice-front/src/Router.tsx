@@ -1,4 +1,3 @@
-import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import NotFound from "./pages/NotFound";
@@ -10,11 +9,10 @@ import StudioList from "./components/StudioList";
 import HomeGrid from "./components/HomeGrid";
 import Voice from "./components/Voice";
 import CommunityComponent from "./components/CommunityComponent";
-import path from "path";
-import KakaoLogin from "./pages/KakaoLogin";
-import NaverLogin from "./pages/NaverLogin";
 import PostComponent from "./components/PostComponent";
 import MyPage from "./pages/MyPage";
+import PostCreateComponent from "./components/PostCreateComponent";
+import AfterLogin from "./pages/AfterLogin";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +53,11 @@ const router = createBrowserRouter([
             element: <PostComponent />,
             errorElement: <ErrorComponent />,
           },
+          {
+            path: 'community/write',
+            element: <PostCreateComponent />,
+            errorElement: <ErrorComponent />,
+          },
         ],
         errorElement: <NotFound />,
       },
@@ -62,13 +65,8 @@ const router = createBrowserRouter([
     errorElement: <ErrorComponent />,
   },
   {
-    path: "kakao-login",
-    element: <KakaoLogin />,
-    errorElement: <ErrorComponent />,
-  },
-  {
-    path: "naver-login",
-    element: <NaverLogin />,
+    path: "after-login",
+    element: <AfterLogin />,
     errorElement: <ErrorComponent />,
   },
   {

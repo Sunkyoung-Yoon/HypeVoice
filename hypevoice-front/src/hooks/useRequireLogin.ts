@@ -26,7 +26,7 @@ export default function useRequireLogin() {
     // 로그인이 되어 있을 경우
     else {
       if (togo) {
-        if (togo === "/myPage") {
+        if (togo === "/MyPage") {
           alert(`${nickname}님의 마이페이지로 이동합니다.`); // 알림 메시지 표시
           // navigate("/myPage");
           // } else {
