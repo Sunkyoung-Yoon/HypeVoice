@@ -8,43 +8,55 @@ interface CommentInputProps {
 }
 
 const CommentInputStyleDiv = styled.div`
-	.comment-input-container {
-		background-color: #f5f5f5;
-		width: 95%;
-		padding: 10px;
-		padding-bottom: 20px;
+	.comment-input-component {
+		width: 80%;
 		margin-left: auto;
 		margin-right: auto;
-	}
-
-	.comment-input {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
+		margin-top: 10;
+		margin-bottom: 40px;
 		padding: 10px;
-		margin-left: auto;
-		margin-right: auto;
 		padding-top: 20px;
 		padding-bottom: 20px;
+		/* border: 1px solid #cccccc; */
+		background-color: #e0e0e0;
+		border-radius: 5px;
+		box-shadow: 2px 2px 2px;
 	}
 
 	.comment-input-id {
-		flex-basis: 20%;
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		margin-left: 6%;
+		margin-bottom: 3%;
+		font-size: large;
 		font-weight: bold;
 		text-align: left;
 	}
 
 	.comment-input-textfield {
-		flex: 1;
-		margin-right: 10px;
+		display: flex;
+		justify-content: center;
+		margin-left: auto;
+		margin-right: auto;
+		width: 90%;
+	}
+
+	.comment-input-textfield-box {
+		display: flex;
+		justify-content: center;
+		width: 99%;
+		font-weight: bold;
+		text-align: left;
 	}
 
 	.comment-input-buttons {
 		display: grid;
-		grid-template-columns: repeat(2, auto); /* 버튼 요소를 두 개의 열로 배치 */
-		grid-column-gap: 10px; /* 버튼 간격 조정 */
+		grid-template-columns: repeat(2, auto);
+		grid-column-gap: 10px;
 		justify-content: flex-end;
-		margin-right: 10px;
+		margin-right: 6%;
+		margin-top: 2%;
 	}
 
 	.comment-input-button-voice {
@@ -76,12 +88,14 @@ const CommentInputComponent: React.FC<CommentInputProps> = ({
 
 	return (
 		<CommentInputStyleDiv>
-			<div className="comment-input-container">
-				<div className="comment-input">
-					<span className="comment-input-id">{nickname}</span>
+			<div className="comment-input-component">
+				<div className="comment-input-id">
+					<p>댓글 작성하기</p>
+				</div>
+				<div className="comment-input-textfield">
 					<TextField
-						className="comment-input-textfield"
-						label="댓글 작성"
+						className="comment-input-textfield-box"
+						// label="댓글 작성"
 						variant="outlined"
 						value={comment}
 						onChange={handleInputChange}

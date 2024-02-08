@@ -1,12 +1,10 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@mui/material';
 import styled from 'styled-components';
-import CommentListComponent from './CommentListComponent';
-import CommentInputComponent from './CommentInputComponent';
-import { useQuery } from '@tanstack/react-query';
+import { QueryClient, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { Post, PostInputType } from './CommunityComponent';
+import { Post } from './CommunityComponent';
 import LoadingComponent from './LoadingComponent';
 
 const PostStyleDiv = styled.div`
@@ -22,12 +20,14 @@ const PostStyleDiv = styled.div`
 
 	.post-header {
 		width: 95%;
-		border: 2px solid #bbb;
+		/* border: 2px solid #bbb; */
 		border-radius: 5px;
 		margin-left: auto;
 		margin-right: auto;
 		padding-top: 5px;
 		padding-bottom: 5px;
+		background-color: #e0e0e0;
+		box-shadow: 2px 2px 2px;
 	}
 
 	.post-header-upper {
@@ -43,7 +43,7 @@ const PostStyleDiv = styled.div`
 		font-weight: bold;
 		font-size: 20px;
 		color: #555;
-		margin-right: 15px;
+		margin-right: 5px;
 	}
 
 	.post-title {
@@ -66,6 +66,9 @@ const PostStyleDiv = styled.div`
 	.post-header-lower-divline {
 		margin-left: 15px;
 		margin-right: 15px;
+		font-size: 14px;
+		text-align: left;
+		color: #c0c0c0;
 	}
 
 	.post-header-lower-left {
@@ -73,16 +76,10 @@ const PostStyleDiv = styled.div`
 		justify-content: space-between;
 	}
 
-	.post-memberid {
+	.post-writernickname {
 		font-size: 14px;
 		text-align: left;
 		color: #868686;
-	}
-
-	.post-header-lower-divline {
-		font-size: 14px;
-		text-align: left;
-		color: #c0c0c0;
 	}
 
 	.post-date {
@@ -116,73 +113,58 @@ const PostStyleDiv = styled.div`
 		align-items: center;
 		margin-left: auto;
 		margin-right: 40px;
-		margin-top: 30px;
+		margin-top: 10px;
 		margin-bottom: 10px;
+	}
+
+	.post-footer {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		margin-right: 40px;
+		margin-bottom: 20px;
+	}
+
+	.post-modify-button {
+		margin-right: 10px;
 	}
 `;
 
+const queryClient = new QueryClient();
 const PostComponent: React.FC = () => {
 	const navigation = useNavigate();
 
-	// ▼ GetComment ▼
+	// ▼ GetPost ▼
 	const post_id = useParams();
 	const id = post_id.id;
 
 	const getPost = async () => {
-		return await axios.get(`https://jsonplaceholder.typicode.com/posts/${id}`);
+		return await axios.get(`/api/boards/${id}`);
 	};
 
-	const { data, isLoading, isError } = useQuery({
-		queryKey: ['posts', id],
+	const { data, isLoading, isFetched, isError } = useQuery({
+		queryKey: ['community-post', id],
 		queryFn: getPost,
+		staleTime: 60000,
 	});
 
 	if (isLoading) {
+		console.log('Post : isLoading');
 		return <LoadingComponent />;
 	}
 
+	if (isFetched) {
+		console.log('Post : isFetched');
+		queryClient.invalidateQueries({ queryKey: ['post', id] });
+	}
+
 	if (isError) {
+		console.log('Post : isError');
 		return <div>게시물을 불러올 수 없습니다</div>;
 	}
-	// ▲ GetComment ▲
 
-	// ▼ 외부 API에서 받아온 데이터를 우리 프로젝트에 맞게 처리하는 부분임
-	// (나중에는 필요없음) ▼
-	const rawData: PostInputType = data?.data;
-	let category = '자유';
-	if (rawData.id % 4 === 1) {
-		category = '피드백';
-	} else if (rawData.id % 4 === 3) {
-		category = '구인구직';
-	}
-
-	const now = new Date();
-	const options: Intl.DateTimeFormatOptions = {
-		year: 'numeric',
-		month: '2-digit',
-		day: '2-digit',
-		hour: '2-digit',
-		minute: '2-digit',
-		second: '2-digit',
-		hour12: false,
-		timeZone: 'Asia/Seoul',
-	};
-
-	const currentTime: string = now
-		.toLocaleString('ko-KR', options)
-		.replace(/,/g, '');
-
-	const postData: Post = {
-		board_id: rawData.id,
-		member_id: rawData.userId,
-		title: rawData.title,
-		content: rawData.body,
-		view: Math.floor(Math.random() * 100),
-		category: category,
-		created_date: currentTime,
-		modified_date: currentTime,
-	};
-	// ▲ 외부 API에서 받아온 데이터를 우리 프로젝트에 맞게 변환한 것 ▲
+	const getPostData: Post = data?.data;
+	// ▲ GetPost ▲
 
 	const handleSubmitComment = (comment: string) => {
 		// 댓글 작성 처리 로직 (아직 미작성)
@@ -194,34 +176,48 @@ const PostComponent: React.FC = () => {
 			<div className="post-component">
 				<Button
 					variant="contained"
-					sx={{ m: 1 }}
 					className="post-tolist-button"
 					onClick={() => {
 						navigation('/community');
+						queryClient.invalidateQueries();
 					}}
 				>
 					<p>목록</p>
 				</Button>
-				{postData ? (
+				{getPostData ? (
 					<>
 						<div className="post-header">
 							<div className="post-header-upper">
-								<p className="post-category">[{postData.category}]</p>
-								<p className="post-title">{postData.title}</p>
+								<p className="post-category">[{getPostData.category}]</p>
+								<p className="post-title">{getPostData.title}</p>
 							</div>
 							<div className="post-header-lower">
 								<div className="post-header-lower-left">
-									<p className="post-memberid">작성자 : {postData.member_id}</p>
+									<p className="post-writernickname">
+										작성자 : {getPostData.writerNickname}
+									</p>
 									<p className="post-header-lower-divline"> | </p>
-									<p className="post-date">등록일 : {postData.modified_date}</p>
+									<p className="post-date">
+										등록일 : {getPostData.createdDate}
+									</p>
 								</div>
 								<div className="post-header-lower-right">
-									<p className="post-view">조회수 : {postData.view}</p>
+									<p className="post-view">조회수 : {getPostData.view}</p>
 								</div>
 							</div>
 						</div>
-						<p className="post-content">{postData.content}</p>
-						<div>
+						<p className="post-content">{getPostData.content}</p>
+						<div className="post-footer">
+							<Button
+								variant="contained"
+								color="warning"
+								className="post-modify-button"
+							>
+								<p>수정</p>
+							</Button>
+							<DeletePost id={getPostData.boardId} />
+						</div>
+						{/* <div>
 							<Suspense fallback={<LoadingComponent />}>
 								<CommentListComponent />
 							</Suspense>
@@ -231,7 +227,7 @@ const PostComponent: React.FC = () => {
 								onSubmit={handleSubmitComment}
 								nickname="2"
 							/>
-						</div>
+						</div> */}
 					</>
 				) : (
 					<p>잘못된 경로입니다</p>

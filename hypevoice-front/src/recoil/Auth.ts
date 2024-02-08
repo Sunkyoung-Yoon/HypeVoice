@@ -15,7 +15,7 @@ const { persistAtom } = recoilPersist({
 export const CurrentMemberAtom = atom({
   key: "CurrentMemberAtom",
   default: {
-    memberid: 0,
+    memberId: 0,
     email: "",
     nickname: "",
     accessToken: "",
@@ -27,7 +27,7 @@ export const CurrentMemberAtom = atom({
 // 로그인 여부
 export const LoginState = atom({
   key: "LoginState",
-  default: true,
+  default: false,
   effects_UNSTABLE: [persistAtom],
   // 이 부분 주석처리하면 localstorage에 유지 X => 새로고침해서 테스트 해볼 수 있음!!
 });
