@@ -27,22 +27,24 @@ public class StudioMemberService {
     private final StudioFindService studioFindService;
     private final MemberFindService memberFindService;
 
-    public void create(Long loginId, Long studioId, int isHost) {
+    public void create(Long loginId, Long studioId, int isHost, String connectionId) {
         if (studioMemberRepository.existsByMemberIdAndStudioId(loginId, studioId)) {
             throw BaseException.type(StudioErrorCode.STUDIO_ALREADY_JOINED);
         }
         Studio studio = studioFindService.findById(studioId);
         Member member = memberFindService.findById(loginId);
-        StudioMember studioMember = StudioMember.createStudioMember(member, studio, isHost);
+        StudioMember studioMember = StudioMember.createStudioMember(member, studio, isHost, connectionId);
         studioMemberRepository.save(studioMember);
 
     }
 
     public void delete(Long loginId, Long studioId) {
-        if (!studioMemberRepository.existsByMemberIdAndStudioId(loginId, studioId)) {
-            throw BaseException.type(StudioErrorCode.STUDIO_MEMBER_NOT_FOUND);
-        }
-        studioMemberRepository.deleteByMemberIdAndStudioId(loginId, studioId);
+        StudioMember studioMember = studioMemberFindService.findByMemberIdAndStudioId(loginId,studioId);
+        studioMemberRepository.deleteById(studioMember.getId());
+    }
+
+    public void delete(Long studioId) {
+        studioMemberRepository.deleteByStudioId(studioId);
     }
 
     public List<MemberResponse> findAllByStudioId(Long studioId) {

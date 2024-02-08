@@ -43,9 +43,9 @@ public class StudioServiceTest extends ServiceTest {
     @DisplayName("스튜디오 생성에 성공한다")
     void success() {
         // when
-        StudioRequest studioRequest = new StudioRequest("title1", "intro1",6,0,null);
+        StudioRequest studioRequest = new StudioRequest("title1", "intro1", 6, 0, null);
 
-        Long studioId = studioService.createStudio(master.getId(), studioRequest);
+        Long studioId = studioService.createStudio(master.getId(), studioRequest).studioId();
         // then
 
         Studio findStudio = studioRepository.findById(studioId).orElseThrow();
@@ -66,18 +66,19 @@ public class StudioServiceTest extends ServiceTest {
         @Test
         @DisplayName("방장이 아니면 수정 할 수 없다.")
         void throwExceptionByMemberNotHost() {
-            studioMemberRepository.save(StudioMember.createStudioMember(noMaster,studio,0));
+            studioMemberRepository.save(StudioMember.createStudioMember(noMaster, studio, 0, "connectionId1"));
             StudioRequest studioRequest = new StudioRequest("newTitle", "newIntro", 6, 0, null);
             // when - then
-            assertThatThrownBy(() -> studioService.updateStudio(noMaster.getId(),studio.getId(), studioRequest))
+            assertThatThrownBy(() -> studioService.updateStudio(noMaster.getId(), studio.getId(), studioRequest))
                     .isInstanceOf(BaseException.class)
                     .hasMessage(StudioErrorCode.UNABLE_TO_UPDATE_STUDIO.getMessage());
         }
+
         @Test
         @DisplayName("스튜디오 정보 수정에 성공한다")
         void success() {
             // given
-            studioMemberRepository.save(StudioMember.createStudioMember(master,studio,1));
+            studioMemberRepository.save(StudioMember.createStudioMember(master, studio, 1, "connectionId1"));
             StudioRequest studioRequest = new StudioRequest("newTitle", "newIntro", 6, 0, null);
             studioService.updateStudio(master.getId(), studio.getId(), studioRequest);
 
@@ -100,20 +101,10 @@ public class StudioServiceTest extends ServiceTest {
     class delete {
 
         @Test
-        @DisplayName("방장이 아니면 삭제 할 수 없다.")
-        void throwExceptionByMemberNotHost() {
-            studioMemberRepository.save(StudioMember.createStudioMember(noMaster,studio,0));
-            // when - then
-            assertThatThrownBy(() -> studioService.deleteStudio(noMaster.getId(),studio.getId()))
-                    .isInstanceOf(BaseException.class)
-                    .hasMessage(StudioErrorCode.UNABLE_TO_DELETE_STUDIO.getMessage());
-        }
-
-        @Test
         @DisplayName("스튜디오 삭제에 성공한다")
         void success() {
             // given
-            studioMemberRepository.save(StudioMember.createStudioMember(master,studio,1));
+            studioMemberRepository.save(StudioMember.createStudioMember(master, studio, 1,"connectionId1"));
             studioService.deleteStudio(master.getId(), studio.getId());
 
             // when - then

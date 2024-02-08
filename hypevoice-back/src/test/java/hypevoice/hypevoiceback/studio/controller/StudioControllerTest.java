@@ -2,6 +2,7 @@ package hypevoice.hypevoiceback.studio.controller;
 
 import hypevoice.hypevoiceback.auth.exception.AuthErrorCode;
 import hypevoice.hypevoiceback.common.ControllerTest;
+import hypevoice.hypevoiceback.studio.dto.StudioJoinResponse;
 import hypevoice.hypevoiceback.studio.dto.StudioRequest;
 import hypevoice.hypevoiceback.studio.dto.StudioResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -58,7 +59,7 @@ public class StudioControllerTest extends ControllerTest {
         @DisplayName("스튜디오 생성에 성공한다")
         void success() throws Exception {
             // given
-            doReturn(1L)
+            doReturn(readJoinStudioResponse())
                     .when(studioService)
                     .createStudio(1L, createStudioRequest());
 
@@ -206,5 +207,8 @@ public class StudioControllerTest extends ControllerTest {
     private StudioResponse readStudioResponse() {
         return new StudioResponse(1L, STUDIO_FIXTURE1.getSessionId(), STUDIO_FIXTURE1.getTitle(), STUDIO_FIXTURE1.getIntro(), 1, STUDIO_FIXTURE1.getLimitNumber(), STUDIO_FIXTURE1.getIsPublic(), 0);
 
+    }
+    private StudioJoinResponse readJoinStudioResponse() {
+        return new StudioJoinResponse(1L,"token");
     }
 }
