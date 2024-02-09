@@ -13,13 +13,14 @@ export type MemberInfo = {
 // 방 하나의 정보를 가져옴
 // url : /api/studio
 export type StudioInfo = {
+  studioId: string;
   sessionId: string;
   title: string;
   intro: string;
   memberCount: number;
   limitNumber: number;
   isPublic: boolean;
-  password: string;
+  password: number;
   onair: boolean;
 };
 
