@@ -1,12 +1,8 @@
-import { Box, AppBar, Toolbar, Button } from "@mui/material";
 import LogoComponent from "../components/LogoComponent";
 import styled from "styled-components";
 import kakaoLogo from "@/assets/kakaoIcon.png";
 import naverLogo from "@/assets/naverIcon.jpg";
-import { useNavigate } from "react-router-dom";
-import { LoginState } from "../recoil/Auth";
 import { useRedirectionWhenLoggedIn } from "../hooks/useRedirectionWhenLoggedIn";
-import axios from "axios";
 
 const OuterContainer = styled.div`
   display: flex;
