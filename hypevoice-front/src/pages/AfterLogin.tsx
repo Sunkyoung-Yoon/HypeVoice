@@ -5,6 +5,7 @@ import { LoginState } from "@/recoil/Auth";
 import { CurrentMemberAtom } from "@/recoil/Auth";
 import { useNavigate } from "react-router-dom";
 import { getCookie, setCookie, removeCookie } from "../api/cookie";
+import { getCookie, setCookie, removeCookie } from "../api/cookie";
 import { DecodedTokenPayload, MemberInfo } from "@/components/type";
 import axios from "axios";
 import { axiosClient } from "@/api/axios";
@@ -31,6 +32,7 @@ const fetchMemberInfo = async (accessToken: string) => {
   console.log(response.data); // response.data가 멤버info
   return response.data;
 };
+};
 
 export default function AfterLogin() {
   const navigate = useNavigate();
@@ -51,11 +53,17 @@ export default function AfterLogin() {
     console.log(accessToken);
     console.log(refreshToken);
 
+    console.log(accessToken);
+    console.log(refreshToken);
+
     if (accessToken) {
       // 토큰이 유효한지 검사하는 로직
       try {
         // 토큰의 페이로드
+        // 토큰의 페이로드
         const decoded: DecodedTokenPayload = jwtDecode(accessToken);
+        console.log("decoded = ");
+        console.log(decoded);
         const currentTime = Date.now() / 1000;
         const memberRole = decoded.role;
         const memberId = decoded.id;
@@ -92,6 +100,8 @@ export default function AfterLogin() {
           removeCookie("access_token");
           navigate("/");
         }
+      } catch (error) {
+        console.error("Error occurred while fetching member info:", error);
       } catch (error) {
         console.error("Error occurred while fetching member info:", error);
       }
