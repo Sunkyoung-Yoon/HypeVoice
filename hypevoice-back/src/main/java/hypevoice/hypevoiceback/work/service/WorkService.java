@@ -76,6 +76,13 @@ public class WorkService {
     @Transactional
     public void deleteWork(Long memberId, Long voiceId, Long workId) {
         validateMember(voiceId, memberId);
+        Work work = workFindService.findById(workId);
+        if(work.getPhotoUrl() != null)
+            fileService.deleteFiles(work.getPhotoUrl());
+        if(work.getScriptUrl() != null)
+            fileService.deleteFiles(work.getScriptUrl());
+        if(work.getRecordUrl() != null)
+            fileService.deleteFiles(work.getRecordUrl());
 
         workRepository.deleteById(workId);
     }

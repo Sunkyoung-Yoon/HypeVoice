@@ -56,6 +56,11 @@ public class BoardService {
     @Transactional
     public void delete(Long writerId, Long boardId){
         validateWriter(boardId, writerId);
+        Board board = boardFindService.findById(boardId);
+
+        if(board.getRecordUrl() != null)
+            fileService.deleteFiles(board.getRecordUrl());
+
         boardRepository.deleteById(boardId);
     }
 
