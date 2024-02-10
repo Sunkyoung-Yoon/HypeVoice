@@ -4,15 +4,11 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Main from "./pages/Main";
 import Studio from "./components/Studio";
-import MyInfo from "./components/MyInfo";
 import ErrorComponent from "./components/ErrorComponent";
 import StudioList from "./components/StudioList";
 import HomeGrid from "./components/HomeGrid";
 import Voice from "./components/Voice";
 import CommunityComponent from "./components/CommunityComponent";
-import path from "path";
-import KakaoLogin from "./pages/KakaoLogin";
-import NaverLogin from "./pages/NaverLogin";
 import PostComponent from "./components/PostComponent";
 import MyPage from "./pages/MyPage";
 import PostCreateComponent from "./components/PostCreateComponent";
@@ -29,7 +25,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: "myPage",
-            element: <MyInfo />,
+            element: <MyPage />,
             errorElement: <ErrorComponent />,
           },
           {

@@ -1,12 +1,28 @@
-import styled from "styled-components";
-
-const VoiceComponentDiv = styled.div`
-  height: 90vh;
-`;
+// import React from "react";
+import AddInfo from "./AddInfo";
+import InlineHeader from "./InlineHeader";
+import MyInfo from "./MyInfo";
+import WorkGrid from "./WorkGrid";
+import ScrollNavigation from "./ScrollNavigation";
 
 function Voice() {
-  return <VoiceComponentDiv>내 보이스 컴포넌트</VoiceComponentDiv>;
+  return (
+    <>
+      <ScrollNavigation />
+      <section id="top">
+        <MyInfo />
+      </section>
+      <section id="work">
+        <InlineHeader title={"💾 작업물"} worksCnt={9} storageSpace={17} />
+        <WorkGrid />
+      </section>
+      <section id="addInfo">
+        <InlineHeader title={"🔎 추가 정보"} worksCnt={0} storageSpace={0} />
+        <AddInfo />
+        <section id="bottom"></section>
+      </section>
+    </>
+  );
 }
 
 export default Voice;
-

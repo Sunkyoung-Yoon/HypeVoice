@@ -33,27 +33,27 @@ const HeaderGrid = styled.div`
 `;
 
 const LeftSideGrid = styled.div`
-	grid-row: 2 / 3;
-	grid-column: 1 / 2;
-	background-color: #f5f5f5;
+  grid-row: 2 / 3;
+  grid-column: 1 / 2;
+  background-color: #f5f5f5;
 `;
 
 const CenterGrid = styled.div`
-	grid-row: 2 / 3;
-	grid-column: 2 / 3;
-	background-color: #ffffff;
+  grid-row: 2 / 3;
+  grid-column: 2 / 3;
+  background-color: #ffffff;
 `;
 
 const RightSideGrid = styled.div`
-	grid-row: 2 / 3;
-	grid-column: 3 / 4;
-	background-color: #f5f5f5;
+  grid-row: 2 / 3;
+  grid-column: 3 / 4;
+  background-color: #f5f5f5;
 `;
 
 const FooterGrid = styled.div`
-	grid-row: 3 / 4;
-	grid-column: 1 / 4;
-	background-color: #f5f5f5;
+  grid-row: 3 / 4;
+  grid-column: 1 / 4;
+  background-color: #f5f5f5;
 `;
 
 function Main() {

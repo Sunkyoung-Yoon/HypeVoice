@@ -163,7 +163,7 @@ export default function HeaderBarComponent() {
           {loginState && (
             <HeaderButtonComponent
               variant="text"
-              onClick={() => checkLoginAndNavigate("/myPage")}
+              onClick={() => checkLoginAndNavigate("/MyPage")}
             >
               마이 페이지
             </HeaderButtonComponent>

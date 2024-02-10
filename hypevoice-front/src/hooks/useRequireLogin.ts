@@ -8,7 +8,7 @@ export default function useRequireLogin() {
   const isLoggedIn: boolean = useRecoilValue(LoginState); // 로그인 상태
   const { nickname } = useRecoilValue(CurrentMemberAtom); // CurrentMemberAtom에서 nickname 추출
 
-  // 이 함수는 클릭 이벤트 핸들러에서 사용됩니다. // 클릭 시 가야할 곳의 위치를 string으로 넣어서 활용!
+  // 이 함수는 클릭 이벤트 핸들러에서 사용됩니다.
   return function (togo: string) {
     if (!isLoggedIn) {
       // 로그인이 되어있지 않다면
