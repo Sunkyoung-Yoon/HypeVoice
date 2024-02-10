@@ -13,19 +13,22 @@ import PostComponent from "@/components/PostComponent";
 import MyPage from "./MyPage";
 import PostCreateComponent from "@/components/PostCreateComponent";
 
+const HeaderHeight = "40px";
+
 const MainGrid = styled.div`
   display: grid;
   grid-template-rows: auto 1fr auto;
   grid-template-columns: 10% 1fr 15%;
   overflow: auto;
   grid-gap: 0;
-  padding-top: 10vh;
+  padding-top: ${HeaderHeight};
   border: none;
 `;
 
 const HeaderGrid = styled.div`
   grid-row: 1 / 2;
   grid-column: 1 / 4;
+  height: ${HeaderHeight};
   background-color: #f5f5f5;
 `;
 
@@ -77,7 +80,7 @@ function Main() {
             path="/myPage"
             element={
               <Center>
-                <MyPage  />
+                <MyPage />
               </Center>
             }
           />
@@ -105,7 +108,7 @@ function Main() {
               </Center>
             }
           />
-                    <Route
+          <Route
             path="/community/:id"
             element={
               <Center>
@@ -113,7 +116,7 @@ function Main() {
               </Center>
             }
           />
-                              <Route
+          <Route
             path="/community/write"
             element={
               <Center>

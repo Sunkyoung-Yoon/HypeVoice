@@ -11,7 +11,7 @@ const { persistAtom } = recoilPersist({
   converter: JSON,
 });
 
-// 메인 화면에 입력한 검색어(닉네임)
+// 메인 화면에 입력한 검색어(방 제목에 포함되는 단어)
 export const StudioListCurrentKeywordAtom = atom({
   key: "StudioListCurrentKeyword",
   default: "",

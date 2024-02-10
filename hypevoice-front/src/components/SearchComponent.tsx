@@ -68,6 +68,7 @@ const TagContainer = styled.div`
   padding: 15px;
 `;
 
+// 선택에 따라 만들어지는 태그
 const Tag = styled.div`
   background-color: #5b5ff4;
   padding: 5px 10px;

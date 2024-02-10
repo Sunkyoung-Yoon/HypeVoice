@@ -11,7 +11,7 @@ export default function Logout() {
   const [currentMember, setCurrentMember] = useRecoilState(CurrentMemberAtom);
 
   useEffect(() => {
-    // 로그인 상태를 false로 변경
+    // 로그인 상태를 false로 변경 // 로그인 상태 및 현재 유저 초기화
     setLoginState(false);
     setCurrentMember(null);
 
