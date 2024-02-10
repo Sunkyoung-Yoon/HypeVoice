@@ -19,7 +19,9 @@ import hypevoice.hypevoiceback.categoryInfo.controller.CategoryInfoController;
 import hypevoice.hypevoiceback.categoryInfo.service.CategoryInfoFindService;
 import hypevoice.hypevoiceback.categoryInfo.service.CategoryInfoService;
 import hypevoice.hypevoiceback.comment.controller.CommentApiController;
+import hypevoice.hypevoiceback.comment.controller.CommentListApiController;
 import hypevoice.hypevoiceback.comment.service.CommentFindService;
+import hypevoice.hypevoiceback.comment.service.CommentListService;
 import hypevoice.hypevoiceback.comment.service.CommentService;
 import hypevoice.hypevoiceback.global.config.SecurityConfig;
 import hypevoice.hypevoiceback.member.controller.MemberApiController;
@@ -59,7 +61,8 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
         WorkController.class,
         StudioController.class,
         BoardListApiController.class,
-        CategoryInfoController.class
+        CategoryInfoController.class,
+        CommentListApiController.class
 })
 @WithMockUser("test")
 public abstract class ControllerTest {
@@ -150,6 +153,9 @@ public abstract class ControllerTest {
 
     @MockBean
     protected CategoryInfoFindService categoryInfoFindService;
+
+    @MockBean
+    protected CommentListService commentListService;
 
     protected String convertObjectToJson(Object data) throws JsonProcessingException {
         return objectMapper.writeValueAsString(data);
