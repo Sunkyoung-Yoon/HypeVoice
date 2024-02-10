@@ -9,9 +9,6 @@ import { getCookie, setCookie, removeCookie } from "../api/cookie";
 import { DecodedTokenPayload, MemberInfo } from "@/components/type";
 import { axiosClient } from "@/api/axios";
 
-// http://localhost:8080
-// http://localhost:8080
-
 const fetchMemberInfo = async (accessToken: string) => {
   const response = await axiosClient.get("/api/members", {
     headers: { Authorization: `Bearer ${accessToken}` },
@@ -26,12 +23,6 @@ export default function AfterLogin() {
   const [loginState, setLoginState] = useRecoilState(LoginState);
   const currentMember = useRecoilValue(CurrentMemberAtom);
   const setCurrentMemberInfo = useSetRecoilState(CurrentMemberAtom);
-  // const updateMemberInfo = (newInfo: MemberInfo) => {
-  //   setCurrentMemberInfo((currentMember) => ({
-  //     ...currentMember,
-  //     ...newInfo,
-  //   }));
-  // };
 
   useEffect(() => {
     const accessToken = getCookie("access_token");

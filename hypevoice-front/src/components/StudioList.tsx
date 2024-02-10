@@ -1,5 +1,5 @@
 // StudioList.tsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { useQuery } from "@tanstack/react-query";
 import { StudioInfo } from "./type";
@@ -9,9 +9,13 @@ import InlineHeader from "./InlineHeader";
 import { StudioListCurrentKeywordAtom } from "../recoil/CurrentKeyword/StudioListCurrentKeyword";
 import Button from "@mui/material/Button";
 import { useRecoilState } from "recoil";
+import { LoginState, StudioId } from "@/recoil/Auth";
+import { useRecoilValue } from "recoil";
 import { Typography } from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
 import GroupIcon from "@mui/icons-material/Group";
+import { axiosClient } from "@/api/axios";
+import { getCookie } from "@/api/cookie";
 
 const StudioListContainer = styled.div`
   min-height: 90vh;
@@ -39,9 +43,8 @@ const OuterDiv = styled.div`
   }
 `;
 
-// LockWrapper 스타일 추가
 const LockWrapper = styled.div`
-  height: 24px; // 이 값은 필요에 따라 조정하시면 됩니다.
+  height: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -138,6 +141,8 @@ const CreateStudioModalContainer = styled.div`
   justify-content: flex-end;
   width: 100%;
   padding: 10px;
+  margin-top: 30px;
+  margin-right: 150px;
 `;
 
 // JoinButton Style
@@ -146,13 +151,23 @@ const JoinButton = styled(Button)<{ canJoin: boolean }>`
   border: transparent !important;
   border-radius: 55px !important;
   padding-inline: 10px !important;
-  white-space: nowrap;
-  min-width: 100px;
+  white-space: nowrap !important;
+  min-width: 100px !important;
   color: ${(props) =>
     props.canJoin ? "white !important" : "black !important"};
   background-color: ${(props) =>
     props.canJoin ? "#268aff !important" : "gray !important"};
-  align-self: flex-end;
+  align-self: flex-end !important;
+`;
+
+const DeleteStudioModalContainer = styled.div``;
+
+const DeleteStudio = styled(Button)`
+  border: transparent !important;
+  border-radius: 55px !important;
+  padding-inline: 10px !important;
+  white-space: nowrap !important;
+  min-width: 100px !important;
 `;
 
 const fetchStudios = async (): Promise<StudioInfo[]> => {
@@ -186,7 +201,7 @@ const fetchStudios = async (): Promise<StudioInfo[]> => {
       intro,
       memberCount,
       limitNumber,
-      isPublic: Boolean(i % 2),
+      isPublic: i % 2,
       password: Math.floor(Math.random() * 9000) + 1000,
       onair: Boolean(i % 2),
     };
@@ -202,11 +217,27 @@ export default function StudioList() {
   const [searchText, setSearchText] = useRecoilState<string>(
     StudioListCurrentKeywordAtom
   );
+  const [filteredStudios, setFilteredStudios] = useState<StudioInfo[]>([]);
+  const loginState = useRecoilValue(LoginState);
+  const [studioId, setStudioId] = useRecoilState(StudioId);
 
   // 검색 버튼 누를 시 해당 검색어로 방 검색
   // 방 제목으로만 검색 가능!
   const handleSearch = () => {
-    console.log(searchText + "로 검색한 결과");
+    alert(searchText + "로 검색한 결과");
+    if (studioList) {
+      const result: StudioInfo[] = studioList.filter((studio) =>
+        studio.title.includes(searchText)
+      );
+      setFilteredStudios(result);
+      setCurrentPage(1);
+    }
+  };
+
+  // 초기화 버튼 (검색 결과)
+  const handleReset = () => {
+    setSearchText("");
+    if (studioList) setFilteredStudios(studioList);
   };
 
   // 방 리스트 React-Query로 불러와서 관리
@@ -221,7 +252,9 @@ export default function StudioList() {
   });
 
   // 전체 페이지 수
-  const totalPages = studioList ? Math.ceil(studioList.length / 6) || 1 : 1;
+  const totalPages = filteredStudios
+    ? Math.ceil(filteredStudios.length / 6) || 1
+    : 1;
 
   // 이전 페이지로
   const handlePrevPage = () => {
@@ -245,6 +278,34 @@ export default function StudioList() {
     }
   };
 
+  const handleDelete = async (): Promise<void> => {
+    try {
+      const accessToken = getCookie("access_token");
+      await axiosClient
+        .delete(`/api/studios/${studioId}`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        })
+        .then(() => {
+          alert(`${studioId} 번 방에서 퇴장하셨습니다.`);
+          setStudioId("");
+          window.location.reload;
+        });
+    } catch (error) {
+      console.log(error);
+      alert(
+        "방 삭제에 실패하셨습니다. 권한이 없거나 해당 Id로 시작하는 방에 입장해 있지 않습니다."
+      );
+    }
+  };
+
+  useEffect(() => {
+    const fetchAndSetStudios = async () => {
+      const studios = await fetchStudios();
+      setFilteredStudios(studios);
+    };
+    fetchAndSetStudios();
+  }, []);
+
   return (
     <StudioListContainer>
       <div style={{ alignSelf: "flex-start", width: "65%" }}>
@@ -261,6 +322,7 @@ export default function StudioList() {
           <Button variant="text" onClick={handleSearch}>
             <SearchIcon />
           </Button>
+          <Button onClick={handleReset}>초기화</Button>
         </SearchBar>
         <PaginationContainer>
           <CurPageNum
@@ -288,8 +350,8 @@ export default function StudioList() {
         <div style={{ marginLeft: "10px" }}>방 정보를 불러올 수 없습니다.</div>
       ) : (
         <StudiosContainer>
-          {studioList &&
-            studioList
+          {filteredStudios &&
+            filteredStudios
               .slice((currentPage - 1) * 6, currentPage * 6) // 0번째부터 5(6-1)번째 // 이런 식으로 한 화면에 6개씩!
               .map((studio) => (
                 <OuterDiv>
@@ -351,10 +413,10 @@ export default function StudioList() {
                       style={{
                         display: "flex",
                         flexDirection: "row",
-                        justifyContent: "space-between",
+                        justifyContent: "center",
                       }}
                     >
-                      <GroupIcon />
+                      <GroupIcon style={{ marginRight: "10px" }} />
                       <Typography>
                         {studio.memberCount} / {studio.limitNumber}
                       </Typography>
@@ -369,10 +431,16 @@ export default function StudioList() {
               ))}
         </StudiosContainer>
       )}
-
-      <CreateStudioModalContainer>
-        <CreateStudioModal />
-      </CreateStudioModalContainer>
+      {loginState && (
+        <div>
+          <CreateStudioModalContainer>
+            <CreateStudioModal />
+          </CreateStudioModalContainer>
+          <DeleteStudioModalContainer>
+            <DeleteStudio onClick={handleDelete}>방 나가기</DeleteStudio>
+          </DeleteStudioModalContainer>
+        </div>
+      )}
     </StudioListContainer>
   );
 }

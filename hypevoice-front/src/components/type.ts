@@ -19,7 +19,7 @@ export type StudioInfo = {
   intro: string;
   memberCount: number;
   limitNumber: number;
-  isPublic: boolean;
+  isPublic: number; // 0 또는 1
   password: number;
   onair: boolean;
 };
@@ -33,13 +33,23 @@ export type DecodedTokenPayload = {
   role: string; // 역할
 };
 
-// // 멤버 한명의 정보 수정
-// // url : /api/members
-// export type aaa = {};
+// // 방 한 개 생성 요청
+// // method : post
+// // url : /api/members (RequestBody)
+export type MakeStudioData = {
+  title: string;
+  intro: string;
+  limitNumber: number;
+  isPublic: number;
+  password: number | null;
+};
 
-// // 멤버 한명의 정보 수정
+// // 생성된 방의 Id를 담는 타입
 // // url : /api/members
-// export type aaa = {};
+// // method : post (ResponseBody)
+export type StudioResponse = {
+  studioId: string;
+};
 
 // // 멤버 한명의 정보 수정
 // // url : /api/members
