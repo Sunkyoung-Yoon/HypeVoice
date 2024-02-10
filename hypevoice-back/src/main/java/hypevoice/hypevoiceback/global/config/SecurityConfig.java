@@ -84,8 +84,8 @@ public class SecurityConfig {
                                         AntPathRequestMatcher.antMatcher( "/api/boards"),
                                         AntPathRequestMatcher.antMatcher( "/api/boards/{boardId}"),
                                         AntPathRequestMatcher.antMatcher( "/api/works"),
-                                        AntPathRequestMatcher.antMatcher( "/api/works/{workId}"),
-                                        AntPathRequestMatcher.antMatcher("/api/works/{workId}/categoryInfos"),
+                                        AntPathRequestMatcher.antMatcher( "/api/voices/{voiceId}/works/{workId}"),
+                                        AntPathRequestMatcher.antMatcher( "/api/voices/{voiceId}/works"),
                                         AntPathRequestMatcher.antMatcher( "/api/voices"),
                                         AntPathRequestMatcher.antMatcher( "/api/voices/{voiceId}")
 

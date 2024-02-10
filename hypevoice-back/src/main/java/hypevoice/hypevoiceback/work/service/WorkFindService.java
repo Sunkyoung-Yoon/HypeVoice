@@ -1,6 +1,5 @@
 package hypevoice.hypevoiceback.work.service;
 
-import hypevoice.hypevoiceback.board.exception.BoardErrorCode;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.work.domain.Work;
 import hypevoice.hypevoiceback.work.domain.WorkRepository;
@@ -16,8 +15,13 @@ public class WorkFindService {
     private final WorkRepository workRepository;
 
     @Transactional
-    public Work findById(Long workId){
+    public Work findById(Long workId) {
         return workRepository.findById(workId)
                 .orElseThrow(() -> BaseException.type(WorkErrorCode.WORK_NOT_FOUND));
+    }
+
+    @Transactional
+    public Work findRepWorkByVoiceId(Long voiceId) {
+        return workRepository.findRepWorkByVoiceId(voiceId);
     }
 }

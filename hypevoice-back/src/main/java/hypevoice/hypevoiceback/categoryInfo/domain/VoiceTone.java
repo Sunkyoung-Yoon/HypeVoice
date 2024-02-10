@@ -30,6 +30,8 @@ public enum VoiceTone implements EnumStandard {
     }
 
     public static VoiceTone from(String value) {
+        if(value == null) return null;
+
         return Arrays.stream(values())
                 .filter(VoiceTone -> VoiceTone.value.equals(value))
                 .findFirst()

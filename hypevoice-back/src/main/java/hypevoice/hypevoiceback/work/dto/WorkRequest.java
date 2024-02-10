@@ -1,5 +1,6 @@
 package hypevoice.hypevoiceback.work.dto;
 
+import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
@@ -13,7 +14,9 @@ public record WorkRequest(
         String videoLink,
         @Size(max = 2000, message = "소개는 최대 2000자 이내로 작성해주세요.")
         String info,
-        int isRep
+        int isRep,
+        CategoryInfoRequest categoryInfoRequest
+
 ) {
 
 }

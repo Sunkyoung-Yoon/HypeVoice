@@ -3,7 +3,7 @@ package hypevoice.hypevoiceback.categoryInfo.dto;
 import lombok.Builder;
 
 @Builder
-public record CategoryInfoResponse (
+public record CategoryInfoValue(
     Long workId,
     String mediaClassificationValue,
     String voiceToneValue,
