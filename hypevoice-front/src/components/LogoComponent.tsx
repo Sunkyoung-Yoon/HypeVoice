@@ -2,18 +2,33 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 const LogoContainer = styled.div`
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-self: center;
   cursor: pointer;
-  border-radius: 15%;
-  transition: border 0.3s ease;
+  transition: opacity 0.1s ease, border 0.1s ease;
+  border-radius: 25%;
+  transition: border 0.1s ease;
+  padding: 20px;
 
   &:hover {
-    border: 5px solid #5b5ff4;
+    opacity: 60%;
+  }
+  @media (max-height: 600px) and (max-width: 600px) {
+    display: none;
+  }
+  @media (max-width: 300px) {
+    display: none;
+  }
+  @media (max-height: 400px) {
+    display: none;
   }
 `;
 
 const LogoImg = styled.img`
   display: block;
+  width: 300px;
+  height: 200px;
 `;
 
 export default function LogoComponent() {

@@ -11,7 +11,7 @@ import {
 	Select,
 } from '@mui/material';
 import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
+import { QueryClient, useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import LoadingComponent from './LoadingComponent';
 
@@ -101,14 +101,6 @@ const CommunityListStyleDiv = styled.div`
 	}
 `;
 
-type TestCommentType = {
-	postId: number;
-	id: number;
-	name: string;
-	email: string;
-	body: string;
-};
-
 type Comment = {
 	comment_id: number;
 	board_id: number;
@@ -118,6 +110,7 @@ type Comment = {
 	modified_date: string;
 };
 
+const queryClient = new QueryClient();
 const CommentListComponent = () => {
 	const loginUserId = '';
 	const [currentPage, setCurrentPage] = useState<number>(1);
@@ -127,72 +120,46 @@ const CommentListComponent = () => {
 	const currentPostId = param.id;
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const commentData: Comment[] = [];
-	let rawData: TestCommentType[] = [];
+	let commentData: Comment[] = [];
 
 	useEffect(() => {
 		setCommentsCount(commentData.length);
 	}, [commentData]);
 
+	// ▼ GetComments ▼
 	const getComments = async () => {
-		return await axios.get(
-			`https://jsonplaceholder.typicode.com/post/${currentPostId}/comments`,
-		);
+		return await axios.get(`/api/comments/${currentPostId}`);
 	};
 
-	const { data, isLoading, isFetching, isError } = useQuery({
-		queryKey: ['comments'],
+	const { data, isLoading, isFetched, isFetching, isError } = useQuery({
+		queryKey: ['post-comments'],
 		queryFn: getComments,
+		staleTime: 60000,
 	});
 
 	if (isLoading) {
+		console.log('Comments : isFetched');
 		return <LoadingComponent />;
 	}
 
+	if (isFetched) {
+		console.log('Comments : isFetched');
+		queryClient.invalidateQueries({ queryKey: ['post-comments'] });
+	}
+
 	if (isFetching) {
+		console.log('Comments : isFetching');
+		queryClient.invalidateQueries({ queryKey: ['comments'] });
 		return <LoadingComponent />;
 	}
 
 	if (isError) {
+		console.log('Comments : isError');
 		return <div>Error</div>;
 	}
 
-	if (data) {
-		rawData = data.data.sort(
-			(a: TestCommentType, b: TestCommentType) => b.id - a.id,
-		);
-		rawData.map((comm) => {
-			const userNickname = comm.email.split('@');
-			comm.email = userNickname[0];
-
-			const hours24InMilliseconds = 24 * 60 * 60 * 1000;
-			const now = new Date();
-			const commentDate = new Date(now);
-			const diff = now.getTime() - commentDate.getTime();
-			let currentTime;
-			if (diff > hours24InMilliseconds) {
-				// 글 작성한지 24시간이 넘었을 경우: "YY/MM/DD" 형식
-				currentTime = `${commentDate.getFullYear().toString().substr(-2)}/${(
-					'0' +
-					(commentDate.getMonth() + 1)
-				).slice(-2)}/${('0' + commentDate.getDate()).slice(-2)}`;
-			} else {
-				// 글 작성한지 24시간이 안 넘었을 경우: "HH:MM" 형식
-				currentTime = `${('0' + commentDate.getHours()).slice(-2)}:${(
-					'0' + commentDate.getMinutes()
-				).slice(-2)}`;
-			}
-
-			commentData.push({
-				comment_id: comm.id,
-				board_id: comm.postId,
-				member_id: comm.name.slice(0, 12),
-				content: comm.body,
-				created_date: currentTime,
-				modified_date: currentTime,
-			});
-		});
-	}
+	commentData = data?.data;
+	// ▲ GetComments ▲
 
 	const pageCount: number = Math.ceil(commentsCount / commentsPerPage);
 

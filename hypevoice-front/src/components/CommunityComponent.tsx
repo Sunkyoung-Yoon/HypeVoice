@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { QueryClient, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -23,7 +23,7 @@ const CommunityStyleDiv = styled.div`
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		width: 95%;
+		width: 98%;
 		padding: 10px;
 		margin-left: auto;
 		margin-right: auto;
@@ -61,18 +61,22 @@ const CommunityStyleDiv = styled.div`
 		width: 25%;
 		display: inline-block;
 		text-align: center;
+		margin: 0px 3px;
 	}
 
 	.community-post-header-boardid {
-		flex-basis: 8%;
+		flex-basis: 9%;
+		/* background-color: aliceblue; */
 	}
 
 	.community-post-header-category {
-		flex-basis: 8%;
+		flex-basis: 9%;
+		/* background-color: antiquewhite; */
 	}
 
 	.community-post-header-title {
-		flex-basis: 56%;
+		flex-basis: 50%;
+		/* background-color: aqua; */
 	}
 
 	.community-post-header-title a {
@@ -84,15 +88,18 @@ const CommunityStyleDiv = styled.div`
 	}
 
 	.community-post-header-memberid {
-		flex-basis: 15%;
+		flex-basis: 14%;
+		/* background-color: aquamarine; */
 	}
 
 	.community-post-header-view {
-		flex-basis: 8%;
+		flex-basis: 9%;
+		/* background-color: azure; */
 	}
 
 	.community-post-header-date {
-		flex-basis: 15%;
+		flex-basis: 9%;
+		/* background-color: beige; */
 	}
 
 	.pagination {
@@ -104,12 +111,10 @@ const CommunityStyleDiv = styled.div`
 	.community-post-container {
 		display: flex;
 		flex-direction: column;
-		align-items: flex-start;
+		align-items: center;
 		width: 100%;
 		text-align: center;
-	}
-
-	.community-post * {
+		font-size: 85%;
 	}
 
 	.community-post {
@@ -124,23 +129,27 @@ const CommunityStyleDiv = styled.div`
 		width: 25%;
 		display: inline-block;
 		text-align: center;
+		margin: 0px 3px;
 	}
 
 	.community-post-boardid {
-		flex-basis: 8%;
+		flex-basis: 9%;
+		/* background-color: aliceblue; */
 	}
 
 	.community-post-category {
-		flex-basis: 8%;
+		flex-basis: 9%;
+		/* background-color: antiquewhite; */
 	}
 
 	.community-post-title {
-		flex-basis: 56%;
+		flex-basis: 50%;
+		/* background-color: aqua; */
 	}
 
 	.community-post-title a {
 		text-decoration: none;
-		color: #333333;
+		color: #000000;
 		transition: color 0.3s ease;
 	}
 
@@ -149,44 +158,47 @@ const CommunityStyleDiv = styled.div`
 	}
 
 	.community-post-memberid {
-		flex-basis: 15%;
+		flex-basis: 14%;
+		/* background-color: aquamarine; */
 	}
 
 	.community-post-view {
-		flex-basis: 8%;
+		flex-basis: 9%;
+		/* background-color: azure; */
 	}
 
 	.community-post-date {
-		flex-basis: 15%;
+		flex-basis: 9%;
+		/* background-color: beige; */
 	}
 
 	.pagination {
-		margin-top: 1rem;
 		display: flex;
 		justify-content: center;
+		margin-top: 1rem;
+	}
+
+	.search-bar {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin: 20px 0px;
 	}
 `;
 
-// ▼ types ▼
-export interface TestPostType {
-	id: number;
-	userId: number;
-	title: string;
-	body: string;
-}
-
-export interface Post {
-	board_id: number;
-	member_id: number;
+// type
+export interface GetPostType {
+	boardId: number;
 	title: string;
 	content: string;
 	view: number;
 	category: string;
-	created_date: string;
-	modified_date: string;
+	createdDate: string;
+	writerId: number;
+	writerNickname: string;
 }
-// ▲ types ▲
 
+const queryClient = new QueryClient();
 const CommunityComponent: React.FC = () => {
 	const [searchTermInput, setSearchTermInput] = useState('');
 	const [searchTerm, setSearchTerm] = useState('');
@@ -197,97 +209,48 @@ const CommunityComponent: React.FC = () => {
 
 	// ▼ axios와 React-Query를 이용하여 외부 API에서 게시물 Get ▼
 	const getAllPosts = async () => {
-		return await axios.get('https://jsonplaceholder.typicode.com/posts');
+		return await axios.get('/api/boards');
 	};
 
-	const { data, isLoading, isFetching, isError } = useQuery({
-		queryKey: ['posts'],
+	const { data, isLoading, isFetched, isError } = useQuery({
+		queryKey: ['community-posts'],
 		queryFn: getAllPosts,
+		staleTime: 60000,
 	});
 
 	if (isLoading) {
+		console.log('Community : isLoading');
 		return <LoadingComponent />;
 	}
 
-	if (isFetching) {
-		return <LoadingComponent />;
+	if (isFetched) {
+		console.log('Community : isFetched');
+		queryClient.invalidateQueries({ queryKey: ['posts'] });
 	}
 
 	if (isError) {
+		console.log('Community : isError');
 		return <div>Error</div>;
 	}
 
+	console.log(data)
 	// ▲ axios와 React-Query를 이용하여 외부 API에서 게시물 Get ▲
 
-	// rawData : 외부 API에서 불러온 데이터를 저장하는 배열.
-	// (테스트를 위해 사용하는 것으로 나중에 지워야 함)
-	let rawData: TestPostType[] = [];
-
 	// postData : Back DB에서 불러온 글들을 담을 배열
-	const postData: Post[] = [];
-
-	// 불러온 데이터를 처리하는 부분
-	if (data) {
-		// 데이터를 board_id를 기준으로 역순으로 정렬
-		rawData = data.data.sort((a: TestPostType, b: TestPostType) => b.id - a.id);
-
-		// ▼ 외부 API에서 받아온 테스트용 데이터를 프로젝트에 맞게 처리하는 부분 ▼
-		// (나중에는 필요없음)
-		rawData.map((d) => {
-			let category = '자유';
-			if (d.id % 4 === 1) {
-				category = '피드백';
-			} else if (d.id % 4 === 3) {
-				category = '구인구직';
-			}
-
-			const hours24InMilliseconds = 24 * 60 * 60 * 1000;
-			const now = new Date();
-			const postDate = new Date(now);
-			const diff = now.getTime() - postDate.getTime();
-			let currentTime;
-			if (diff > hours24InMilliseconds) {
-				// 글 작성한지 24시간이 넘었을 경우: "YY/MM/DD" 형식
-				currentTime = `${postDate.getFullYear().toString().substr(-2)}/${(
-					'0' +
-					(postDate.getMonth() + 1)
-				).slice(-2)}/${('0' + postDate.getDate()).slice(-2)}`;
-			} else {
-				// 글 작성한지 24시간이 안 넘었을 경우: "HH:MM" 형식
-				currentTime = `${('0' + postDate.getHours()).slice(-2)}:${(
-					'0' + postDate.getMinutes()
-				).slice(-2)}`;
-			}
-
-			postData.push({
-				board_id: d.id,
-				member_id: d.userId,
-				title: d.title,
-				content: d.body,
-				view: Math.floor(Math.random() * 100),
-				category: category,
-				created_date: currentTime,
-				modified_date: currentTime,
-			});
-		});
-	}
-	// ▲ 외부 API에서 받아온 데이터를 우리 프로젝트에 맞게 처리하는 부분임 ▲
+	const postData: GetPostType[] = data?.data;
 
 	// FilteredCategoryPosts : Category에 따라 글을 출력
 	// (전체, 자유, 피드백, 구인구직)
-	const FilteredCategoryPosts: Post[] =
+	const FilteredCategoryPosts: GetPostType[] =
 		currentcategory === '전체'
 			? postData
 			: postData.filter((post) => post.category === currentcategory);
 
 	// searchedPosts : 검색 결과에 따라 글을 출력
-	const searchedPosts: Post[] = searchTerm
+	const searchedPosts: GetPostType[] = searchTerm
 		? FilteredCategoryPosts.filter(
 				(post) =>
-					post.board_id.toString().includes(searchTerm) ||
-					post.member_id.toString().includes(searchTerm) ||
-					post.title.includes(searchTerm) ||
-					post.content.includes(searchTerm),
+					post.title.includes(searchTerm) || post.content.includes(searchTerm),
 		  )
 		: FilteredCategoryPosts;
 
@@ -295,7 +258,7 @@ const CommunityComponent: React.FC = () => {
 	const pageCount: number = Math.ceil(searchedPosts.length / postsPerPage);
 	const indexOfLastPost: number = currentPage * postsPerPage;
 	const indexOfFirstPost: number = indexOfLastPost - postsPerPage;
-	const currentPosts: Post[] = searchedPosts.slice(
+	const currentPosts: GetPostType[] = searchedPosts.slice(
 		indexOfFirstPost,
 		indexOfLastPost,
 	);
@@ -368,7 +331,7 @@ const CommunityComponent: React.FC = () => {
 						<Button
 							variant="contained"
 							sx={{ m: 1 }}
-							onClick={() => navigation('/write')}
+							onClick={() => navigation('/community/write')}
 						>
 							글쓰기
 						</Button>
@@ -393,27 +356,29 @@ const CommunityComponent: React.FC = () => {
 				</div>
 				<List className="community-post-container">
 					<ListItem className="community-post-header">
-						<div className="community-post-header-boardid">번호</div>
+						<div className="community-post-header-boardId">번호</div>
 						<div className="community-post-header-category">분류</div>
 						<div className="community-post-header-title">제목</div>
-						<div className="community-post-header-memberid">작성자</div>
+						<div className="community-post-header-writerNickname">작성자</div>
 						<div className="community-post-header-date">작성일자</div>
 						<div className="community-post-header-view">조회수</div>
 					</ListItem>
 					{currentPosts.map((p) => (
-						<ListItem key={p.board_id} className="community-post">
-							<div className="community-post-boardid">{p.board_id}</div>
+						<ListItem key={p.boardId} className="community-post">
+							<div className="community-post-boardid">{p.boardId}</div>
 							<div className="community-post-category">{p.category}</div>
 							<div className="community-post-title">
 								<Link
-									to={`/community/${p.board_id}`}
+									to={`/community/${p.boardId}`}
 									className="community-post-title-link"
 								>
 									<p>{p.title}</p>
 								</Link>
 							</div>
-							<div className="community-post-memberid">{p.member_id}</div>
-							<div className="community-post-date">{p.modified_date}</div>
+							<div className="community-post-writerNickname">
+								{p.writerNickname}
+							</div>
+							<div className="community-post-date">{p.createdDate}</div>
 							<div className="community-post-view">{p.view}</div>
 						</ListItem>
 					))}
@@ -432,16 +397,17 @@ const CommunityComponent: React.FC = () => {
 						value={searchTermInput}
 						onChange={handleInputChange}
 						variant="standard"
-						sx={{ m: 1 }}
 					/>
-					<button
+					<Button
+						variant="contained"
+						size="small"
 						onClick={() => {
 							handleSearchClick();
 							ScrollToTopComponent();
 						}}
 					>
 						검색
-					</button>
+					</Button>
 				</div>
 			</div>
 		</CommunityStyleDiv>
