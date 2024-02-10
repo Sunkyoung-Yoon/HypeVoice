@@ -2,7 +2,6 @@ package hypevoice.hypevoiceback.file.service;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
 import hypevoice.hypevoiceback.file.exception.FileErrorCode;
 import hypevoice.hypevoiceback.global.exception.BaseException;
@@ -23,6 +22,7 @@ public class FileService {
     private static final String BOARD = "board";
     private static final String VOICE = "voice";
     private static final String WORK = "work";
+    private static final String COMMENT = "comment";
 
     private final AmazonS3 amazonS3;
 
@@ -49,6 +49,11 @@ public class FileService {
     public String uploadWorkFiles(MultipartFile file) {
         validateFileExists(file);
         return uploadFile(WORK, file);
+    }
+
+    public String uploadCommentFiles(MultipartFile file) {
+        validateFileExists(file);
+        return uploadFile(COMMENT, file);
     }
 
     public void deleteFiles(String uploadFileUrl) {
@@ -97,6 +102,7 @@ public class FileService {
             case BOARD -> String.format("board/%s", uuidName);
             case VOICE -> String.format("voice/%s", uuidName);
             case WORK -> String.format("work/%s", uuidName);
+            case COMMENT -> String.format("comment/%s", uuidName);
             default -> throw BaseException.type(FileErrorCode.INVALID_DIR);
         };
     }

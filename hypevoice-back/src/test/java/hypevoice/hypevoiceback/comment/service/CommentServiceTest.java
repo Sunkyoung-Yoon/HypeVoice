@@ -50,7 +50,7 @@ public class CommentServiceTest extends ServiceTest {
     @DisplayName("댓글 등록에 성공한다")
     void success() {
         // when
-        commentService.create(writer.getId(), board.getId(), "내용", "음성댓글");
+        commentService.create(writer.getId(), board.getId(), "내용", null);
 
         // then
         Comment findComment = commentRepository.findById(2L).orElseThrow();
@@ -58,7 +58,7 @@ public class CommentServiceTest extends ServiceTest {
                 () -> assertThat(findComment.getWriter().getId()).isEqualTo(writer.getId()),
                 () -> assertThat(findComment.getBoard().getId()).isEqualTo(board.getId()),
                 () -> assertThat(findComment.getContent()).isEqualTo("내용"),
-                () -> assertThat(findComment.getVoiceCommentUrl()).isEqualTo("음성댓글"),
+                () -> assertThat(findComment.getVoiceCommentUrl()).isNull(),
                 () -> assertThat(findComment.getCreatedDate().format(formatter)).isEqualTo(LocalDateTime.now().format(formatter)),
                 () -> assertThat(findComment.getModifiedDate().format(formatter)).isEqualTo(LocalDateTime.now().format(formatter))
         );
