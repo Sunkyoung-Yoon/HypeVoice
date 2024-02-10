@@ -43,7 +43,7 @@ public class StudioMemberRepositoryTest extends RepositoryTest {
     @DisplayName("스튜디오에 입장한 회원 ID와 스튜디오 ID 를 이용하여 스튜디오멤버 정보가 존재하는지 확인한다")
     void existsByMemberIdAndStudioId() {
         // given
-        studioMemberRepository.save(StudioMember.createStudioMember(member[0], studio[0], 0));
+        studioMemberRepository.save(StudioMember.createStudioMember(member[0], studio[0], 0, "connection1"));
 
         // when
         boolean actual1 = studioMemberRepository.existsByMemberIdAndStudioId(member[0].getId(), studio[0].getId());
@@ -60,7 +60,7 @@ public class StudioMemberRepositoryTest extends RepositoryTest {
     @DisplayName("스튜디오에 입장한 회원 ID와 스튜디오 ID 를 이용하여 스튜디오멤버 정보를 삭제한다")
     void deleteByMemberIdAndStudioId() {
         // given
-        studioMemberRepository.save(StudioMember.createStudioMember(member[0], studio[0], 0));
+        studioMemberRepository.save(StudioMember.createStudioMember(member[0], studio[0], 0, "connection1"));
 
         // when
         studioMemberRepository.deleteByMemberIdAndStudioId(member[0].getId(), studio[0].getId());

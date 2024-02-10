@@ -15,7 +15,7 @@ public interface StudioMemberRepository extends JpaRepository<StudioMember,Long>
    boolean existsByMemberIdAndStudioId(Long memberId, Long studioId);
 
    void deleteByMemberIdAndStudioId(Long memberId, Long studioId);
-
+   void deleteByStudioId(Long studioId);
    @Query("select m " +
            "from Member m left  join StudioMember sm " +
            "on m.id = sm.member.id " +

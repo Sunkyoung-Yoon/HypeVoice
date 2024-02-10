@@ -52,7 +52,7 @@ public class StudioMemberServiceTest extends ServiceTest {
     void success() {
         // when
 
-        studioMemberService.create(member[0].getId(), studio[0].getId(), 0);
+        studioMemberService.create(member[0].getId(), studio[0].getId(), 0, "connection1");
 
         // then
         StudioMember findStudioMember = studioMemberRepository.findById(1L).orElseThrow();
@@ -74,7 +74,7 @@ public class StudioMemberServiceTest extends ServiceTest {
         @DisplayName("스튜디오 멤버 삭제에 성공한다")
         void success() {
             // given
-            studioMemberService.create(member[0].getId(), studio[0].getId(), 0);
+            studioMemberService.create(member[0].getId(), studio[0].getId(), 0, "connection1");
 
             studioMemberService.delete(member[0].getId(), studio[0].getId());
 
@@ -94,7 +94,7 @@ public class StudioMemberServiceTest extends ServiceTest {
         @DisplayName("스튜디오에 참여한 멤버 전체 조회에 성공한다")
         void success() {
             // given
-            studioMemberService.create(member[0].getId(), studio[0].getId(), 0);
+            studioMemberService.create(member[0].getId(), studio[0].getId(), 0, "connection1");
             List<MemberResponse> memberResponseList = studioMemberService.findAllByStudioId(studio[0].getId());
 
             // when - then
@@ -105,7 +105,6 @@ public class StudioMemberServiceTest extends ServiceTest {
                     () -> assertThat(memberResponseList.get(0).email()).isEqualTo(member[0].getEmail()),
                     () -> assertThat(memberResponseList.get(0).profileUrl()).isEqualTo(member[0].getProfileUrl())
             );
-
 
 
         }
@@ -120,9 +119,9 @@ public class StudioMemberServiceTest extends ServiceTest {
         void success() {
 
             // given
-            studioMemberService.create(member[0].getId(), studio[0].getId(), 0);
-            studioMemberService.create(member[1].getId(), studio[0].getId(), 0);
-            studioMemberService.create(member[2].getId(), studio[0].getId(), 0);
+            studioMemberService.create(member[0].getId(), studio[0].getId(), 0, "connection1");
+            studioMemberService.create(member[1].getId(), studio[0].getId(), 0, "connection1");
+            studioMemberService.create(member[2].getId(), studio[0].getId(), 0, "connection1");
             StudioResponse studioResponse = studioMemberService.findByMemberId(member[0].getId());
             // when - then
 
