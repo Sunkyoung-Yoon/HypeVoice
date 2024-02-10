@@ -65,6 +65,16 @@ public class VoiceService {
                 .build();
     }
 
+    @Transactional
+    public void delete(Long memberId) {
+        Voice voice = voiceFindService.findByMemberId(memberId);
+
+        if(voice.getImageUrl() != null)
+            fileService.deleteFiles(voice.getImageUrl());
+
+        voiceRepository.delete(voice);
+    }
+
     private void validateMember(Long voiceId, Long memberId) {
         Voice voice = voiceFindService.findById(voiceId);
         if (!voice.getMember().getId().equals(memberId)) {

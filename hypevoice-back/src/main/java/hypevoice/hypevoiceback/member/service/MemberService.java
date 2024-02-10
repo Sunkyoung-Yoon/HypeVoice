@@ -8,6 +8,8 @@ import hypevoice.hypevoiceback.member.domain.MemberRepository;
 import hypevoice.hypevoiceback.member.domain.Role;
 import hypevoice.hypevoiceback.member.dto.MemberResponse;
 import hypevoice.hypevoiceback.member.exception.MemberErrorCode;
+import hypevoice.hypevoiceback.voice.service.VoiceFindService;
+import hypevoice.hypevoiceback.voice.service.VoiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final AuthService authService;
     private final FileService fileService;
+    private final VoiceService voiceService;
+    private final VoiceFindService voiceFindService;
 
     @Transactional
     public void update(Long memberId, String nickname, MultipartFile file) {
@@ -58,7 +62,13 @@ public class MemberService {
     @Transactional
     public void delete(Long memberId) {
         Member member = memberFindService.findById(memberId);
+
         authService.logout(member.getId());
+
+        if(member.getProfileUrl() != null)
+            fileService.deleteFiles(member.getProfileUrl());
+
+        voiceService.delete(member.getId());
         memberRepository.delete(member);
     }
 

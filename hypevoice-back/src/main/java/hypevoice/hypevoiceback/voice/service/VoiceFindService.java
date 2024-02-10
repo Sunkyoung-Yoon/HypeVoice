@@ -20,4 +20,8 @@ public class VoiceFindService {
                 .orElseThrow(() -> BaseException.type(VoiceErrorCode.VOICE_NOT_FOUND));
     }
 
+    public Voice findByMemberId(Long memberId){
+        return voiceRepository.findById(memberId)
+                .orElseThrow(() -> BaseException.type(VoiceErrorCode.VOICE_NOT_FOUND));
+    }
 }

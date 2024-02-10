@@ -2,10 +2,16 @@ package hypevoice.hypevoiceback.voice.domain;
 
 import hypevoice.hypevoiceback.global.BaseTimeEntity;
 import hypevoice.hypevoiceback.member.domain.Member;
+import hypevoice.hypevoiceback.work.domain.Work;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static jakarta.persistence.CascadeType.PERSIST;
 
 @Getter
 @Entity
@@ -29,6 +35,9 @@ public class Voice extends BaseTimeEntity {
     private String phone;
     private String addInfo;
     private int likes;
+
+    @OneToMany(mappedBy = "voice", cascade = PERSIST, orphanRemoval = true)
+    private List<Work> workList = new ArrayList<>();
 
     @Builder
     private Voice(Member member, String name, String imageUrl, String intro, String email, String phone, String addInfo) {
