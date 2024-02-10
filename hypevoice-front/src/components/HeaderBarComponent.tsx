@@ -13,6 +13,9 @@ const HeaderButtonComponent = styled(Button)`
   font-weight: 1000;
   font-size: large;
   margin-inline: 10px;
+  font-weight: 1000;
+  font-size: large;
+  margin-inline: 10px;
   align-self: center;
   white-space: nowrap;
   :hover {
@@ -20,6 +23,7 @@ const HeaderButtonComponent = styled(Button)`
     opacity: 70%;
   }
 
+  @media (max-width: 750px) {
   @media (max-width: 750px) {
     display: none;
   }
@@ -31,8 +35,10 @@ const HamburgerButtonComponent = styled(MenuIcon)`
   width: 100px;
   position: fixed;
   top: 3%;
+  top: 3%;
   right: 0;
 
+  @media (max-width: 750px) {
   @media (max-width: 750px) {
     display: block;
   }
@@ -41,11 +47,13 @@ const HamburgerButtonComponent = styled(MenuIcon)`
 export const LogoImg = styled.img`
   cursor: pointer;
   transition: opacity 0.1s ease, border 0.1s ease;
+  transition: opacity 0.1s ease, border 0.1s ease;
   border: 0 solid transparent;
   border-radius: 15%;
 
   &:hover {
     opacity: 0.6;
+    /* border: 2px solid #5b5ff4; */
     /* border: 2px solid #5b5ff4; */
   }
 `;
@@ -55,6 +63,25 @@ export default function HeaderBarComponent() {
   const [loginState, setLoginState] = useRecoilState(LoginState);
   const navigation = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // 화면 너비가 변경되었을 때 실행되는 함수
+  const handleResize = (event: MediaQueryListEvent) => {
+    if (event.matches) {
+      // 너비가 768px 이상일 때
+      setMenuOpen(false);
+    }
+  };
+
+  // 컴포넌트가 마운트되었을 때와 언마운트될 때 실행되는 코드입니다.
+  useEffect(() => {
+    const mediaQueryList = window.matchMedia("(min-width: 768px)");
+    mediaQueryList.addListener(handleResize); // 이벤트 리스너를 추가합니다.
+
+    // 컴포넌트가 언마운트될 때 실행되는 클린업 함수입니다.
+    return () => {
+      mediaQueryList.removeListener(handleResize); // 이벤트 리스너를 제거합니다.
+    };
+  }, []); // 의존성 배열이 빈 배열이므로, 이 useEffect는 컴포넌트가 마운트되었을 때 한 번만 실행됩니다.
 
   // 화면 너비가 변경되었을 때 실행되는 함수
   const handleResize = (event: MediaQueryListEvent) => {
@@ -99,6 +126,8 @@ export default function HeaderBarComponent() {
   const checkLoginAndNavigate = useRequireLogin();
 
   return (
+    <AppBar
+      position="fixed"
     <AppBar
       position="fixed"
       style={{
