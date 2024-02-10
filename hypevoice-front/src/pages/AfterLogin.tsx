@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { jwtDecode } from "jwt-decode";
 import { LoginState } from "@/recoil/Auth";
@@ -7,20 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { getCookie, setCookie, removeCookie } from "../api/cookie";
 import { getCookie, setCookie, removeCookie } from "../api/cookie";
 import { DecodedTokenPayload, MemberInfo } from "@/components/type";
-import axios from "axios";
 import { axiosClient } from "@/api/axios";
-
-// export async function fetchMemberInfo(
-//   accessToken: string
-// ): Promise<MemberInfo> {
-//   console.log(accessToken);
-//   const response = await axios.get("http://localhost:8080/api/members", {
-//     headers: { Authorization: `Bearer ${accessToken}` },
-//   });
-//   console.log("The Member is " + response.data);
-
-//   return response.data;
-// }
 
 // http://localhost:8080
 // http://localhost:8080
@@ -81,7 +68,7 @@ export default function AfterLogin() {
               setCurrentMemberInfo({
                 ...currentMember,
                 ...memberInfo,
-                // accessToken: accessToken,
+                // accessToken: accessToken, // 엑세스 토큰은 제외하고!
               });
               console.log("memberInfo is ");
               console.log(memberInfo);
