@@ -20,6 +20,7 @@ const MainGrid = styled.div`
   overflow: auto;
   grid-gap: 0;
   padding-top: 10vh;
+  padding-top: 10vh;
   border: none;
 `;
 

@@ -4,6 +4,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Main from "./pages/Main";
 import Studio from "./components/Studio";
+import MyInfo from "./components/MyInfo";
 import ErrorComponent from "./components/ErrorComponent";
 import StudioList from "./components/StudioList";
 import HomeGrid from "./components/HomeGrid";
@@ -28,7 +29,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: "myPage",
-            element: <MyPage />,
+            element: <MyInfo />,
             errorElement: <ErrorComponent />,
           },
           {

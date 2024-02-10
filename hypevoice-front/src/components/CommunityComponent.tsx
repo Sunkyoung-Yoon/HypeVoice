@@ -26,6 +26,29 @@ export interface Post {
   date: string;
   viewcnt: number;
 }
+  List,
+  ListItem,
+  Button,
+  TextField,
+  ButtonGroup,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
+import Pagination from "@mui/material/Pagination";
+import posts from "./PostsDummyData";
+import styled from "styled-components";
+
+// typescript 타입
+export interface Post {
+  category: string;
+  id: number;
+  title: string;
+  author: string;
+  date: string;
+  viewcnt: number;
+}
 
 const CommunityStyleDiv = styled.div`
 	.community-component {
@@ -49,13 +72,32 @@ const CommunityStyleDiv = styled.div`
     /* margin-bottom: 2rem; */
     /* border-bottom: 2px solid rgba(0, 0, 0, 0.1); */
   }
+  .community-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    /* margin-bottom: 2rem; */
+    /* border-bottom: 2px solid rgba(0, 0, 0, 0.1); */
+  }
 
+  .community-header-left {
+  }
   .community-header-left {
   }
 
   .community-header-right {
   }
+  .community-header-right {
+  }
 
+  .community-post-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    /* margin-bottom: 1rem; */
+    font-size: 120%;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  }
   .community-post-header {
     display: flex;
     align-items: center;
@@ -91,7 +133,13 @@ const CommunityStyleDiv = styled.div`
     text-decoration: none;
     transition: color 0.3s ease;
   }
+  .community-post-header-title a {
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
 
+  .community-post-header-title a:hover {
+  }
   .community-post-header-title a:hover {
   }
 
@@ -115,6 +163,11 @@ const CommunityStyleDiv = styled.div`
     display: flex;
     justify-content: center;
   }
+  .pagination {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+  }
 
 	.community-post-container {
 		display: flex;
@@ -125,6 +178,13 @@ const CommunityStyleDiv = styled.div`
 		font-size: 85%;
 	}
 
+  .community-post {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    margin-bottom: 0.3rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
   .community-post {
     display: flex;
     align-items: center;
@@ -161,6 +221,9 @@ const CommunityStyleDiv = styled.div`
 		transition: color 0.3s ease;
 	}
 
+  .community-post-title a:hover {
+    color: #007bff;
+  }
   .community-post-title a:hover {
     color: #007bff;
   }
@@ -283,7 +346,23 @@ const CommunityComponent: React.FC = () => {
     setCurrentcategory(category);
     setCurrentPage(1);
   };
+  const handleButtonClick = (category: string): void => {
+    setCurrentcategory(category);
+    setCurrentPage(1);
+  };
 
+  const handleSearchChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    setSearchKeyword(event.target.value);
+  };
+
+  const indexOfLastPost: number = currentPage * postsPerPage;
+  const indexOfFirstPost: number = indexOfLastPost - postsPerPage;
+  const currentPosts: Post[] = searchedPosts.slice(
+    indexOfFirstPost,
+    indexOfLastPost
+  );
   const handleSearchChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
