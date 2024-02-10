@@ -21,11 +21,14 @@ const PostStyleDiv = styled.div`
 	.post-header {
 		width: 95%;
 		/* border: 2px solid #bbb; */
+		/* border: 2px solid #bbb; */
 		border-radius: 5px;
 		margin-left: auto;
 		margin-right: auto;
 		padding-top: 5px;
 		padding-bottom: 5px;
+		background-color: #e0e0e0;
+		box-shadow: 2px 2px 2px;
 		background-color: #e0e0e0;
 		box-shadow: 2px 2px 2px;
 	}
@@ -43,6 +46,7 @@ const PostStyleDiv = styled.div`
 		font-weight: bold;
 		font-size: 20px;
 		color: #555;
+		margin-right: 5px;
 		margin-right: 5px;
 	}
 
@@ -66,6 +70,9 @@ const PostStyleDiv = styled.div`
 	.post-header-lower-divline {
 		margin-left: 15px;
 		margin-right: 15px;
+		font-size: 14px;
+		text-align: left;
+		color: #c0c0c0;
 		font-size: 14px;
 		text-align: left;
 		color: #c0c0c0;
@@ -162,9 +169,45 @@ const PostComponent: React.FC = () => {
 		console.log('Post : isError');
 		return <div>게시물을 불러올 수 없습니다</div>;
 	}
+	// ▲ GetComment ▲
 
-	const getPostData: Post = data?.data;
-	// ▲ GetPost ▲
+	// ▼ 외부 API에서 받아온 데이터를 우리 프로젝트에 맞게 처리하는 부분임
+	// (나중에는 필요없음) ▼
+	const rawData: TestPostType = data?.data;
+	let category = '자유';
+	if (rawData.id % 4 === 1) {
+		category = '피드백';
+	} else if (rawData.id % 4 === 3) {
+		category = '구인구직';
+	}
+
+	const now = new Date();
+	const options: Intl.DateTimeFormatOptions = {
+		year: 'numeric',
+		month: '2-digit',
+		day: '2-digit',
+		hour: '2-digit',
+		minute: '2-digit',
+		second: '2-digit',
+		hour12: false,
+		timeZone: 'Asia/Seoul',
+	};
+
+	const currentTime: string = now
+		.toLocaleString('ko-KR', options)
+		.replace(/,/g, '');
+
+	const postData: Post = {
+		board_id: rawData.id,
+		member_id: rawData.userId,
+		title: rawData.title,
+		content: rawData.body,
+		view: Math.floor(Math.random() * 100),
+		category: category,
+		created_date: currentTime,
+		modified_date: currentTime,
+	};
+	// ▲ 외부 API에서 받아온 데이터를 우리 프로젝트에 맞게 변환한 것 ▲
 
 	const handleSubmitComment = (comment: string) => {
 		// 댓글 작성 처리 로직 (아직 미작성)
