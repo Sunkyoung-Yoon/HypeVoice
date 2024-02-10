@@ -16,7 +16,7 @@ const HeaderButtonComponent = styled(Button)`
   align-self: center;
   white-space: nowrap;
   :hover {
-    color: #268aff;
+    color: #5b5ff4;
     opacity: 70%;
   }
 

@@ -1,8 +1,7 @@
-// StudioList.tsx
 import { useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { useQuery } from "@tanstack/react-query";
-import { StudioInfo } from "./type";
+import { StudioInfo, joinStudioInfo } from "./type";
 import CreateStudioModal from "./CreateStudioModal";
 import styled from "styled-components";
 import InlineHeader from "./InlineHeader";
@@ -98,11 +97,11 @@ export const CurPageNum = styled.input`
 
 // 이전/다음 버튼 스타일 수정
 export const PrevNextButton = styled.button`
-  background-color: #f5f5f5;
+  background-color: #5b5ff4;
   border: none;
   padding: 8px 12px;
   margin-left: 10px;
-  border-radius: 4px;
+  border-radius: 15px;
   font-size: 14px;
   white-space: nowrap;
   cursor: pointer;
@@ -145,8 +144,6 @@ const CreateStudioModalContainer = styled.div`
   margin-right: 150px;
 `;
 
-// JoinButton Style
-
 const JoinButton = styled(Button)<{ canJoin: boolean }>`
   border: transparent !important;
   border-radius: 55px !important;
@@ -156,7 +153,7 @@ const JoinButton = styled(Button)<{ canJoin: boolean }>`
   color: ${(props) =>
     props.canJoin ? "white !important" : "black !important"};
   background-color: ${(props) =>
-    props.canJoin ? "#268aff !important" : "gray !important"};
+    props.canJoin ? "#5b5ff4 !important" : "gray !important"};
   align-self: flex-end !important;
 `;
 
@@ -168,15 +165,61 @@ const DeleteStudio = styled(Button)`
   padding-inline: 10px !important;
   white-space: nowrap !important;
   min-width: 100px !important;
+  align-self: flex-end !important;
 `;
 
+/* ----------------------------------------------------------------------------------------- */
+/* ----------------------------------------------------------------------------------------- */
+
+const joinStudio = async (studio: StudioInfo) => {
+  const accessToken = getCookie("access_token");
+  const joinStudioInfo: joinStudioInfo = {
+    studioId: studio.studioId,
+    sessionId: studio.sessionId,
+  };
+  if (!studio.isPublic) {
+    const pw = prompt("비밀방입니다. 비밀번호를 입력해주세요.");
+    joinStudioInfo.password = parseInt(pw);
+  }
+  try {
+    const response = await axiosClient.post(
+      `/api/studios/connections/${
+        studio.isPublic === 1 ? "public" : "private"
+      }`,
+      joinStudioInfo,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+
+    if (response.data) {
+      alert(`${response.data} 방에 참가하셨습니다!`);
+      // 이 부분에 실제 방으로 이동하는 메서드 및 기존에 방 목록에 반영되는 거 추가
+    } else {
+      alert("방 참가에 실패하셨습니다!");
+    }
+  } catch (error) {
+    alert("방 참가 실패!");
+    console.log(error);
+  }
+};
+
 const fetchStudios = async (): Promise<StudioInfo[]> => {
-  // const response = await axios.get<{ studioList: StudioInfo[] }>(
-  //   "/api/studios"
+  // const accessToken = getCookie("access_token");
+  // const response = await axiosClient.get<{ studioList: StudioInfo[] }>(
+  //   "/api/studios",
+  //   {
+  //     headers: { Authorization: `Bearer ${accessToken}` },
+  //   }
   // );
+  // alert(`총 ${response.data.studioList.length}개의 방이 존재합니다.`);
+
+  /* ----------------------------------------------------------------------------------------- */
+  /* ----------------------------------------------------------------------------------------- */
+
   const mockData: StudioInfo[] = Array.from({ length: 50 }, (_, i) => {
     // studioId는 총 6자리 숫자
-    const studioId = String(i + 1).padStart(6, "0");
+    const studioId = parseInt(String(i + 1).padStart(6, "0"));
 
     // limitNumber는 최소1 최대 6
     const limitNumber = Math.floor(Math.random() * 6) + 1;
@@ -208,6 +251,10 @@ const fetchStudios = async (): Promise<StudioInfo[]> => {
   });
 
   return mockData;
+
+  /* ----------------------------------------------------------------------------------------- */
+  /* ----------------------------------------------------------------------------------------- */
+
   // return response.data.studioList;
 };
 
@@ -220,6 +267,17 @@ export default function StudioList() {
   const [filteredStudios, setFilteredStudios] = useState<StudioInfo[]>([]);
   const loginState = useRecoilValue(LoginState);
   const [studioId, setStudioId] = useRecoilState(StudioId);
+
+  // 방 리스트 React-Query로 불러와서 관리
+  const {
+    data: studioList,
+    isLoading,
+    isError,
+  } = useQuery<StudioInfo[]>({
+    queryKey: ["studios"],
+    queryFn: fetchStudios,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
   // 검색 버튼 누를 시 해당 검색어로 방 검색
   // 방 제목으로만 검색 가능!
@@ -239,17 +297,6 @@ export default function StudioList() {
     setSearchText("");
     if (studioList) setFilteredStudios(studioList);
   };
-
-  // 방 리스트 React-Query로 불러와서 관리
-  const {
-    data: studioList,
-    isLoading,
-    isError,
-  } = useQuery<StudioInfo[]>({
-    queryKey: ["studios"],
-    queryFn: fetchStudios,
-    staleTime: 1000 * 60 * 5, // 5 minutes
-  });
 
   // 전체 페이지 수
   const totalPages = filteredStudios
@@ -277,6 +324,9 @@ export default function StudioList() {
       setCurrentPage(inputPage);
     }
   };
+
+  /* ----------------------------------------------------------------------------------------- */
+  /* ----------------------------------------------------------------------------------------- */
 
   const handleDelete = async (): Promise<void> => {
     try {
@@ -340,7 +390,6 @@ export default function StudioList() {
 
       {/* ----------------------------------------------------------------------------------------- */}
       {/* ----------------------------------------------------------------------------------------- */}
-      {/* ----------------------------------------------------------------------------------------- */}
 
       {isLoading ? (
         <div style={{ marginLeft: "10px" }}>
@@ -354,7 +403,7 @@ export default function StudioList() {
             filteredStudios
               .slice((currentPage - 1) * 6, currentPage * 6) // 0번째부터 5(6-1)번째 // 이런 식으로 한 화면에 6개씩!
               .map((studio) => (
-                <OuterDiv>
+                <OuterDiv key={studio.studioId}>
                   <div
                     className="left"
                     style={{
@@ -423,6 +472,7 @@ export default function StudioList() {
                     </div>
                     <JoinButton
                       canJoin={studio.memberCount < studio.limitNumber}
+                      onClick={() => joinStudio(studio)}
                     >
                       같이하기
                     </JoinButton>

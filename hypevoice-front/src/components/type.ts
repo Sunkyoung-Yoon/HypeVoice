@@ -13,7 +13,7 @@ export type MemberInfo = {
 // 방 하나의 정보를 가져옴
 // url : /api/studio
 export type StudioInfo = {
-  studioId: string;
+  studioId: number;
   sessionId: string;
   title: string;
   intro: string;
@@ -24,7 +24,7 @@ export type StudioInfo = {
   onair: boolean;
 };
 
-// // 멤버 한명의 정보 수정
+// // 멤버 한 명의 정보
 // // url : /api/members
 export type DecodedTokenPayload = {
   exp: number; // 만료
@@ -48,17 +48,61 @@ export type MakeStudioData = {
 // // url : /api/members
 // // method : post (ResponseBody)
 export type StudioResponse = {
-  studioId: string;
+  studioId: number | null;
 };
 
-// // 멤버 한명의 정보 수정
-// // url : /api/members
-// export type aaa = {};
+// // 방 참가에 필요한 정보
+// // url :/api/studios/connections/public 또는 private
+export type JoinStudioInfo = {
+  studioId: number;
+  sessionId: string;
+  password?: number | null;
+};
 
-// // 멤버 한명의 정보 수정
-// // url : /api/members
-// export type aaa = {};
+// // 작업물 한 개의 정보
+// // url :
+export type WorkInfo = {
+  voiceId: number; // 보이스 번호 => memberId랑 비교해서 수정 및 삭제 가능여부 판단
+  workId: number; // 작업물 자체 번호
+  title: string; // 작업물 제목 // 최대 20자
+  videoLink: string; // 영상 링크
+  photoUrl: string; // 사진 링크
+  scriptUrl: string; // 대본 링크
+  recordUrl: string; // 녹음 파일 링크
+  info: string; // 소개 // 최대 100자
+  isRep: number; // 대표 작업물 여부
+  CategoryInfoValue: {
+    workId: number; // 작업물 자체 번호
+    mediaClassification: string; // 미디어
+    voiceTone: string; // 톤
+    voiceStyle: string; // 스타일
+    gender: string; // 성별
+    age: string; // 나이
+  };
+};
 
-// // 멤버 한명의 정보 수정
+// // 내용
 // // url : /api/members
-// export type aaa = {};
+export type CategoryInfoValue = {
+  mediaClassification: string;
+  voiceTone: string;
+  voiceStyle: string;
+  gender: string;
+  age: string;
+};
+
+// // 내용
+// // url : /api/members
+// export type CategoryInfoValue = {};
+
+// // 내용
+// // url : /api/members
+// export type CategoryInfoValue = {};
+
+// // 내용
+// // url : /api/members
+// export type CategoryInfoValue = {};
+
+// // 내용
+// // url : /api/members
+// export type CategoryInfoValue = {};

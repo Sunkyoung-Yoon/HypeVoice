@@ -1,124 +1,129 @@
-// import React from "react";
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import Work from "./Work";
+import { useQuery } from "@tanstack/react-query";
+import { useRecoilValue } from "recoil";
+import { WorkInfo } from "./type";
+import { CurrentMemberAtom } from "@/recoil/Auth";
+import { axiosClient } from "@/api/axios";
+import WorkTemplate from "./WorkTemplate";
+import { useParams } from "react-router-dom";
+import styled from "styled-components";
+import { useEffect } from "react";
 
-export type WorkData = {
-  workId: number;
-  title: string;
-  videoLink: string;
-  photoUrl: string;
-  scriptUrl: string;
-  recordUrl: string;
-  info: string;
-  isRep: number;
+type WorkGridProps = {
+  setWorkCount: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const WorkDatas: WorkData[] = [
-  {
-    workId: 1,
-    title: "제목1제목1제목1",
-    videoLink: "https://www.youtube.com",
-    photoUrl: "https://cdn.pixabay.com/photo/2023/08/04/11/47/anime-8169104_1280.jpg",
-    scriptUrl: "https://www.naver.com",
-    recordUrl: "",
-    info: "설명1설명1설명1설명1설명1설명1설명1설명1설명1",
-    isRep: 1,
-  },
-  {
-    workId: 2,
-    title: "제목2제목2제목2",
-    videoLink: "",
-    photoUrl: "https://cdn.pixabay.com/photo/2022/12/01/04/35/sunset-7628294_1280.jpg",
-    scriptUrl: "",
-    recordUrl: "",
-    info: "설명2설명2설명2설명2설명2설명2설명2설명2설명2",
-    isRep: 0,
-  },
-  {
-    workId: 3,
-    title: "제목3제목3제목3",
-    videoLink: "", 
-    photoUrl: "https://cdn.pixabay.com/photo/2020/11/15/18/31/cat-5746771_1280.png",
-    scriptUrl: "",
-    recordUrl: "",
-    info: "설명3설명3설명3설명3설명3설명3설명3설명3설명3",
-    isRep: 0,
-  },
-  {
-    workId: 4,
-    title: "제목4제목4제목4",
-    videoLink: "",
-    photoUrl: "https://source.unsplash.com/random?wallpapers",
-    scriptUrl: "",
-    recordUrl: "",
-    info: "설명4설명4설명4설명4설명4설명4설명4설명4설명4",
-    isRep: 0,
-  },
-  {
-    workId: 5,
-    title: "제목5제목5제목5",
-    videoLink: "",
-    photoUrl: "https://source.unsplash.com/random?wallpapers",
-    scriptUrl: "",
-    recordUrl: "",
-    info: "설명5설명5설명5설명5설명5설명5설명5설명5설명5",
-    isRep: 0,
-  },
-  {
-    workId: 6,
-    title: "제목6제목6제목6",
-    videoLink: "",
-    photoUrl: "https://source.unsplash.com/random?wallpapers",
-    scriptUrl: "",
-    recordUrl: "",
-    info: "설명6설명6설명6설명6설명6설명6설명6설명6설명6",
-    isRep: 0,
-  },
-  {
-    workId: 7,
-    title: "제목7제목7제목7",
-    videoLink: "",
-    photoUrl: "https://source.unsplash.com/random?wallpapers",
-    scriptUrl: "",
-    recordUrl: "",
-    info: "설명7설명7설명7설명7설명7설명7설명7설명7설명7",
-    isRep: 0,
-  },
-  {
-    workId: 8,
-    title: "제목8제목8제목8",
-    videoLink: "",
-    photoUrl: "https://source.unsplash.com/random?wallpapers",
-    scriptUrl: "",
-    recordUrl: "",
-    info: "설명8설명8설명8설명8설명8설명8설명8설명8설명8",
-    isRep: 0,
-  },
-  {
-    workId: 9,
-    title: "제목9제목9제목9",
-    videoLink: "",
-    photoUrl: "https://source.unsplash.com/random?wallpapers",
-    scriptUrl: "",
-    recordUrl: "",
-    info: "설명9설명9설명9설명9설명9설명9설명9설명9설명9",
-    isRep: 0,
-  },
-];
+const WorksGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+  padding: 1rem;
+  margin: 1rem;
+  @media (max-width: 850px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 550px), (max-height: 480px) {
+    grid-template-columns: 1fr;
+    grid-gap: 10px;
+    grid-row-gap: 10px;
+  }
+  @media (max-height: 480px) {
+    grid-gap: 5px;
+    grid-row-gap: 5px;
+  }
+`;
 
-function WorkGrid() {
+export default function WorkGrid({ setWorkCount }: WorkGridProps) {
+  const currentMember = useRecoilValue(CurrentMemberAtom);
+  const { voiceId } = useParams<{ voiceId: string }>();
+
+  // const fetchWorks = async (): Promise<WorkInfo[]> => {
+  //   try {
+  //     const response = await axiosClient.get(`/api/voices/${voiceId}/works`);
+  //     // 작업물이 하나도 없다면
+  //     if (!response.data) {
+  //       alert(
+  //         "작업물이 아직 없습니다. 하입보이스에게 당신의 목소리를 들려주세요!"
+  //       );
+  //     } else {
+  //       alert(
+  //         `${response.data.length} 개의 목소리를 가진 ${currentMember.nickname}님 반갑습니다!`
+  //       );
+  //     }
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error(error);
+  //     return [];
+  //   }
+  // };
+
+  const mockFetchWorks = async (): Promise<WorkInfo[]> => {
+    return new Promise((resolve) =>
+      setTimeout(() => {
+        resolve([
+          {
+            voiceId: 1,
+            workId: 1,
+            title: "작업물 제목",
+            videoLink: "http://example.com/video1.mp4",
+            photoUrl: "http://example.com/photo1.jpg",
+            scriptUrl: "http://example.com/script1.txt",
+            recordUrl: "http://example.com/record1.mp3",
+            info: "작업물에 대한 설명입니다.",
+            isRep: 1,
+            CategoryInfoValue: {
+              workId: 1,
+              mediaClassification: "오디오드라마",
+              voiceTone: "중음",
+              voiceStyle: "밝은",
+              gender: "남성",
+              age: "청소년",
+            },
+          },
+          {
+            voiceId: 2,
+            workId: 2,
+            title: "작업물 제목",
+            videoLink: "http://example.com/video2.mp4",
+            photoUrl: "http://example.com/photo2.jpg",
+            scriptUrl: "http://example.com/script2.txt",
+            recordUrl: "http://example.com/record2.mp3",
+            info: "작업물에 대한 설명입니다. 작업물에 대한 설명입니다. 작업물에 대한 설명입니다. 작업물에 대한 설명입니다. 작업물에 대한 설명입니다. 작업물에 대한 설명입니다. 작업물에 대한 설명입니다. 작업물에 대한 설명입니다. 작업물에 대한 설명입니다. ",
+            isRep: 0,
+            CategoryInfoValue: {
+              workId: 2,
+              mediaClassification: "외화",
+              voiceTone: "저음",
+              voiceStyle: "어두운",
+              gender: "여성",
+              age: "노년",
+            },
+          },
+        ]);
+      }, 1000)
+    );
+  };
+
+  const { data: works } = useQuery({
+    queryKey: ["works"],
+    // queryFn: fetchWorks,
+    queryFn: mockFetchWorks,
+  });
+
+  useEffect(() => {
+    if (works) {
+      setWorkCount(works.length);
+    }
+  }, [works]);
+
   return (
-    <>
-      <Container sx={{ py: 8 }} maxWidth="md">
-        <Grid container spacing={4}>
-          {WorkDatas.map((work) => (
-            <Work key={work.workId} work={work} />
-          ))}
-        </Grid>
-      </Container>
-    </>
+    <WorksGrid>
+      {works ? (
+        works.map((work) => <WorkTemplate key={work.workId} work={work} />)
+      ) : (
+        <p>
+          아직 작업물이 없습니다. 하입보이스에서 당신의 목소리를 들려주세요!
+        </p>
+      )}
+    </WorksGrid>
   );
 }
-
-export default WorkGrid;

@@ -26,9 +26,14 @@ import { useRecoilValue, useRecoilState } from "recoil";
 import { getCookie } from "../api/cookie";
 
 const CreateButton = styled(Button)`
-  position: absolute;
-  right: 20px;
-  bottom: 20px;
+  && {
+    position: absolute;
+    border-radius: 25px;
+    right: 20px;
+    bottom: 20px;
+    background-color: #5b5ff4;
+    color: #fff;
+  }
 `;
 
 export default function CreateStudioModal() {
@@ -94,7 +99,7 @@ export default function CreateStudioModal() {
         }
       );
 
-      if (response?.data?.studioId !== "") {
+      if (response?.data?.studioId !== null) {
         console.log(response);
         console.log(response?.data);
         setStudioId(response.data);
