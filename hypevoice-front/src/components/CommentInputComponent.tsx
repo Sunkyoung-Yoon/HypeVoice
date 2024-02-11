@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button } from '@mui/material';
 import styled from 'styled-components';
-
-interface CommentInputProps {
-	onSubmit: (comment: string) => void;
-	nickname: string; // 닉네임을 전달받는 prop 추가
-}
+import { CommentInputProps } from './CommunityType';
 
 const CommentInputStyleDiv = styled.div`
 	.comment-input-component {
