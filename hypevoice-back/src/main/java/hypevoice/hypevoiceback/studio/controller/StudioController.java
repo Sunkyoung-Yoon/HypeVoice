@@ -1,6 +1,7 @@
 package hypevoice.hypevoiceback.studio.controller;
 
 import hypevoice.hypevoiceback.global.annotation.ExtractPayload;
+import hypevoice.hypevoiceback.studio.dto.StudioJoinRequest;
 import hypevoice.hypevoiceback.studio.dto.StudioJoinResponse;
 import hypevoice.hypevoiceback.studio.dto.StudioRequest;
 import hypevoice.hypevoiceback.studio.dto.StudioResponse;
@@ -55,8 +56,8 @@ public class StudioController {
     }
 
     @PostMapping("/{studioId}/connect/private")
-    public ResponseEntity<StudioJoinResponse> joinPrivateStudio(@ExtractPayload Long loginId,  @PathVariable("studioId") Long studioId, @PathVariable("password") String password){
-        return ResponseEntity.status(HttpStatus.OK).body(studioService.joinStudio(loginId,studioId,password));
+    public ResponseEntity<StudioJoinResponse> joinPrivateStudio(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId, @RequestBody StudioJoinRequest studioJoinRequest){
+        return ResponseEntity.status(HttpStatus.OK).body(studioService.joinStudio(loginId,studioId,studioJoinRequest.password()));
     }
 
     @GetMapping()

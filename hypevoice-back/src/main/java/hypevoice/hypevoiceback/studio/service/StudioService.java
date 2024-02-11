@@ -11,11 +11,14 @@ import hypevoice.hypevoiceback.studio.dto.StudioRequest;
 import hypevoice.hypevoiceback.studio.dto.StudioResponse;
 import hypevoice.hypevoiceback.studio.exception.StudioErrorCode;
 import hypevoice.hypevoiceback.studiomember.domain.StudioMember;
+import hypevoice.hypevoiceback.studiomember.domain.StudioMemberRepository;
 import hypevoice.hypevoiceback.studiomember.service.StudioMemberFindService;
 import hypevoice.hypevoiceback.studiomember.service.StudioMemberService;
 import io.openvidu.java.client.Recording;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,22 +34,39 @@ public class StudioService {
     private final StudioRepository studioRepository;
     private final StudioFindService studioFindService;
     private final MemberFindService memberFindService;
+    private final StudioMemberRepository studioMemberRepository;
     private final StudioMemberService studioMemberService;
     private final StudioMemberFindService studioMemberFindService;
+
+    @Autowired
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private final OpenViduClient openViduClient;
     private String sessionId;
 
     public StudioJoinResponse createStudio(Long loginId, StudioRequest studioRequest) {
 
+        if (studioMemberRepository.existsById(loginId)) {
+            throw new BaseException(StudioErrorCode.STUDIO_ALREADY_JOINED);
+        }
+
+        if (studioRequest.isPublic() == 0 && studioRequest.password() != null)
+            throw new BaseException(StudioErrorCode.UNABLE_CONNECT_PRIVATE_ROOM);
+        else if (studioRequest.isPublic() == 1 && studioRequest.password() == null)
+            throw new BaseException(StudioErrorCode.NULL_PASSWORD_OF_STUDIO_OR_REQUEST);
         sessionId = openViduClient.createSession();
 
         System.out.println(sessionId);
 
         Member member = memberFindService.findById(loginId);
+        String password = studioRequest.password();
+
+        if (studioRequest.password() != null) {
+            password = bCryptPasswordEncoder.encode(studioRequest.password());
+        }
         Studio studio = Studio.createStudio(sessionId, studioRequest.title(),
                 studioRequest.intro(), studioRequest.limitNumber(), studioRequest.isPublic(),
-                studioRequest.password());
+                password);
 
         Map<String, String> map = openViduClient.getJoinStudioToken(sessionId, loginId);
         String token = map.get("token");
@@ -62,13 +82,25 @@ public class StudioService {
     }
 
     public void updateStudio(Long loginId, Long studioId, StudioRequest studioRequest) {
+        if (studioRequest.isPublic() == 0 && studioRequest.password() != null)
+            throw new BaseException(StudioErrorCode.UNABLE_CONNECT_PRIVATE_ROOM);
+        else if (studioRequest.isPublic() == 1 && studioRequest.password() == null)
+            throw new BaseException(StudioErrorCode.NULL_PASSWORD_OF_STUDIO_OR_REQUEST);
+
         Studio studio = studioFindService.findById(studioId);
         Member member = memberFindService.findById(loginId);
         // 방장이 아니면 예외발생
         if (studioMemberFindService.findByMemberIdAndStudioId(member.getId(), studio.getId()).getIsHost() == 0)
             throw BaseException.type(StudioErrorCode.UNABLE_TO_UPDATE_STUDIO);
+
+        String password = studioRequest.password();
+
+        if (studioRequest.password() != null) {
+            password = bCryptPasswordEncoder.encode(studioRequest.password());
+        }
+
         studio.updateStudio(studioRequest.title(), studioRequest.intro(), studioRequest.limitNumber(),
-                studioRequest.isPublic(), studioRequest.password());
+                studioRequest.isPublic(), password);
     }
 
 
@@ -114,7 +146,9 @@ public class StudioService {
         System.out.println("멤버 : " + member.getId() + " / 아이디 : " + memberId);
         String token;
         String connectionId;
-        //
+        if (studioMemberRepository.existsById(loginId)) {
+            throw new BaseException(StudioErrorCode.STUDIO_ALREADY_JOINED);
+        }
         if (password == null ^ studio.getPassword() == null) {
             throw BaseException.type(StudioErrorCode.NULL_PASSWORD_OF_STUDIO_OR_REQUEST);
         } else {
@@ -124,7 +158,7 @@ public class StudioService {
                 }
                 // 아니면 통과
             } else {
-                if (!password.equals(studio.getPassword())) {
+                if (!bCryptPasswordEncoder.matches(password, studio.getPassword())) {
                     throw BaseException.type(StudioErrorCode.INCORRECT_PASSWORD);
                 }
                 // 아니면 통과
