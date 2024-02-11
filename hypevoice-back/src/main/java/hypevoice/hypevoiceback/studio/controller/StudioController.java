@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/studios")
@@ -57,6 +59,10 @@ public class StudioController {
         return ResponseEntity.status(HttpStatus.OK).body(studioService.joinStudio(loginId,studioId,password));
     }
 
+    @GetMapping()
+    public ResponseEntity<List<StudioResponse>> findAllStudios(@RequestParam(value = "word", required = false, defaultValue = "") String word, @RequestParam(value = "page") Integer page) {
+        return ResponseEntity.status(HttpStatus.OK).body(studioService.findAll(word, page));
+    }
 
     // 녹음 시작
     @PostMapping("/{studioId}/recording/start/individual")

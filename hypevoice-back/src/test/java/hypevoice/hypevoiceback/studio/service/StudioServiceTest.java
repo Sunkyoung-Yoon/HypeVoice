@@ -15,7 +15,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 import static hypevoice.hypevoiceback.fixture.StudioFixture.STUDIO_FIXTURE1;
+import static hypevoice.hypevoiceback.fixture.StudioFixture.STUDIO_FIXTURE2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -134,6 +137,42 @@ public class StudioServiceTest extends ServiceTest {
                     () -> assertThat(studioResponse.limitNumber()).isEqualTo(studio.getLimitNumber()),
                     () -> assertThat(studioResponse.isPublic()).isEqualTo(studio.getIsPublic()),
                     () -> assertThat(studioResponse.onAir()).isEqualTo(studio.getOnAir())
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("스튜디오 전체 조회")
+    class readAll {
+        @Test
+        @DisplayName("스튜디오 전체 조회에 성공한다")
+        void success() {
+            //
+
+            // when
+            Studio studio2 = studioRepository.save(STUDIO_FIXTURE2.toStudio());
+            List<StudioResponse> studioResponseList = studioService.findAll("ti", 1);
+
+            // then
+            assertAll(
+
+                    () -> assertThat(studioResponseList.get(1).studioId()).isEqualTo(studio.getId()),
+                    () -> assertThat(studioResponseList.get(1).sessionId()).isEqualTo(studio.getSessionId()),
+                    () -> assertThat(studioResponseList.get(1).title()).isEqualTo(studio.getTitle()),
+                    () -> assertThat(studioResponseList.get(1).intro()).isEqualTo(studio.getIntro()),
+                    () -> assertThat(studioResponseList.get(1).memberCount()).isEqualTo(studio.getMemberCount()),
+                    () -> assertThat(studioResponseList.get(1).limitNumber()).isEqualTo(studio.getLimitNumber()),
+                    () -> assertThat(studioResponseList.get(1).isPublic()).isEqualTo(studio.getIsPublic()),
+                    () -> assertThat(studioResponseList.get(1).onAir()).isEqualTo(studio.getOnAir()),
+
+                    () -> assertThat(studioResponseList.get(0).studioId()).isEqualTo(studio2.getId()),
+                    () -> assertThat(studioResponseList.get(0).sessionId()).isEqualTo(studio2.getSessionId()),
+                    () -> assertThat(studioResponseList.get(0).title()).isEqualTo(studio2.getTitle()),
+                    () -> assertThat(studioResponseList.get(0).intro()).isEqualTo(studio2.getIntro()),
+                    () -> assertThat(studioResponseList.get(0).memberCount()).isEqualTo(studio2.getMemberCount()),
+                    () -> assertThat(studioResponseList.get(0).limitNumber()).isEqualTo(studio2.getLimitNumber()),
+                    () -> assertThat(studioResponseList.get(0).isPublic()).isEqualTo(studio2.getIsPublic()),
+                    () -> assertThat(studioResponseList.get(0).onAir()).isEqualTo(studio2.getOnAir())
             );
         }
     }
