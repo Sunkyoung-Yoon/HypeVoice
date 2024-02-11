@@ -15,9 +15,11 @@ import hypevoice.hypevoiceback.studiomember.service.StudioMemberFindService;
 import hypevoice.hypevoiceback.studiomember.service.StudioMemberService;
 import io.openvidu.java.client.Recording;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -152,6 +154,18 @@ public class StudioService {
         return openViduClient.studioJoinList(sessionId);
     }
 
+    public List<StudioResponse> findAll(final String word, Integer page) {
+        int limit = 10;
+        int offset = (page - 1) * limit;
+        List<Studio> studioList = studioRepository.findAllByTitleOrIntro(PageRequest.of(offset, limit), word).getContent();
+
+        List<StudioResponse> studioResponseList = new ArrayList<>();
+        for (Studio s : studioList) {
+            studioResponseList.add(new StudioResponse(s.getId(), s.getSessionId(), s.getTitle(), s.getIntro(), s.getMemberCount(), s.getLimitNumber(), s.getIsPublic(), s.getOnAir()));
+        }
+        return studioResponseList;
+    }
+
     public String startRecording(Long studioId, Long loginId, boolean isIndividual) {
         Studio studio = studioFindService.findById(studioId);
         String sessionId = studio.getSessionId();
@@ -201,8 +215,7 @@ public class StudioService {
         if (studioMemberFindService.findByMemberIdAndStudioId(loginId, studioId).getIsHost() == 1) {
             openViduClient.deleteRecording(recordingId);
 
-        }
-        else {
+        } else {
             throw new BaseException(StudioErrorCode.UNABLE_RECORDING);
         }
     }

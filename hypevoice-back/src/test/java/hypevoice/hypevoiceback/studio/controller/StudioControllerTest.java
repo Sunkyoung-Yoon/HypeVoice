@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static hypevoice.hypevoiceback.fixture.StudioFixture.STUDIO_FIXTURE1;
 import static hypevoice.hypevoiceback.fixture.TokenFixture.ACCESS_TOKEN;
 import static hypevoice.hypevoiceback.fixture.TokenFixture.BEARER_TOKEN;
@@ -199,6 +202,32 @@ public class StudioControllerTest extends ControllerTest {
                     .andExpectAll(status().isOk());
         }
     }
+    @Nested
+    @DisplayName("스튜디오 전체조회 API [GET /api/studios]")
+    class getAllStudio {
+        private static final String BASE_URL = "/api/studios";
+
+
+        @Test
+        @DisplayName("스튜디오 전체조회에 성공한다")
+        void success() throws Exception {
+            // given
+            doReturn(readStudioResponseList())
+                    .when(studioService)
+                    .findAll("ti",1);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .get(BASE_URL)
+                    .param("word", "ti")
+                    .param("page", String.valueOf(1))
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(status().isOk());
+        }
+    }
 
     private StudioRequest createStudioRequest() {
         return new StudioRequest(STUDIO_FIXTURE1.getTitle(), STUDIO_FIXTURE1.getIntro(), STUDIO_FIXTURE1.getLimitNumber(), STUDIO_FIXTURE1.getIsPublic(), STUDIO_FIXTURE1.getPassword());
@@ -206,6 +235,12 @@ public class StudioControllerTest extends ControllerTest {
 
     private StudioResponse readStudioResponse() {
         return new StudioResponse(1L, STUDIO_FIXTURE1.getSessionId(), STUDIO_FIXTURE1.getTitle(), STUDIO_FIXTURE1.getIntro(), 1, STUDIO_FIXTURE1.getLimitNumber(), STUDIO_FIXTURE1.getIsPublic(), 0);
+
+    }
+    private List<StudioResponse> readStudioResponseList() {
+        List<StudioResponse> studioResponseList = new ArrayList<>();
+        studioResponseList.add(new StudioResponse(1L, STUDIO_FIXTURE1.getSessionId(), STUDIO_FIXTURE1.getTitle(), STUDIO_FIXTURE1.getIntro(), 1, STUDIO_FIXTURE1.getLimitNumber(), STUDIO_FIXTURE1.getIsPublic(), 0));
+        return studioResponseList;
 
     }
     private StudioJoinResponse readJoinStudioResponse() {
