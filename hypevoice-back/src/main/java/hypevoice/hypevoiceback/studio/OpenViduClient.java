@@ -30,8 +30,11 @@ public class OpenViduClient {
     private String sessionId;
     private OpenVidu openVidu;
     private RecordingProperties recordingProperties = new RecordingProperties.Builder()
+            .outputMode(Recording.OutputMode.COMPOSED)
             .hasAudio(true)
             .hasVideo(false)
+            .name(UUID.randomUUID().toString())
+
             .build();
 
     @PostConstruct
@@ -77,7 +80,7 @@ public class OpenViduClient {
     }
 
     public Map<String, String> getJoinStudioToken(String sessionId, Long memberId) {
-                HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>();
         try {
             String url = OPENVIDU_URL + "/openvidu/api/sessions/" + sessionId + "/connection";
 
@@ -86,19 +89,19 @@ public class OpenViduClient {
                     "\"data\": \"" + memberId + "\", " +
                     "\"role\": \"PUBLISHER\", " +
                     "\"kurentoOptions\": {" +
-                        "\"videoMaxRecvBandwidth\": 1000," +
-                        "\"videoMinRecvBandwidth\": 300," +
-                        "\"videoMaxSendBandwidth\": 1000," +
-                        "\"videoMinSendBandwidth\": 300," +
-                        "\"allowedFilters\": [ \"GStreamerFilter\", \"ZBarFilter\" ]" +
-                        "}," +
+                    "\"videoMaxRecvBandwidth\": 1000," +
+                    "\"videoMinRecvBandwidth\": 300," +
+                    "\"videoMaxSendBandwidth\": 1000," +
+                    "\"videoMinSendBandwidth\": 300," +
+                    "\"allowedFilters\": [ \"GStreamerFilter\", \"ZBarFilter\" ]" +
+                    "}," +
                     "\"customIceServers\": [" +
-                            "{" +
-                            "\"url\": \"turn:turn-domain.com:443\"," +
-                            "\"username\": \"usertest\"," +
-                            "\"credential\": \"userpass\"" +
-                            "}" +
-                        "]"+
+                    "{" +
+                    "\"url\": \"turn:turn-domain.com:443\"," +
+                    "\"username\": \"usertest\"," +
+                    "\"credential\": \"userpass\"" +
+                    "}" +
+                    "]" +
                     "}";
             System.out.println("RequestBody : " + requestBody);
             String responseBody = WebClient.create().post()
@@ -196,4 +199,51 @@ public class OpenViduClient {
         return username;
     }
 
+    public Recording startRecording(String sessionId, Boolean isIndividual) {
+        if(isIndividual){
+            recordingProperties = new RecordingProperties.Builder()
+                    .outputMode(Recording.OutputMode.INDIVIDUAL)
+                    .hasAudio(true)
+                    .hasVideo(false)
+                    .name(UUID.randomUUID().toString())
+
+                    .build();
+        }
+        try {
+            return openVidu.startRecording(sessionId, recordingProperties);
+        } catch (Exception e) {
+            throw new BaseException(StudioErrorCode.UNABLE_RECORDING_START);
+        }
+    }
+
+    public Recording stopRecording(String recordingId) {
+        Recording recording = null;
+        try {
+            recording = openVidu.stopRecording(recordingId);
+            System.out.println(recording.getId());
+            System.out.println("status : " + recording.getStatus());
+            return recording;
+        } catch (Exception e) {
+            throw new BaseException(StudioErrorCode.UNABLE_RECORDING_STOP);
+        }
+    }
+
+    public Recording getRecording(String recordingId) {
+        Recording recording = null;
+        try {
+            recording = openVidu.getRecording(recordingId);;
+            return recording;
+        } catch (Exception e) {
+            throw new BaseException(StudioErrorCode.RECORDING_NOT_FOUND);
+        }
+    }
+
+    public void deleteRecording(String recordingId) {
+        try {
+            openVidu.deleteRecording(recordingId);
+        } catch (Exception e) {
+            throw new BaseException(StudioErrorCode.UNABLE_RECORDING_DELETE);
+        }
+
+    }
 }

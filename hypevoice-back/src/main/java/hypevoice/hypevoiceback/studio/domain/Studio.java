@@ -49,4 +49,9 @@ public class Studio extends BaseTimeEntity {
         this.isPublic = isPublic;
         this.password = password;
     }
+
+    public void updateOnAir() {
+        this.onAir = onAir == 0 ? 1 : 0;
+    }
+
 }
