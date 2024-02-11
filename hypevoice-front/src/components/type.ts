@@ -110,16 +110,40 @@ export type CategoryInfoValue = {
 
 // // 내용
 // // url :
-// export type CategoryInfoValue = {};
+export type ChangeIsRep = {
+  voiceId: number;
+  workId: number;
+};
 
-// // 내용
-// // url : /api/members
-// export type CategoryInfoValue = {};
+// 작업물 만들기 모달
+// url :
+export type WorkData = {
+  title: string;
+  videoLink: string;
+  info: string;
+  isRep: number;
+  CategoryInfoRequest: {
+    mediaClassification: string;
+    voiceTone: string;
+    voiceStyle: string;
+    gender: string;
+    age: string;
+  };
+};
 
-// // 내용
-// // url : /api/members
-// export type CategoryInfoValue = {};
+// // BLOB 이미지
+export type ImageUpload = {
+  file: File;
+  thumbnail: string;
+  type: string;
+};
 
-// // 내용
-// // url : /api/members
-// export type CategoryInfoValue = {};
+// // 작업물 관련 모달창 props type
+// // url :
+export type WorkModalProps = {
+  open: boolean;
+  onClose: () => void;
+  role: string;
+  voiceId: number;
+  workId: number;
+};

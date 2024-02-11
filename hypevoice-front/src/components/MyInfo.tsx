@@ -8,6 +8,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { LoginState } from "../recoil/Auth";
+import useRequireLogin from "@/hooks/useRequireLogin";
 
 const Img = styled("img")({
   margin: "auto",
