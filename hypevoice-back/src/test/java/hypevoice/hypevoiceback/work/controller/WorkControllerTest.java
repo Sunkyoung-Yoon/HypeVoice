@@ -345,54 +345,6 @@ public class WorkControllerTest extends ControllerTest {
     }
 
     @Nested
-    @DisplayName("스크립트 상세조회 API [GET /api/voices/{voiceId}/works/{workId}/script]")
-    class getDetailWorkScript {
-        private static final String BASE_URL = "/api/voices/{voiceId}/works/{workId}/script";
-
-        @Test
-        @DisplayName("스크립트 상세조회에 성공한다")
-        void success() throws Exception {
-            // given
-            doReturn(readScriptResponse())
-                    .when(workService)
-                    .readScriptUrl(anyLong(), anyLong());
-
-            // when
-            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .get(BASE_URL, VOICE_ID, WORK_ID)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
-
-            // then
-            mockMvc.perform(requestBuilder)
-                    .andExpectAll(status().isOk());
-        }
-    }
-
-    @Nested
-    @DisplayName("영상 상세조회 API [GET /api/voices/{voiceId}/works/{workId}/video]")
-    class getDetailWorkVideo {
-        private static final String BASE_URL = "/api/voices/{voiceId}/works/{workId}/video";
-
-        @Test
-        @DisplayName("영상 상세조회에 성공한다")
-        void success() throws Exception {
-            // given
-            doReturn(readVideoResponse())
-                    .when(workService)
-                    .readVideoLink(anyLong(), anyLong());
-
-            // when
-            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .get(BASE_URL, VOICE_ID, WORK_ID)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
-
-            // then
-            mockMvc.perform(requestBuilder)
-                    .andExpectAll(status().isOk());
-        }
-    }
-
-    @Nested
     @DisplayName("작업물 대표 정보 수정 API [GET /api/voices/{voiceId}/works/{workId}]")
     class updateRepresentationWork {
         private static final String BASE_URL = "/api/voices/{voiceId}/works/{workId}";

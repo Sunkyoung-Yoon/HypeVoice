@@ -108,11 +108,11 @@ public class WorkService {
                 voiceId, workId, work.getTitle(), work.getVideoLink(), work.getPhotoUrl(), work.getScriptUrl(), work.getRecordUrl(), work.getInfo(), work.getIsRep(),
                 new CategoryInfoValue(
                         workId,
-                        categoryInfo.getMediaClassification().getValue(),
-                        categoryInfo.getVoiceTone().getValue(),
-                        categoryInfo.getVoiceStyle().getValue(),
-                        categoryInfo.getGender().getValue(),
-                        categoryInfo.getAge().getValue()
+                        categoryInfo.getMediaClassification().getTitle(),
+                        categoryInfo.getVoiceTone().getTitle(),
+                        categoryInfo.getVoiceStyle().getTitle(),
+                        categoryInfo.getGender().getTitle(),
+                        categoryInfo.getAge().getTitle()
                 )
         );
     }
@@ -127,7 +127,12 @@ public class WorkService {
                     new WorkResponse(
                             voiceId, wl.workId(), wl.title(), wl.videoLink(), wl.photoUrl(), wl.scriptUrl(), wl.recordUrl(), wl.info(), wl.isRep(),
                             new CategoryInfoValue(
-                                    wl.workId(), categoryInfoList.mediaClassification().getValue(), categoryInfoList.voiceTone().getValue(), categoryInfoList.voiceStyle().getValue(), categoryInfoList.gender().getValue(), categoryInfoList.age().getValue()
+                                    wl.workId(),
+                                    categoryInfoList.mediaClassification().getTitle(),
+                                    categoryInfoList.voiceTone().getTitle(),
+                                    categoryInfoList.voiceStyle().getTitle(),
+                                    categoryInfoList.gender().getTitle(),
+                                    categoryInfoList.age().getTitle()
                             )
                     )
             );
@@ -149,35 +154,17 @@ public class WorkService {
                             voiceId, workId, work.getTitle(), work.getVideoLink(), work.getPhotoUrl(), work.getScriptUrl(), work.getRecordUrl(), work.getInfo(), work.getIsRep(),
                             new CategoryInfoValue(
                                     workId,
-                                    work.getCategoryInfo().getMediaClassification().getValue(),
-                                    work.getCategoryInfo().getVoiceTone().getValue(),
-                                    work.getCategoryInfo().getVoiceStyle().getValue(),
-                                    work.getCategoryInfo().getGender().getValue(),
-                                    work.getCategoryInfo().getAge().getValue()
+                                    work.getCategoryInfo().getMediaClassification().getTitle(),
+                                    work.getCategoryInfo().getVoiceTone().getTitle(),
+                                    work.getCategoryInfo().getVoiceStyle().getTitle(),
+                                    work.getCategoryInfo().getGender().getTitle(),
+                                    work.getCategoryInfo().getAge().getTitle()
                             )
                     )
             );
         }
 
         return findWorkResponse;
-    }
-
-    // 대본 클릭시
-    @Transactional
-    public String readScriptUrl(Long voiceId, Long workId) {
-        validateVoice(voiceId, workId);
-        Work work = workFindService.findById(workId);
-
-        return work.getScriptUrl();
-    }
-
-    // 유튜브 링크 클릭시
-    @Transactional
-    public String readVideoLink(Long voiceId, Long workId) {
-        validateVoice(voiceId, workId);
-        Work work = workFindService.findById(workId);
-
-        return work.getVideoLink();
     }
 
     // 대표 작업물 설정

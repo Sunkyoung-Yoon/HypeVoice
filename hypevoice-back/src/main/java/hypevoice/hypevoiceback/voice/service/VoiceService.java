@@ -73,7 +73,7 @@ public class VoiceService {
 
     @Transactional
     public List<VoiceCardListResponse> readAllVoice() {
-        List<Voice> voiceList = voiceRepository.findAll();
+        List<Voice> voiceList = voiceFindService.findAll();
         List<VoiceCard> voiceCardList = new ArrayList<>();
 
         for (Voice v : voiceList) {
@@ -126,7 +126,14 @@ public class VoiceService {
     @Transactional
     public List<VoiceCardListResponse> searchVoice(String keyword) {
         List<VoiceCard> voiceCardList = voiceFindService.findByKeyword(keyword);
-        return getVoiceCardListResponses(voiceCardList);
+        List<VoiceCard> findVoiceCardList = new ArrayList<>();
+        for(VoiceCard vc : voiceCardList){
+            Work w = workFindService.findRepWorkByVoiceId(vc.voiceId());
+            if (w != null && vc.categoryInfo().getWork().getId().equals(w.getId())){
+                findVoiceCardList.add(vc);
+            }
+        }
+        return getVoiceCardListResponses(findVoiceCardList);
     }
 
     // 카테고리를 이용한 조회
@@ -166,12 +173,13 @@ public class VoiceService {
             searchVoiceCardListResponseList.add(
                     new VoiceCardListResponse(
                             vcr.voiceId(),
+                            vcr.categoryInfo().getWork().getId(),
                             vcr.photoUrl(),
-                            vcr.categoryInfo().getMediaClassification().getValue(),
-                            vcr.categoryInfo().getVoiceTone().getValue(),
-                            vcr.categoryInfo().getVoiceStyle().getValue(),
-                            vcr.categoryInfo().getGender().getValue(),
-                            vcr.categoryInfo().getAge().getValue(),
+                            vcr.categoryInfo().getMediaClassification().getTitle(),
+                            vcr.categoryInfo().getVoiceTone().getTitle(),
+                            vcr.categoryInfo().getVoiceStyle().getTitle(),
+                            vcr.categoryInfo().getGender().getTitle(),
+                            vcr.categoryInfo().getAge().getTitle(),
                             vcr.title(),
                             vcr.recordUrl(),
                             vcr.imageUrl(),

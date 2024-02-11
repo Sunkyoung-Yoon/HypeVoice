@@ -200,34 +200,6 @@ public class WorkServiceTest extends ServiceTest {
     }
 
     @Nested
-    @DisplayName("작업물의 대본 상세 조회")
-    class readWorkScript {
-        @Test
-        @DisplayName("작업물의 대본 상세 조회에 성공한다")
-        void success() {
-            // when
-            String findScriptUrl = workService.readScriptUrl(voice.getId(), work.getId());
-
-            // then
-            assertThat(findScriptUrl).isEqualTo(work.getScriptUrl());
-        }
-    }
-
-    @Nested
-    @DisplayName("작업물의 영상 상세 조회")
-    class readWorkVideo {
-        @Test
-        @DisplayName("작업물의 영상 상세 조회에 성공한다")
-        void success() {
-            // when
-            String findVideoLink = workService.readVideoLink(voice.getId(), work.getId());
-
-            // then
-            assertThat(findVideoLink).isEqualTo(work.getVideoLink());
-        }
-    }
-
-    @Nested
     @DisplayName("작업물 대표 등록 수정")
     class updateRepresentationWork {
         @Test
