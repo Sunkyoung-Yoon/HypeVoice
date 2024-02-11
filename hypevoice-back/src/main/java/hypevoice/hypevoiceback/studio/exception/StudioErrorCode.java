@@ -18,6 +18,11 @@ public enum StudioErrorCode implements ErrorCode {
     INCORRECT_PASSWORD(HttpStatus.BAD_REQUEST, "STUDIO_007", "패스워드를 틀렸습니다."),
     NULL_PASSWORD_OF_STUDIO_OR_REQUEST(HttpStatus.BAD_REQUEST, "STUDIO_008", "비공개 방에 패스워드가 설정되지 않았습니다."),
     UNABLE_CONNECT_PRIVATE_ROOM(HttpStatus.BAD_REQUEST, "STUDIO_009", "비공개방에 접근 할 수 없습니다."),
+    UNABLE_RECORDING_START(HttpStatus.BAD_REQUEST, "STUDIO_010", "녹음 시작 할 수 없습니다."),
+    UNABLE_RECORDING_STOP(HttpStatus.BAD_REQUEST, "STUDIO_011", "녹음을 정지 할 수 없습니다.."),
+    UNABLE_RECORDING_DELETE(HttpStatus.BAD_REQUEST, "STUDIO_012", "녹음을 삭제 할 수 없습니다.."),
+    UNABLE_RECORDING(HttpStatus.BAD_REQUEST, "STUDIO_013", "녹음을 관리 할 권한이 없습니다.."),
+    RECORDING_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDIO_014", "녹음을 찾을 수 올 수 없습니다.."),
     STUDIO_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDIO_MEMBER_001", "스튜디오에 참여한 인원을 찾을 수 없습니다."),
     ;
 

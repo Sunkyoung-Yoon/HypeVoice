@@ -57,9 +57,43 @@ public class StudioController {
         return ResponseEntity.status(HttpStatus.OK).body(studioService.joinStudio(loginId,studioId,password));
     }
 
-//    @DeleteMapping("/{studioId}/connect")
-//    public ResponseEntity<Void> leaveStudio(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId) {
-//        studioService.leaveStudio(loginId, studioId);
-//        return ResponseEntity.ok().build();
-//    }
+
+    // 녹음 시작
+    @PostMapping("/{studioId}/recording/start/individual")
+    public ResponseEntity<String> startRecordingIndividual(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId){
+        System.out.println("레코딩 시작 ");
+        String response = studioService.startRecording(studioId,loginId, true);
+        System.out.println("레코딩 시작 서비스 완료");
+        System.out.println(response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+
+    }
+
+    @PostMapping("/{studioId}/recording/start")
+    public ResponseEntity<String> startRecording(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId){
+        System.out.println("레코딩 시작 ");
+        String response = studioService.startRecording(studioId,loginId, false);
+        System.out.println("레코딩 시작 서비스 완료");
+        System.out.println(response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+
+    }
+
+    @PostMapping("/{studioId}/recording/stop/{recordingId}")
+    public ResponseEntity<String> stopRecording(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId, @PathVariable("recordingId") String recordingId){
+        String status = studioService.stopRecording(recordingId,loginId,studioId);
+        return ResponseEntity.status(HttpStatus.OK).body(status);
+    }
+
+    @GetMapping("/{studioId}/recording/{recordingId}")
+    public ResponseEntity<String> getRecording(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId, @PathVariable("recordingId") String recordingId) {
+        String response = studioService.getRecordingUrl(recordingId,loginId,studioId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @DeleteMapping("/{studioId}/recording/{recordingId}")
+    public ResponseEntity<Void> deleteRecording(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId, @PathVariable("recordingId") String recordingId) {
+        studioService.deleteRecording(recordingId,loginId,studioId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 }
