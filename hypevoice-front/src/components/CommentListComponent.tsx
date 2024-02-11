@@ -14,7 +14,6 @@ import axios from 'axios';
 import { QueryClient, useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import LoadingComponent from './LoadingComponent';
-import { GetCommentType } from './CommunityType';
 
 const CommunityListStyleDiv = styled.div`
 	.comments-container {
@@ -102,6 +101,15 @@ const CommunityListStyleDiv = styled.div`
 	}
 `;
 
+type Comment = {
+	comment_id: number;
+	board_id: number;
+	member_id: string;
+	content: string;
+	created_date: string;
+	modified_date: string;
+};
+
 const queryClient = new QueryClient();
 const CommentListComponent = () => {
 	const loginUserId = '';
@@ -112,38 +120,21 @@ const CommentListComponent = () => {
 	const currentPostId = param.id;
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	let commentData: GetCommentType[] = [];
+	let commentData: Comment[] = [];
 
 	useEffect(() => {
 		setCommentsCount(commentData.length);
 	}, [commentData]);
 
 	// ▼ GetComments ▼
-	// const getComments = async () => {
-	// 	return await axios.get(`/api/comments/${currentPostId}`);
-	// };
-
-	// const { data, isLoading, isFetched, isFetching, isError } = useQuery({
-	// 	queryKey: ['post-comments'],
-	// 	queryFn: getComments,
-	// 	staleTime: 60000,
-	// });
-	const { id } = useParams();
-	const base_server_url = 'http://localhost:8080';
-	const getComments = async (): Promise<GetCommentType[]> => {
-		const response = await axios.get(base_server_url + `/api/comments/1`);
-		return response.data.commentList;
+	const getComments = async () => {
+		return await axios.get(`/api/comments/${currentPostId}`);
 	};
 
-	const {
-		data: boardList,
-		isLoading,
-		isFetched,
-		isError,
-	} = useQuery<GetCommentType[]>({
-		queryKey: ['get-comments'],
+	const { data, isLoading, isFetched, isFetching, isError } = useQuery({
+		queryKey: ['post-comments'],
 		queryFn: getComments,
-		staleTime: 1000 * 60 * 5,
+		staleTime: 60000,
 	});
 
 	if (isLoading) {
@@ -151,24 +142,23 @@ const CommentListComponent = () => {
 		return <LoadingComponent />;
 	}
 
-	// if (isFetched) {
-	// 	console.log('Comments : isFetched');
-	// 	queryClient.invalidateQueries({ queryKey: ['get-comments'] });
-	// }
+	if (isFetched) {
+		console.log('Comments : isFetched');
+		queryClient.invalidateQueries({ queryKey: ['post-comments'] });
+	}
 
-	// if (isFetching) {
-	// 	console.log('Comments : isFetching');
-	// 	queryClient.invalidateQueries({ queryKey: ['comments'] });
-	// 	return <LoadingComponent />;
-	// }
+	if (isFetching) {
+		console.log('Comments : isFetching');
+		queryClient.invalidateQueries({ queryKey: ['comments'] });
+		return <LoadingComponent />;
+	}
 
 	if (isError) {
 		console.log('Comments : isError');
 		return <div>Error</div>;
 	}
 
-	commentData = boardList ? boardList : [];
-	console.log(commentData);
+	commentData = data?.data;
 	// ▲ GetComments ▲
 
 	const pageCount: number = Math.ceil(commentsCount / commentsPerPage);

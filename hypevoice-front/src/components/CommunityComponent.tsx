@@ -17,16 +17,13 @@ import Pagination from '@mui/material/Pagination';
 import styled from 'styled-components';
 import LoadingComponent from './LoadingComponent';
 import ScrollToTopComponent from './ScrollToTopComponent';
-import { GetPostType } from './CommunityType';
-import { useRecoilValue } from 'recoil';
-import { LoginState } from '@/recoil/Auth';
 
 const CommunityStyleDiv = styled.div`
 	.community-component {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		width: 95%;
+		width: 98%;
 		padding: 10px;
 		margin-left: auto;
 		margin-right: auto;
@@ -90,7 +87,7 @@ const CommunityStyleDiv = styled.div`
 	.community-post-header-title a:hover {
 	}
 
-	.community-post-header-writerNickname {
+	.community-post-header-memberid {
 		flex-basis: 14%;
 		/* background-color: aquamarine; */
 	}
@@ -160,7 +157,7 @@ const CommunityStyleDiv = styled.div`
 		color: #007bff;
 	}
 
-	.community-post-writerNickname {
+	.community-post-memberid {
 		flex-basis: 14%;
 		/* background-color: aquamarine; */
 	}
@@ -190,37 +187,36 @@ const CommunityStyleDiv = styled.div`
 `;
 
 // type
+export interface GetPostType {
+	boardId: number;
+	title: string;
+	content: string;
+	view: number;
+	category: string;
+	createdDate: string;
+	writerId: number;
+	writerNickname: string;
+}
 
 const queryClient = new QueryClient();
-const base_server_url = 'http://localhost:8080';
-const getAllPosts = async (): Promise<GetPostType[]> => {
-	const response = await axios.get<{ boardList: GetPostType[] }>(
-		base_server_url + '/api/boards',
-	);
-	return response.data.boardList;
-};
-
 const CommunityComponent: React.FC = () => {
 	const [searchTermInput, setSearchTermInput] = useState('');
 	const [searchTerm, setSearchTerm] = useState('');
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [currentcategory, setCurrentcategory] = useState<string>('전체');
 	const [postsPerPage, setPostsPerPage] = useState<number>(10);
-	const isLogin = useRecoilValue(LoginState);
 	const navigation = useNavigate();
 
-	const {
-		data: boardList,
-		isLoading,
-		isFetched,
-		isError,
-	} = useQuery<GetPostType[]>({
-		queryKey: ['get-posts'],
-		queryFn: getAllPosts,
-		staleTime: 1000 * 60 * 5,
-	});
+	// ▼ axios와 React-Query를 이용하여 외부 API에서 게시물 Get ▼
+	const getAllPosts = async () => {
+		return await axios.get('/api/boards');
+	};
 
-	console.log(boardList);
+	const { data, isLoading, isFetched, isError } = useQuery({
+		queryKey: ['community-posts'],
+		queryFn: getAllPosts,
+		staleTime: 60000,
+	});
 
 	if (isLoading) {
 		console.log('Community : isLoading');
@@ -229,7 +225,7 @@ const CommunityComponent: React.FC = () => {
 
 	if (isFetched) {
 		console.log('Community : isFetched');
-		queryClient.invalidateQueries({ queryKey: ['get-posts'] });
+		queryClient.invalidateQueries({ queryKey: ['posts'] });
 	}
 
 	if (isError) {
@@ -237,36 +233,25 @@ const CommunityComponent: React.FC = () => {
 		return <div>Error</div>;
 	}
 
-	const getCurrentTime = (): string => {
-		const now = new Date();
-		const hours = now.getHours().toString().padStart(2, '0');
-		const minutes = now.getMinutes().toString().padStart(2, '0');
-		return `${hours}:${minutes}`;
-	};
+	console.log(data)
+	// ▲ axios와 React-Query를 이용하여 외부 API에서 게시물 Get ▲
 
-	const formatDate = (dateString: string): string => {
-		const currentTime = getCurrentTime();
-		const currentDate = new Date().toISOString().split('T')[0];
-		const postDate = dateString.split('T')[0];
-
-		if (currentDate === postDate) {
-			return currentTime;
-		} else {
-			const [year, month, day] = postDate.split('-');
-			return `${year.slice(2)}.${month}.${day}`;
-		}
-	};
+	// postData : Back DB에서 불러온 글들을 담을 배열
+	const postData: GetPostType[] = data?.data;
 
 	// FilteredCategoryPosts : Category에 따라 글을 출력
 	// (전체, 자유, 피드백, 구인구직)
 	const FilteredCategoryPosts: GetPostType[] =
 		currentcategory === '전체'
-			? boardList
-			: boardList.filter((post) => post.category === currentcategory);
+			? postData
+			: postData.filter((post) => post.category === currentcategory);
 
 	// searchedPosts : 검색 결과에 따라 글을 출력
 	const searchedPosts: GetPostType[] = searchTerm
-		? FilteredCategoryPosts.filter((post) => post.title.includes(searchTerm))
+		? FilteredCategoryPosts.filter(
+				(post) =>
+					post.title.includes(searchTerm) || post.content.includes(searchTerm),
+		  )
 		: FilteredCategoryPosts;
 
 	// Pagination에 따라 글을 출력
@@ -343,17 +328,13 @@ const CommunityComponent: React.FC = () => {
 						</ButtonGroup>
 					</div>
 					<div className="community-header-right">
-						{isLogin ? (
-							<Button
-								variant="contained"
-								sx={{ m: 1 }}
-								onClick={() => navigation('/community/write')}
-							>
-								글쓰기
-							</Button>
-						) : (
-							<div></div>
-						)}
+						<Button
+							variant="contained"
+							sx={{ m: 1 }}
+							onClick={() => navigation('/community/write')}
+						>
+							글쓰기
+						</Button>
 						<FormControl variant="standard" sx={{ m: 1, minWidth: 90 }}>
 							<InputLabel id="community-header-postsperpage">
 								페이지 글 개수
@@ -373,71 +354,61 @@ const CommunityComponent: React.FC = () => {
 						</FormControl>
 					</div>
 				</div>
-				{currentPosts ? (
-					<>
-						<List className="community-post-container">
-							<ListItem className="community-post-header">
-								<div className="community-post-header-boardid">번호</div>
-								<div className="community-post-header-category">분류</div>
-								<div className="community-post-header-title">제목</div>
-								<div className="community-post-header-writerNickname">
-									작성자
-								</div>
-								<div className="community-post-header-date">작성일자</div>
-								<div className="community-post-header-view">조회수</div>
-							</ListItem>
-							{currentPosts.map((p) => (
-								<ListItem key={p.boardId} className="community-post">
-									<div className="community-post-boardid">{p.boardId}</div>
-									<div className="community-post-category">{p.category}</div>
-									<div className="community-post-title">
-										<Link
-											to={`/community/${p.boardId}`}
-											className="community-post-title-link"
-										>
-											<p>{p.title}</p>
-										</Link>
-									</div>
-									<div className="community-post-writerNickname">
-										{p.writerNickname}
-									</div>
-									<div className="community-post-date">
-										{formatDate(p.createdDate)}
-									</div>
-									<div className="community-post-view">{p.view}</div>
-								</ListItem>
-							))}
-						</List>
-						<div className="pagination">
-							<Pagination
-								count={pageCount}
-								page={currentPage}
-								onChange={handlePageClick}
-							/>
-						</div>
-						<div className="search-bar">
-							<TextField
-								id="standard-basic"
-								label="검색어"
-								value={searchTermInput}
-								onChange={handleInputChange}
-								variant="standard"
-							/>
-							<Button
-								variant="contained"
-								size="small"
-								onClick={() => {
-									handleSearchClick();
-									ScrollToTopComponent();
-								}}
-							>
-								검색
-							</Button>
-						</div>
-					</>
-				) : (
-					<div>게시물이 없습니다</div>
-				)}
+				<List className="community-post-container">
+					<ListItem className="community-post-header">
+						<div className="community-post-header-boardId">번호</div>
+						<div className="community-post-header-category">분류</div>
+						<div className="community-post-header-title">제목</div>
+						<div className="community-post-header-writerNickname">작성자</div>
+						<div className="community-post-header-date">작성일자</div>
+						<div className="community-post-header-view">조회수</div>
+					</ListItem>
+					{currentPosts.map((p) => (
+						<ListItem key={p.boardId} className="community-post">
+							<div className="community-post-boardid">{p.boardId}</div>
+							<div className="community-post-category">{p.category}</div>
+							<div className="community-post-title">
+								<Link
+									to={`/community/${p.boardId}`}
+									className="community-post-title-link"
+								>
+									<p>{p.title}</p>
+								</Link>
+							</div>
+							<div className="community-post-writerNickname">
+								{p.writerNickname}
+							</div>
+							<div className="community-post-date">{p.createdDate}</div>
+							<div className="community-post-view">{p.view}</div>
+						</ListItem>
+					))}
+				</List>
+				<div className="pagination">
+					<Pagination
+						count={pageCount}
+						page={currentPage}
+						onChange={handlePageClick}
+					/>
+				</div>
+				<div className="search-bar">
+					<TextField
+						id="standard-basic"
+						label="검색어"
+						value={searchTermInput}
+						onChange={handleInputChange}
+						variant="standard"
+					/>
+					<Button
+						variant="contained"
+						size="small"
+						onClick={() => {
+							handleSearchClick();
+							ScrollToTopComponent();
+						}}
+					>
+						검색
+					</Button>
+				</div>
 			</div>
 		</CommunityStyleDiv>
 	);

@@ -1,16 +1,24 @@
 import { Button, FormControl, NativeSelect, TextField } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { QueryClient, useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { CreatePostType } from './CommunityType';
-import { useRecoilValue } from 'recoil';
-import { LoginState } from '@/recoil/Auth';
-import AudioRecorder from './AudioRecorder';
 // import AudioRecord from './AudioRecord';
+
+export type PostEditorProps = {
+	initialTitleValue?: string;
+	initialContentValue?: string;
+	onCreate: (title: string, content: string) => void;
+};
+
+export type CreatePostType = {
+	title: string;
+	content: string;
+	category: string;
+};
 
 const PostEditorStyleDiv = styled.div`
 	.post-editor-component {
@@ -125,7 +133,6 @@ const formats = [
 	'align',
 	'link',
 	'image',
-	'video',
 	'clean',
 ];
 
@@ -135,7 +142,7 @@ const modules = {
 		['bold', 'underline', 'strike'],
 		[{ color: [] }],
 		[{ align: [] }],
-		['link', 'image', 'video'],
+		['link', 'image'],
 		['clean'],
 	],
 	clipboard: {
@@ -147,40 +154,17 @@ Quill.register('formats/my-link', MyLink);
 // Quill.register('formats/align', Quill.import('attributors/style/align'));
 
 const queryClient = new QueryClient();
-
-const base_server_url = 'http://localhost:8080';
-
 const PostCreateComponent = () => {
 	const navigation = useNavigate();
 	const [title, setTitle] = useState<string>('');
 	const [content, setContent] = useState<string>('');
-	const [category, setCategory] = useState<string>('');
-	const isLogin = useRecoilValue(LoginState);
-	const getAccessToken = () => {
-		const cookies = document.cookie.split('; ');
-		const accessTokenCookie = cookies.find((cookie) =>
-			cookie.startsWith('access_token='),
-		);
 
-		if (accessTokenCookie) {
-			const accessToken = accessTokenCookie.split('=')[1];
-			return accessToken;
-		}
-	};
+	// ▼ 임시로 데이터 저장하기 위한 것
+	const [tempData, setTempData] = useState<CreatePostType[]>([]);
+	const tempDataId = useRef<number>(0);
 
-	const createPost = async (newPost: CreatePostType): Promise<number> => {
-		console.log(`Bearer ${getAccessToken()}`);
-		const token = getAccessToken();
-		const response = await axios.post(
-			base_server_url + `/api/boards`,
-			newPost,
-			{
-				headers: {
-					'Authorization': `Bearer ${token}`,
-				},
-			},
-		);
-		return response.data;
+	const createPost = async (newPost: CreatePostType) => {
+		return await axios.post(`/api/boards`, newPost);
 	};
 
 	const { mutate } = useMutation({
@@ -202,18 +186,18 @@ const PostCreateComponent = () => {
 		mutate(newPost);
 	};
 
-	const onCreate = (title: string, content: string, category: string) => {
+	const onCreate = (title: string, category: string, content: string) => {
+		console.log(content);
 		const newPost: CreatePostType = {
 			title: title,
-			content: content,
 			category: category,
+			content: content,
 		};
 		createPostHandler(newPost);
 	};
 	// ▲ 임시로 데이터 저장하기 위한 것
 
 	useEffect(() => {
-		setCategory('');
 		setTitle('');
 		setContent('');
 	}, []);
@@ -225,10 +209,6 @@ const PostCreateComponent = () => {
 
 	const handleEditorChange = (value: string) => {
 		setContent(value);
-	};
-
-	const handleCategoryChange = (value: string) => {
-		setCategory(value);
 	};
 
 	const handlePublish = () => {
@@ -248,97 +228,89 @@ const PostCreateComponent = () => {
 			return;
 		}
 
-		// const processedContent = content.replace(
-		// 	/<a /g,
-		// 	'<a target="_blank" rel="noopener noreferrer" ',
-		// );
+		const processedContent = content.replace(
+			/<a /g,
+			'<a target="_blank" rel="noopener noreferrer" ',
+		);
 
-		onCreate(title, content, '자유');
+		onCreate(title, '자유', processedContent);
 		setTitle('');
 		setContent('');
-		setCategory('');
 		console.log('글을 게시판에 등록합니다:', content);
 	};
 
 	return (
 		<PostEditorStyleDiv>
-			{isLogin ? (
-				<div className="post-editor-component">
-					<div className="post-editor">
-						<div className="post-editor-header">
-							<div className="post-editor-header-upper">
-								<div className="post-editor-header-upper-nav">
-									<p>글 작성하기</p>
-								</div>
-								<Button
-									variant="contained"
-									className="post-tolist-button"
-									onClick={() => {
-										navigation('/community');
-									}}
-								>
-									<p>목록</p>
-								</Button>
+			<div className="post-editor-component">
+				<div className="post-editor">
+					<div className="post-editor-header">
+						<div className="post-editor-header-upper">
+							<div className="post-editor-header-upper-nav">
+								<p>글 작성하기</p>
 							</div>
-							<div className="post-editor-header-lower">
-								<div className="post-editor-header-category">
-									<p>분류</p>
-									<FormControl>
-										<NativeSelect
-											className="post-editor-header-category-box"
-											defaultValue={'자유'}
-											inputProps={{
-												name: 'category',
-												id: 'uncontrolled-native',
-											}}
-											id="demo-select-small"
-										>
-											<option value="자유">자유</option>
-											<option value="피드백">피드백</option>
-											<option value="구인구직">구인구직</option>
-										</NativeSelect>
-									</FormControl>
-								</div>
-								<div className="post-editor-header-title">
-									<p>제목</p>
-									<TextField
-										className="post-editor-header-title-textfield"
-										id="standard-basic"
-										variant="standard"
-										fullWidth
-										value={title}
-										onChange={handleTitleChange}
-									/>
-								</div>
-							</div>
-						</div>
-						<ReactQuill
-							className="post-editor-reactquill"
-							theme="snow"
-							modules={modules}
-							formats={formats as unknown as string[]}
-							value={content}
-							onChange={handleEditorChange}
-						/>
-						<div className="post-editor-footer">
 							<Button
 								variant="contained"
-								color="success"
 								className="post-tolist-button"
-								onClick={handlePublish}
-								size="large"
+								onClick={() => {
+									navigation('/community');
+								}}
 							>
-								<p>등록하기</p>
+								<p>목록</p>
 							</Button>
 						</div>
-						<div>
-							<AudioRecorder />
+						<div className="post-editor-header-lower">
+							<div className="post-editor-header-category">
+								<p>분류</p>
+								<FormControl>
+									<NativeSelect
+										className="post-editor-header-category-box"
+										defaultValue={'자유'}
+										inputProps={{
+											name: 'category',
+											id: 'uncontrolled-native',
+										}}
+										id="demo-select-small"
+									>
+										<option value="자유">자유</option>
+										<option value="피드백">피드백</option>
+										<option value="구인구직">구인구직</option>
+									</NativeSelect>
+								</FormControl>
+							</div>
+							<div className="post-editor-header-title">
+								<p>제목</p>
+								<TextField
+									className="post-editor-header-title-textfield"
+									id="standard-basic"
+									variant="standard"
+									fullWidth
+									value={title}
+									onChange={handleTitleChange}
+								/>
+							</div>
 						</div>
 					</div>
+					<ReactQuill
+						className="post-editor-reactquill"
+						theme="snow"
+						modules={modules}
+						formats={formats as unknown as string[]}
+						value={content}
+						onChange={handleEditorChange}
+					/>
+					<div className="post-editor-footer">
+						<Button
+							variant="contained"
+							color="success"
+							className="post-tolist-button"
+							onClick={handlePublish}
+							size="large"
+						>
+							<p>등록하기</p>
+						</Button>
+					</div>
 				</div>
-			) : (
-				<div>로그인이 필요합니다</div>
-			)}
+			</div>
 		</PostEditorStyleDiv>
 	);
 };

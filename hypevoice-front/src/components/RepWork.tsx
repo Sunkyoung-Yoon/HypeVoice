@@ -1,49 +1,58 @@
-import { WorkInfo } from "./type";
+import { WorkInfo, ChangeIsRep } from "./type";
 import CustomAudioPlayer from "./CustomAudioPlayer";
 import styled from "styled-components";
 import { useRecoilValue } from "recoil";
 import { CurrentMemberAtom } from "@/recoil/Auth";
+import { axiosClient } from "@/api/axios";
+import { getCookie } from "@/api/cookie";
 
-interface WorkWrapperProps {
-  isHovered: boolean; // 마우스 올라갔는 지 여부
-  isRep: boolean; // 대표 작업물 여부
-}
-
-const WorkWrapper = styled.div.attrs<WorkWrapperProps>(
-  () => ({})
-)<WorkWrapperProps>`
+// 전체 래퍼
+const WorkWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 330px;
   height: 390px;
-  cursor: pointer;
-  opacity: ${(props) => (props.isHovered ? 0.4 : 1)};
-  transition: opacity 0.3s;
 `;
 
+// 별 아이콘에 대표 여부 알려주는 props
 interface StarProps {
-  isRep: boolean;
+  isRep: number;
 }
-
-const Star = styled.div<StarProps>`
+// 별 아이콘
+const Star = styled.span<StarProps>`
   position: relative;
-  top: 10px;
-  left: 10px;
+  top: 8px;
+  left: 8px;
   cursor: pointer;
-  color: ${(props) => (props.isRep ? "yellow" : "transparent")};
-  border: 1px solid;
-  border-color: ${(props) => (props.isRep ? "yellow" : "grey")};
+  color: ${(props) => (props.isRep === 1 ? "yellow" : "grey")};
   border-radius: 50%;
   width: 20px;
   height: 20px;
+  font-size: 4vw;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-const NonTransparentDiv = styled.div`
-  opacity: 1 !important;
-`;
+// 대표작업물 여부 바꾸기 요청
+const changeIsRep = async (targetWorkInfo: ChangeIsRep) => {
+  const accessToken = getCookie("access_token");
+  try {
+    const response = await axiosClient.put(
+      `/api/voices/${targetWorkInfo.voiceId}/works/${targetWorkInfo.workId}`,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    alert(response.data);
+    alert("대표 작업물 등록 성공!");
+    return response.data;
+  } catch (error) {
+    alert("대표 작업물 등록 실패!");
+    console.error(error);
+    return null;
+  }
+};
 
 const ImageContainer = styled.div`
   flex: 3;
@@ -80,25 +89,27 @@ const Tag = styled.span`
   font-size: 12px;
 `;
 
-export default function RepWork({
-  work,
-  isHovered,
-  isRep,
-  handleStarClick,
-}: {
-  work: WorkInfo;
-  isHovered: boolean;
-  isRep: boolean;
-  handleStarClick: () => void;
-}) {
+const handleStarClick = async (targetWork: WorkInfo) => {
+  const beforeVoiceId = targetWork.voiceId;
+  const beforWorkId = targetWork.workId;
+  const before: ChangeIsRep = {
+    voiceId: beforeVoiceId,
+    workId: beforWorkId,
+  };
+  try {
+    const repOrNot = await changeIsRep(before);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export default function RepWork({ work }: { work: WorkInfo }) {
   const currentMember = useRecoilValue(CurrentMemberAtom);
   return (
-    <WorkWrapper isHovered={isHovered} isRep={true}>
-      {work.voiceId === currentMember.memberId && (
-        <Star isRep={isRep} onClick={handleStarClick}>
-          왜 아무것도 안보이니?
-        </Star>
-      )}
+    <WorkWrapper>
+      <div onClick={handleStarClick}>
+        <Star isRep={work.isRep}>{work.isRep ? "★" : "☆"}</Star>
+      </div>
       <div>
         <div style={{ display: "flex", marginBottom: "15px" }}>
           <ImageContainer>
@@ -141,9 +152,7 @@ export default function RepWork({
           >
             {work.title}
           </h2>
-          <NonTransparentDiv>
-            <CustomAudioPlayer src={work.recordUrl} />
-          </NonTransparentDiv>
+          <CustomAudioPlayer src={work.recordUrl} />
         </div>
       </div>
     </WorkWrapper>

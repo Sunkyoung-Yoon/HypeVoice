@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRecoilValue } from "recoil";
-import { WorkInfo } from "./type";
+import { WorkInfo, WorkModalProps } from "./type";
 import { CurrentMemberAtom } from "@/recoil/Auth";
 import { axiosClient } from "@/api/axios";
 import WorkTemplate from "./WorkTemplate";
@@ -8,19 +8,26 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import Pagination from "@mui/material/Pagination";
+import WorkModal from "./WorkModal";
 
+// 작업물 추가 버튼
+const CreateWorkButton = styled.button`
+  margin-left: 40px;
+  width: 110px;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 15px;
+  background-color: #5b5ff4;
+  color: #fff;
+  cursor: pointer;
+`;
+
+// 작업물들 갯수 넘겨주기 to Voice
 type WorkGridProps = {
   setWorkCount: React.Dispatch<React.SetStateAction<number>>;
 };
 
-// const WorksGrid = styled.div`
-//   display: flex;
-//   flex-wrap: wrap;
-//   justify-content: flex-start;
-//   padding: 15px;
-//   margin: 15px;
-// `;
-
+// 작업물들 들어가는 곳
 const WorksGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -38,6 +45,7 @@ const WorksGrid = styled.div`
   }
 `;
 
+// 페이지네이션용
 const PaginationContainer = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -50,7 +58,21 @@ export default function WorkGrid({ setWorkCount }: WorkGridProps) {
   const indexOfLastWork = activePage * worksPerPage;
   const indexOfFirstWork = indexOfLastWork - worksPerPage;
   const currentMember = useRecoilValue(CurrentMemberAtom);
-  const { voiceId } = useParams<{ voiceId: string }>();
+  const voiceIdString = useParams<{ voiceId: string }>();
+  const voiceId = voiceIdString.voiceId
+    ? parseInt(voiceIdString.voiceId)
+    : null;
+  const [open, setOpen] = useState(false);
+
+  // 작업물 추가 버튼 클릭 => 모달 창 열리기
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  // WorkModal 컴포넌트에서 모달을 닫음
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   // const fetchWorks = async (): Promise<WorkInfo[]> => {
   //   try {
@@ -114,185 +136,6 @@ export default function WorkGrid({ setWorkCount }: WorkGridProps) {
               age: "노년",
             },
           },
-          {
-            voiceId: 3,
-            workId: 3,
-            title: "작업물 제목 3",
-            videoLink: "http://example.com/video3.mp4",
-            photoUrl: "http://example.com/photo3.jpg",
-            scriptUrl: "http://example.com/script3.txt",
-            recordUrl: "http://example.com/record3.mp3",
-            info: "3번째 작업물에 대한 설명입니다. 이 작업물은 애니메이션 분야의 작업물입니다.",
-            isRep: 1,
-            CategoryInfoValue: {
-              workId: 3,
-              mediaClassification: "애니메이션",
-              voiceTone: "고음",
-              voiceStyle: "부드러운",
-              gender: "여성",
-              age: "청소년",
-            },
-          },
-          // 작업물 4
-          {
-            voiceId: 4,
-            workId: 4,
-            title: "작업물 제목 4",
-            videoLink: "http://example.com/video4.mp4",
-            photoUrl: "http://example.com/photo4.jpg",
-            scriptUrl: "http://example.com/script4.txt",
-            recordUrl: "http://example.com/record4.mp3",
-            info: "4번째 작업물에 대한 설명입니다. 이 작업물은 광고 분야의 작업물입니다.",
-            isRep: 0,
-            CategoryInfoValue: {
-              workId: 4,
-              mediaClassification: "광고",
-              voiceTone: "중음",
-              voiceStyle: "담백한",
-              gender: "남성",
-              age: "청년",
-            },
-          },
-          // 작업물 5
-          {
-            voiceId: 5,
-            workId: 5,
-            title: "작업물 제목 5",
-            videoLink: "http://example.com/video5.mp4",
-            photoUrl: "http://example.com/photo5.jpg",
-            scriptUrl: "http://example.com/script5.txt",
-            recordUrl: "http://example.com/record5.mp3",
-            info: "5번째 작업물에 대한 설명입니다. 이 작업물은 게임 분야의 작업물입니다.",
-            isRep: 1,
-            CategoryInfoValue: {
-              workId: 5,
-              mediaClassification: "게임",
-              voiceTone: "저음",
-              voiceStyle: "친근한",
-              gender: "남성",
-              age: "성인",
-            },
-          },
-          // 작업물 6
-          {
-            voiceId: 6,
-            workId: 6,
-            title: "작업물 제목 6",
-            videoLink: "http://example.com/video6.mp4",
-            photoUrl: "http://example.com/photo6.jpg",
-            scriptUrl: "http://example.com/script6.txt",
-            recordUrl: "http://example.com/record6.mp3",
-            info: "6번째 작업물에 대한 설명입니다. 이 작업물은 오디오북 분야의 작업물입니다.",
-            isRep: 0,
-            CategoryInfoValue: {
-              workId: 6,
-              mediaClassification: "오디오북",
-              voiceTone: "중음",
-              voiceStyle: "따뜻한",
-              gender: "여성",
-              age: "청년",
-            },
-          },
-          // 작업물 7
-          {
-            voiceId: 7,
-            workId: 7,
-            title: "작업물 제목 7",
-            videoLink: "http://example.com/video7.mp4",
-            photoUrl: "http://example.com/photo7.jpg",
-            scriptUrl: "http://example.com/script7.txt",
-            recordUrl: "http://example.com/record7.mp3",
-            info: "7번째 작업물에 대한 설명입니다. 이 작업물은 뉴스 분야의 작업물입니다.",
-            isRep: 1,
-            CategoryInfoValue: {
-              workId: 7,
-              mediaClassification: "뉴스",
-              voiceTone: "고음",
-              voiceStyle: "명확한",
-              gender: "여성",
-              age: "성인",
-            },
-          },
-          // 작업물 8
-          {
-            voiceId: 8,
-            workId: 8,
-            title: "작업물 제목 8",
-            videoLink: "http://example.com/video8.mp4",
-            photoUrl: "http://example.com/photo8.jpg",
-            scriptUrl: "http://example.com/script8.txt",
-            recordUrl: "http://example.com/record8.mp3",
-            info: "8번째 작업물에 대한 설명입니다. 이 작업물은 교육 분야의 작업물입니다.",
-            isRep: 0,
-            CategoryInfoValue: {
-              workId: 8,
-              mediaClassification: "교육",
-              voiceTone: "저음",
-              voiceStyle: "신중한",
-              gender: "남성",
-              age: "노년",
-            },
-          },
-          // 작업물 9
-          {
-            voiceId: 9,
-            workId: 9,
-            title: "작업물 제목 9",
-            videoLink: "http://example.com/video9.mp4",
-            photoUrl: "http://example.com/photo9.jpg",
-            scriptUrl: "http://example.com/script9.txt",
-            recordUrl: "http://example.com/record9.mp3",
-            info: "9번째 작업물에 대한 설명입니다. 이 작업물은 낭독 분야의 작업물입니다.",
-            isRep: 1,
-            CategoryInfoValue: {
-              workId: 9,
-              mediaClassification: "낭독",
-              voiceTone: "중음",
-              voiceStyle: "감성적인",
-              gender: "여성",
-              age: "청소년",
-            },
-          },
-          // 작업물 10
-          {
-            voiceId: 10,
-            workId: 10,
-            title: "작업물 제목 10",
-            videoLink: "http://example.com/video10.mp4",
-            photoUrl: "http://example.com/photo10.jpg",
-            scriptUrl: "http://example.com/script10.txt",
-            recordUrl: "http://example.com/record10.mp3",
-            info: "10번째 작업물에 대한 설명입니다. 이 작업물은 라디오 분야의 작업물입니다.",
-            isRep: 0,
-            CategoryInfoValue: {
-              workId: 10,
-              mediaClassification: "라디오",
-              voiceTone: "고음",
-              voiceStyle: "사교적인",
-              gender: "남성",
-              age: "청년",
-            },
-          },
-          // 작업물 11
-          {
-            voiceId: 11,
-            workId: 11,
-            title: "작업물 제목 11",
-            videoLink: "http://example.com/video11.mp4",
-            photoUrl: "http://example.com/photo11.jpg",
-            scriptUrl: "http://example.com/script11.txt",
-            recordUrl: "http://example.com/record11.mp3",
-            info: "11번째 작업물에 대한 설명입니다. 이 작업물은 TV쇼 분야의 작업물입니다.",
-            isRep: 1,
-            CategoryInfoValue: {
-              workId: 11,
-              mediaClassification: "TV쇼",
-              voiceTone: "중음",
-              voiceStyle: "유쾌한",
-              gender: "여",
-              age: "노년",
-            },
-          },
         ]);
       }, 1000)
     );
@@ -323,6 +166,14 @@ export default function WorkGrid({ setWorkCount }: WorkGridProps) {
 
   return (
     <>
+      <CreateWorkButton onClick={handleClick}>작업물 추가</CreateWorkButton>
+      <WorkModal
+        open={open}
+        onClose={handleClose}
+        role="create"
+        voiceId={voiceId}
+        workId={0}
+      />
       <WorksGrid>
         {currentWorks ? (
           currentWorks.map((work) => (
