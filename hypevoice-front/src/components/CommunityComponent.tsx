@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { QueryClient, useQuery } from '@tanstack/react-query';
+import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -191,7 +191,6 @@ const CommunityStyleDiv = styled.div`
 
 // type
 
-const queryClient = new QueryClient();
 const base_server_url = 'http://localhost:8080';
 const getAllPosts = async (): Promise<GetPostType[]> => {
 	const response = await axios.get<{ boardList: GetPostType[] }>(
@@ -208,16 +207,17 @@ const CommunityComponent: React.FC = () => {
 	const [postsPerPage, setPostsPerPage] = useState<number>(10);
 	const isLogin = useRecoilValue(LoginState);
 	const navigation = useNavigate();
-
+	const queryClient = useQueryClient();
 	const {
 		data: boardList,
 		isLoading,
 		isFetched,
+		isFetching,
 		isError,
 	} = useQuery<GetPostType[]>({
 		queryKey: ['get-posts'],
 		queryFn: getAllPosts,
-		staleTime: 1000 * 60 * 5,
+		staleTime: 100000,
 	});
 
 	console.log(boardList);
@@ -228,15 +228,18 @@ const CommunityComponent: React.FC = () => {
 	}
 
 	if (isFetched) {
+		// queryClient.invalidateQueries();
 		console.log('Community : isFetched');
-		queryClient.invalidateQueries({ queryKey: ['get-posts'] });
+	}
+
+	if (isFetching) {
+		console.log('Community : isFetching');
 	}
 
 	if (isError) {
 		console.log('Community : isError');
 		return <div>Error</div>;
 	}
-
 	const getCurrentTime = (): string => {
 		const now = new Date();
 		const hours = now.getHours().toString().padStart(2, '0');
