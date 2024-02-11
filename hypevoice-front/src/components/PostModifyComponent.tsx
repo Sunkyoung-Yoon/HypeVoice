@@ -9,6 +9,7 @@ import axios from 'axios';
 import { GetPostType } from './CommunityType';
 import LoadingComponent from './LoadingComponent';
 import { CreatePostType } from './CommunityType';
+import PostEditor from './PostEditor';
 // import AudioRecord from './AudioRecord';
 
 const PostEditorStyleDiv = styled.div`
@@ -227,7 +228,7 @@ const PostModifyComponent = () => {
 		mutate(modifiedPost);
 	};
 
-	const onCreate = (title: string, category: string, content: string) => {
+	const onModify = (title: string, category: string, content: string) => {
 		console.log(content);
 		const modifiedPost: CreatePostType = {
 			category: category,
@@ -250,14 +251,6 @@ const PostModifyComponent = () => {
 		setTitle(event.target.value);
 	};
 
-	const handleEditorChange = (value: string) => {
-		setContent(value);
-	};
-
-	const handleCategoryChange = (value: string) => {
-		setCategory(value);
-	};
-
 	const handlePublish = () => {
 		if (title.length < 5) {
 			alert('제목의 내용이 너무 짧습니다');
@@ -275,12 +268,12 @@ const PostModifyComponent = () => {
 			return;
 		}
 
-		const processedContent = content.replace(
-			/<a /g,
-			'<a target="_blank" rel="noopener noreferrer" ',
-		);
+		// const processedContent = content.replace(
+		// 	/<a /g,
+		// 	'<a target="_blank" rel="noopener noreferrer" ',
+		// );
 
-		onCreate(category, title, content);
+		onModify(category, title, content);
 		setCategory('');
 		setTitle('');
 		setContent('');
@@ -330,7 +323,7 @@ const PostModifyComponent = () => {
 						modules={modules}
 						formats={formats as unknown as string[]}
 						value={content}
-						onChange={handleEditorChange}
+						onChange={setContent}
 					/>
 					<div className="post-editor-footer">
 						<Button

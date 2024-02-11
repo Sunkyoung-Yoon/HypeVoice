@@ -144,19 +144,20 @@ const modules = {
 };
 
 Quill.register('formats/my-link', MyLink);
-// Quill.register('formats/align', Quill.import('attributors/style/align'));
+Quill.register('formats/align', Quill.import('attributors/style/align'));
 
 const queryClient = new QueryClient();
 
 const base_server_url = 'http://localhost:8080';
-
+let id: number;
 const PostCreateComponent = () => {
 	const navigation = useNavigate();
 	const [title, setTitle] = useState<string>('');
 	const [content, setContent] = useState<string>('');
-	const [category, setCategory] = useState<string>('');
+	const [category, setCategory] = useState<string>('피드백');
 	const isLogin = useRecoilValue(LoginState);
 	const getAccessToken = () => {
+		console.log(document.cookie);
 		const cookies = document.cookie.split('; ');
 		const accessTokenCookie = cookies.find((cookie) =>
 			cookie.startsWith('access_token='),
@@ -168,37 +169,73 @@ const PostCreateComponent = () => {
 		}
 	};
 
+	// const createPost = async (newPost: CreatePostType): Promise<number> => {
+	// 	console.log(`Bearer ${getAccessToken()}`);
+	// 	const token = getAccessToken();
+	// 	const response = await axios.post(
+	// 		base_server_url + `/api/boards`,
+	// 		newPost,
+	// 		{
+	// 			headers: {
+	// 				'Authorization': `Bearer ${token}`,
+	// 			},
+	// 		},
+	// 	);
+	// 	return response.data;
+	// };
+
 	const createPost = async (newPost: CreatePostType): Promise<number> => {
-		console.log(`Bearer ${getAccessToken()}`);
 		const token = getAccessToken();
-		const response = await axios.post(
-			base_server_url + `/api/boards`,
-			newPost,
-			{
-				headers: {
-					'Authorization': `Bearer ${token}`,
-				},
-			},
+		console.log(token);
+		const data = new FormData();
+		data.append(
+			'request',
+			new Blob([JSON.stringify(newPost)], { type: 'application/json' }),
 		);
-		return response.data;
+		const headers = {
+			// 'Content-Type': 'multipart/form-data',
+			'Authorization': `Bearer ${token}`,
+		};
+
+		// if (file) {
+		// 	form.append('file', file);
+		// }
+
+		try {
+			const response = await axios.post<number>(
+				base_server_url + '/api/boards',
+				data,
+				{ headers },
+			);
+			id = response.data;
+			return response.data;
+		} catch (error) {
+			console.error(error);
+			return -1;
+		}
 	};
 
-	const { mutate } = useMutation({
+	const { data, mutate } = useMutation({
 		mutationFn: createPost,
+
 		onError: () => {
 			console.log('createPost : On Error');
 		},
 		onSuccess: () => {
 			console.log('createPost : Success');
-			queryClient.invalidateQueries({ queryKey: ['post'] });
+			queryClient.invalidateQueries({ queryKey: ['get-posts'] });
 			alert('등록 성공!');
+			console.log(data);
+			navigation(`/community/${id}`);
 		},
 		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: ['get-posts'] });
 			console.log('createPost : On Settled');
 		},
 	});
 
 	const createPostHandler = (newPost: CreatePostType) => {
+		console.log(newPost);
 		mutate(newPost);
 	};
 
@@ -206,29 +243,32 @@ const PostCreateComponent = () => {
 		const newPost: CreatePostType = {
 			title: title,
 			content: content,
-			category: category,
+			category: 'feedback',
 		};
 		createPostHandler(newPost);
 	};
 	// ▲ 임시로 데이터 저장하기 위한 것
 
-	useEffect(() => {
-		setCategory('');
-		setTitle('');
-		setContent('');
-	}, []);
+	// useEffect(() => {
+	// 	setCategory('');
+	// 	setTitle('');
+	// 	setContent('');
+	// }, []);
+
 	const reg = /<[^>]*>?/g;
 
 	const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setTitle(event.target.value);
 	};
 
-	const handleEditorChange = (value: string) => {
+	const handleContentChange = (value: string) => {
 		setContent(value);
 	};
 
-	const handleCategoryChange = (value: string) => {
-		setCategory(value);
+	const handleCategoryChange = (
+		event: React.ChangeEvent<{ value: unknown }>,
+	) => {
+		setCategory(event.target.value as string);
 	};
 
 	const handlePublish = () => {
@@ -253,11 +293,7 @@ const PostCreateComponent = () => {
 		// 	'<a target="_blank" rel="noopener noreferrer" ',
 		// );
 
-		onCreate(title, content, '자유');
-		setTitle('');
-		setContent('');
-		setCategory('');
-		console.log('글을 게시판에 등록합니다:', content);
+		onCreate(title, content, category);
 	};
 
 	return (
@@ -286,7 +322,8 @@ const PostCreateComponent = () => {
 									<FormControl>
 										<NativeSelect
 											className="post-editor-header-category-box"
-											defaultValue={'자유'}
+											value={category}
+											onChange={handleCategoryChange}
 											inputProps={{
 												name: 'category',
 												id: 'uncontrolled-native',
@@ -318,7 +355,7 @@ const PostCreateComponent = () => {
 							modules={modules}
 							formats={formats as unknown as string[]}
 							value={content}
-							onChange={handleEditorChange}
+							onChange={handleContentChange}
 						/>
 						<div className="post-editor-footer">
 							<Button

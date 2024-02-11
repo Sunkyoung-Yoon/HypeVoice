@@ -108,8 +108,6 @@ const CommentListComponent = () => {
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [commentsCount, setCommentsCount] = useState<number>(0);
 	const [commentsPerPage, setCommentsPerPage] = useState<number>(10);
-	const param = useParams();
-	const currentPostId = param.id;
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	let commentData: GetCommentType[] = [];
@@ -131,30 +129,29 @@ const CommentListComponent = () => {
 	const { id } = useParams();
 	const base_server_url = 'http://localhost:8080';
 	const getComments = async (): Promise<GetCommentType[]> => {
-		const response = await axios.get(base_server_url + `/api/comments/1`);
+		const response = await axios.get(base_server_url + `/api/comments/${id}`);
 		return response.data.commentList;
 	};
 
 	const {
-		data: boardList,
+		data: commentList,
 		isLoading,
 		isFetched,
 		isError,
 	} = useQuery<GetCommentType[]>({
-		queryKey: ['get-comments'],
+		queryKey: [`get-comments-${id}`],
 		queryFn: getComments,
 		staleTime: 1000 * 60 * 5,
 	});
 
 	if (isLoading) {
-		console.log('Comments : isFetched');
+		console.log('Comments : isLoading');
 		return <LoadingComponent />;
 	}
 
-	// if (isFetched) {
-	// 	console.log('Comments : isFetched');
-	// 	queryClient.invalidateQueries({ queryKey: ['get-comments'] });
-	// }
+	if (isFetched) {
+		console.log('Comments : isFetched');
+	}
 
 	// if (isFetching) {
 	// 	console.log('Comments : isFetching');
@@ -167,7 +164,7 @@ const CommentListComponent = () => {
 		return <div>Error</div>;
 	}
 
-	commentData = boardList ? boardList : [];
+	commentData = commentList ? commentList : [];
 	console.log(commentData);
 	// ▲ GetComments ▲
 

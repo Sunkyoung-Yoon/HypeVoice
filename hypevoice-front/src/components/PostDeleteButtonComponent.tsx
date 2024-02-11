@@ -32,15 +32,41 @@ type PostIdType = {
 };
 
 const queryClient = new QueryClient();
-
+const base_server_url = 'http://localhost:8080';
 export default function PostDeleteButtonComponent({
 	id,
 }: PostIdType): React.ReactElement {
 	const navigation = useNavigate();
 	const [open, setOpen] = useState(false);
+	const getAccessToken = () => {
+		console.log(document.cookie);
+		const cookies = document.cookie.split('; ');
+		const accessTokenCookie = cookies.find((cookie) =>
+			cookie.startsWith('access_token='),
+		);
+
+		if (accessTokenCookie) {
+			const accessToken = accessTokenCookie.split('=')[1];
+			return accessToken;
+		}
+	};
+	// const deletePost = async (id: number) => {
+	// 	return await axios.delete(`api/boards/${id}`);
+	// };
 
 	const deletePost = async (id: number) => {
-		return await axios.delete(`api/boards/${id}`);
+		const token = getAccessToken();
+		const headers = {
+			'Authorization': `Bearer ${token}`,
+		};
+
+		try {
+			await axios.delete(base_server_url + `/api/boards/${id}`, {
+				headers,
+			});
+		} catch (error) {
+			console.error(error);
+		}
 	};
 
 	const { mutate } = useMutation({
