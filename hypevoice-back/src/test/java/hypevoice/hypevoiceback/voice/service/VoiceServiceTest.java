@@ -4,7 +4,6 @@ import hypevoice.hypevoiceback.common.ServiceTest;
 import hypevoice.hypevoiceback.member.domain.Member;
 import hypevoice.hypevoiceback.voice.domain.Voice;
 import hypevoice.hypevoiceback.voice.domain.VoiceRepository;
-import hypevoice.hypevoiceback.voice.dto.VoiceCardListResponse;
 import hypevoice.hypevoiceback.voice.dto.VoiceReadResponse;
 import hypevoice.hypevoiceback.work.domain.Work;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 import static hypevoice.hypevoiceback.fixture.MemberFixture.JAESIK;
 import static hypevoice.hypevoiceback.fixture.VoiceFixture.VOICE_01;
@@ -30,6 +28,9 @@ public class VoiceServiceTest extends ServiceTest {
 
     @Autowired
     private VoiceService voiceService;
+
+    @Autowired
+    private VoiceFindService voiceFindService;
 
     private Voice voice;
     private Member member;

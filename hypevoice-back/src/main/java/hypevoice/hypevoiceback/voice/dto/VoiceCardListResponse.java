@@ -2,6 +2,7 @@ package hypevoice.hypevoiceback.voice.dto;
 
 public record VoiceCardListResponse(
         Long voiceId,
+        Long workId,
         String photoUrl,
         String mediaClassificationValue,
         String voiceToneValue,

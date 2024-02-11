@@ -1,6 +1,7 @@
 package hypevoice.hypevoiceback.voice.domain;
 
 import hypevoice.hypevoiceback.voice.dto.VoiceCard;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -15,10 +16,14 @@ public interface VoiceRepository extends JpaRepository<Voice, Long> {
             "where w.isRep = 1 and (v.name like concat('%', :keyword, '%') or w.title like concat('%', :keyword, '%')) " )
     Optional <List<VoiceCard>> findByKeyword(String keyword);
 
+    @Query( "select v " +
+            "from Voice v " +
+            "order by v.likes desc, v.modifiedDate ")
+    Optional <List<Voice>> findAllSortedByLikes(Pageable pageable);
 
     @Query( "select v " +
             "from Voice v " +
-            "order by v.likes desc ")
-    Optional <List<Voice>> findAllSortedByLikes();
+            "order by v.modifiedDate desc ")
+    Optional <List<Voice>> findAllSortedByDate(Pageable pageable);
 
 }

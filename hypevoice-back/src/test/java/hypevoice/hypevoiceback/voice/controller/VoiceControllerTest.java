@@ -253,9 +253,9 @@ public class VoiceControllerTest extends ControllerTest {
 
     private List<VoiceCardListResponse> voiceCardListResponses() {
         List<VoiceCardListResponse> voiceCardListResponseList = new ArrayList<>();
-        VoiceCardListResponse v1 = new VoiceCardListResponse(1L, "photo1", "M01", "T01", "S01", "G01", "A01", "title1", "record1", "image1", "name1", 100);
-        VoiceCardListResponse v2 = new VoiceCardListResponse(2L, "photo2", "M02", "T02", "S02", "G02", "A02", "title2", "record2", "image2", "name2", 200);
-        VoiceCardListResponse v3 = new VoiceCardListResponse(3L, "photo3", "M03", "T03", "S03", "G03", "A03", "title3", "record3", "image3", "name3", 300);
+        VoiceCardListResponse v1 = new VoiceCardListResponse(1L, 1L,"photo1", "M01", "T01", "S01", "G01", "A01", "title1", "record1", "image1", "name1", 100);
+        VoiceCardListResponse v2 = new VoiceCardListResponse(2L, 2L,"photo2", "M02", "T02", "S02", "G02", "A02", "title2", "record2", "image2", "name2", 200);
+        VoiceCardListResponse v3 = new VoiceCardListResponse(3L, 3L,"photo3", "M03", "T03", "S03", "G03", "A03", "title3", "record3", "image3", "name3", 300);
         voiceCardListResponseList.add(v1);
         voiceCardListResponseList.add(v2);
         voiceCardListResponseList.add(v3);
