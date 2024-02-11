@@ -1,7 +1,6 @@
 package hypevoice.hypevoiceback.categoryInfo.service;
 
 import hypevoice.hypevoiceback.categoryInfo.domain.*;
-import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoValue;
 import hypevoice.hypevoiceback.common.ServiceTest;
 import hypevoice.hypevoiceback.member.domain.Member;
 import hypevoice.hypevoiceback.voice.domain.Voice;
@@ -84,24 +83,4 @@ public class CategoryInfoServiceTest extends ServiceTest {
         }
     }
 
-    @Nested
-    @DisplayName("카테고리 선택")
-    class read {
-        @Test
-        @DisplayName("카테고리 선택에 성공한다")
-        void success() {
-            // when
-            CategoryInfoValue categoryInfoResponse = categoryInfoService.readCategoryInfo(categoryInfo.getWork().getId());
-
-            // then
-            assertAll(
-                    () -> assertThat(categoryInfoResponse.mediaClassificationValue()).isEqualTo(categoryInfo.getMediaClassification().getValue()),
-                    () -> assertThat(categoryInfoResponse.voiceToneValue()).isEqualTo(categoryInfo.getVoiceTone().getValue()),
-                    () -> assertThat(categoryInfoResponse.voiceStyleValue()).isEqualTo(categoryInfo.getVoiceStyle().getValue()),
-                    () -> assertThat(categoryInfoResponse.genderValue()).isEqualTo(categoryInfo.getGender().getValue()),
-                    () -> assertThat(categoryInfoResponse.ageValue()).isEqualTo(categoryInfo.getAge().getValue()),
-                    () -> assertThat(categoryInfoResponse.workId()).isEqualTo(categoryInfo.getWork().getId())
-            );
-        }
-    }
 }

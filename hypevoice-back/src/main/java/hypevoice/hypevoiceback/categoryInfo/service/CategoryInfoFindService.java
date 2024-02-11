@@ -29,8 +29,14 @@ public class CategoryInfoFindService {
     }
 
     @Transactional
-    public List<Long> findWorkIdByCategory(MediaClassification mediaClassification, VoiceTone voiceTone, VoiceStyle voiceStyle, Gender gender, Age age) {
-        return categoryInfoRepository.findWorkIdByCategory(mediaClassification, voiceTone, voiceStyle, gender, age)
+    public List<Long> findWorkIdByCategory(List<MediaClassification> mediaList, List<VoiceTone> voiceToneList, List<VoiceStyle> voiceStyleList, List<Gender> genderList, List<Age> ageList) {
+        if (mediaList.isEmpty()) mediaList = null;
+        if (voiceToneList.isEmpty()) voiceToneList = null;
+        if (voiceStyleList.isEmpty()) voiceStyleList = null;
+        if (genderList.isEmpty()) genderList = null;
+        if (ageList.isEmpty()) ageList = null;
+
+        return categoryInfoRepository.findWorkIdByCategory(mediaList, voiceToneList, voiceStyleList, genderList, ageList)
                 .orElseThrow(() -> BaseException.type(CategoryInfoErrorCode.CATEGORY_NOT_FOUND));
     }
 }

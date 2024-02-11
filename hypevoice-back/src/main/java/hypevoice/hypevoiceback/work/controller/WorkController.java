@@ -1,6 +1,6 @@
 package hypevoice.hypevoiceback.work.controller;
 
-import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoRequest;
+import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoListRequest;
 import hypevoice.hypevoiceback.categoryInfo.service.CategoryInfoService;
 import hypevoice.hypevoiceback.global.annotation.ExtractPayload;
 import hypevoice.hypevoiceback.work.dto.WorkRequest;
@@ -65,7 +65,7 @@ public class WorkController {
         return new ResponseEntity<>(videoLink, HttpStatus.OK);
     }
 
-    @PostMapping("/{workId}")
+    @PutMapping("/{workId}")
     public ResponseEntity<Void> updateRepresentationWork(@ExtractPayload Long memberId, @PathVariable("voiceId") Long voiceId, @PathVariable("workId") Long workId) {
         workService.updateRepresentationWork(memberId, voiceId, workId);
         return ResponseEntity.ok().build();
@@ -78,8 +78,8 @@ public class WorkController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<WorkResponse>> readWorkByCategory(@PathVariable("voiceId") Long voiceId, @RequestBody CategoryInfoRequest request) {
-        List<WorkResponse> findWorkListByCategory = workService.readCategoryWork(voiceId, request.mediaClassification(), request.voiceTone(), request.voiceStyle(), request.gender(), request.age());
+    public ResponseEntity<List<WorkResponse>> readWorkByCategory(@PathVariable("voiceId") Long voiceId, @RequestBody CategoryInfoListRequest request) {
+        List<WorkResponse> findWorkListByCategory = workService.readCategoryWork(voiceId, request.mediaClassificationValueList(), request.voiceToneValueList(), request.voiceStyleValueList(), request.genderValueList(), request.ageValueList());
         return new ResponseEntity<>(findWorkListByCategory, HttpStatus.OK);
     }
 }

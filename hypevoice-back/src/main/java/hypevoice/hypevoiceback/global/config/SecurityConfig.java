@@ -86,7 +86,8 @@ public class SecurityConfig {
                                         AntPathRequestMatcher.antMatcher( "/api/works"),
                                         AntPathRequestMatcher.antMatcher( "/api/voices/{voiceId}/works/{workId}"),
                                         AntPathRequestMatcher.antMatcher( "/api/voices/{voiceId}/works"),
-                                        AntPathRequestMatcher.antMatcher( "/api/voices"),
+                                        AntPathRequestMatcher.antMatcher( "/api/voices/list/date"),
+                                        AntPathRequestMatcher.antMatcher( "/api/voices/list/likes"),
                                         AntPathRequestMatcher.antMatcher( "/api/voices/{voiceId}")
 
                                 ).permitAll()

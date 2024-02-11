@@ -4,7 +4,6 @@ import lombok.Builder;
 
 @Builder
 public record VoiceReadResponse (
-        Long memberId,
         String name,
         String imageUrl,
         String intro,

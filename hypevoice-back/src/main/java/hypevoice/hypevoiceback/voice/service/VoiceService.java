@@ -61,7 +61,6 @@ public class VoiceService {
         Voice voiceDetail = voiceFindService.findById(voiceId);
 
         return VoiceReadResponse.builder()
-                .memberId(voiceDetail.getId())
                 .name(voiceDetail.getName())
                 .imageUrl(voiceDetail.getImageUrl())
                 .intro(voiceDetail.getIntro())
@@ -87,29 +86,55 @@ public class VoiceService {
                                 .categoryInfo(work.getCategoryInfo())
                                 .title(work.getTitle())
                                 .recordUrl(work.getRecordUrl())
-                                .profileUrl(work.getPhotoUrl())
+                                .imageUrl(v.getImageUrl())
                                 .name(v.getName())
                                 .likes(v.getLikes())
                                 .build()
                 );
             }
         }
+
+        return getVoiceCardListResponses(voiceCardList);
+    }
+
+    @Transactional
+    public List<VoiceCardListResponse> readAllSortedByLikes() {
+        List<Voice> voiceList = voiceFindService.findAllSortedByLikes();
+        List<VoiceCard> voiceCardList = new ArrayList<>();
+
+        for (Voice v : voiceList) {
+            Work work = workFindService.findRepWorkByVoiceId(v.getId());
+            if (work != null) {
+                voiceCardList.add(
+                        VoiceCard.builder()
+                                .voiceId(v.getId())
+                                .photoUrl(work.getPhotoUrl())
+                                .categoryInfo(work.getCategoryInfo())
+                                .title(work.getTitle())
+                                .recordUrl(work.getRecordUrl())
+                                .imageUrl(v.getImageUrl())
+                                .name(v.getName())
+                                .likes(v.getLikes())
+                                .build()
+                );
+            }
+        }
+
         return getVoiceCardListResponses(voiceCardList);
     }
 
     @Transactional
     public List<VoiceCardListResponse> searchVoice(String keyword) {
-        List<VoiceCard> voiceList = voiceFindService.findByKeyword(keyword);
-        return getVoiceCardListResponses(voiceList);
+        List<VoiceCard> voiceCardList = voiceFindService.findByKeyword(keyword);
+        return getVoiceCardListResponses(voiceCardList);
     }
 
     // 카테고리를 이용한 조회
     @Transactional
-    public List<VoiceCardListResponse> filterVoiceByCategory(String mediaClassificationValue, String voiceToneValue, String voiceStyleValue, String genderValue, String ageValue) {
+    public List<VoiceCardListResponse> filterVoiceByCategory(List<String> mediaValueList, List<String> voiceToneValueList, List<String> voiceStyleValueList, List<String> genderValueList, List<String> ageValueList) {
         List<VoiceCardListResponse> voiceCardListResponseList = this.readAllVoice();
-        List<Long> workIdList = categoryInfoService.getWorkIdList(mediaClassificationValue, voiceToneValue, voiceStyleValue, genderValue, ageValue);
+        List<Long> workIdList = categoryInfoService.getWorkIdListByCategories(mediaValueList, voiceToneValueList, voiceStyleValueList, genderValueList, ageValueList);
         List<VoiceCard> voiceCardList = new ArrayList<>();
-
 
         for (VoiceCardListResponse v : voiceCardListResponseList) {
             for (Long workId : workIdList) {
@@ -122,7 +147,7 @@ public class VoiceService {
                                     .categoryInfo(w.getCategoryInfo())
                                     .title(w.getTitle())
                                     .recordUrl(w.getRecordUrl())
-                                    .profileUrl(w.getPhotoUrl())
+                                    .imageUrl(w.getPhotoUrl())
                                     .name(v.name())
                                     .likes(v.likes())
                                     .build()
@@ -133,6 +158,7 @@ public class VoiceService {
 
         return getVoiceCardListResponses(voiceCardList);
     }
+
 
     private List<VoiceCardListResponse> getVoiceCardListResponses(List<VoiceCard> voiceList) {
         List<VoiceCardListResponse> searchVoiceCardListResponseList = new ArrayList<>();
@@ -148,7 +174,7 @@ public class VoiceService {
                             vcr.categoryInfo().getAge().getValue(),
                             vcr.title(),
                             vcr.recordUrl(),
-                            vcr.profileUrl(),
+                            vcr.imageUrl(),
                             vcr.name(),
                             vcr.likes()
                     )

@@ -14,7 +14,7 @@ public record WorkResponse(
         String recordUrl,
         String info,
         int isRep,
-        CategoryInfoValue categoryInfoResponse
+        CategoryInfoValue categoryInfoValue
 
 ) {
 

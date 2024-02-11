@@ -1,7 +1,6 @@
 package hypevoice.hypevoiceback.categoryInfo.service;
 
 import hypevoice.hypevoiceback.categoryInfo.domain.*;
-import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoValue;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.voice.exception.VoiceErrorCode;
 import hypevoice.hypevoiceback.work.domain.Work;
@@ -10,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -53,27 +53,35 @@ public class CategoryInfoService {
     }
 
     @Transactional
-    public CategoryInfoValue readCategoryInfo(Long workId) {
-        CategoryInfo categoryInfo = categoryInfoFindService.findByWorkId(workId);
+    public List<Long> getWorkIdListByCategories(List<String> mediaValueList, List<String> voiceToneValueList, List<String> voiceStyleValueList, List<String> genderValueList, List<String> ageValueList) {
+        List<MediaClassification> mediaList = new ArrayList<>();
+        List<VoiceTone> voiceToneList = new ArrayList<>();
+        List<VoiceStyle> voiceStyleList = new ArrayList<>();
+        List<Gender> genderList = new ArrayList<>();
+        List<Age> ageList = new ArrayList<>();
 
-        return CategoryInfoValue.builder()
-                .workId(workId)
-                .mediaClassificationValue(categoryInfo.getMediaClassification().getValue())
-                .voiceToneValue(categoryInfo.getVoiceTone().getValue())
-                .voiceStyleValue(categoryInfo.getVoiceStyle().getValue())
-                .genderValue(categoryInfo.getGender().getValue())
-                .ageValue(categoryInfo.getAge().getValue())
-                .build();
-    }
+        for (String s : mediaValueList) {
+            if (mediaValueList.isEmpty()) break;
+            mediaList.add(MediaClassification.from(s));
+        }
+        for (String s : voiceToneValueList) {
+            if (voiceToneValueList.isEmpty()) break;
+            voiceToneList.add(VoiceTone.from(s));
+        }
+        for (String s : voiceStyleValueList) {
+            if (voiceStyleValueList.isEmpty()) break;
+            voiceStyleList.add(VoiceStyle.from(s));
+        }
+        for (String s : genderValueList) {
+            if (genderValueList.isEmpty()) break;
+            genderList.add(Gender.from(s));
+        }
+        for (String s : ageValueList) {
+            if (ageValueList.isEmpty()) break;
+            ageList.add(Age.from(s));
+        }
 
-    @Transactional
-    public List<Long> getWorkIdList(String mediaClassification, String voiceTone, String voiceStyle, String gender, String age) {
-        MediaClassification findMediaClassification = MediaClassification.from(mediaClassification);
-        VoiceTone findVoiceTone = VoiceTone.from(voiceTone);
-        VoiceStyle findVoiceStyle = VoiceStyle.from(voiceStyle);
-        Gender findGender = Gender.from(gender);
-        Age findAge = Age.from(age);
-        List<Long> workIdList = categoryInfoFindService.findWorkIdByCategory(findMediaClassification, findVoiceTone, findVoiceStyle, findGender, findAge);
+        List<Long> workIdList = categoryInfoFindService.findWorkIdByCategory(mediaList, voiceToneList, voiceStyleList, genderList, ageList);
 
         return workIdList;
     }
@@ -84,4 +92,5 @@ public class CategoryInfoService {
             throw BaseException.type(VoiceErrorCode.USER_IS_NOT_VOICE_MEMBER);
         }
     }
+
 }

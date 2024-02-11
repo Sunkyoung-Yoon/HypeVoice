@@ -1,6 +1,6 @@
 package hypevoice.hypevoiceback.voice.controller;
 
-import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoRequest;
+import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoListRequest;
 import hypevoice.hypevoiceback.global.annotation.ExtractPayload;
 import hypevoice.hypevoiceback.voice.dto.VoiceCardListResponse;
 import hypevoice.hypevoiceback.voice.dto.VoiceReadResponse;
@@ -41,10 +41,16 @@ public class VoiceController {
         return new ResponseEntity<>(voiceService.readDetailVoice(voiceId), HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<List<VoiceCardListResponse>> readAll() {
+    @GetMapping("/list/date")
+    public ResponseEntity<List<VoiceCardListResponse>> readAllSortedByDate() {
         return new ResponseEntity<>(voiceService.readAllVoice(), HttpStatus.OK);
     }
+
+    @GetMapping("/list/likes")
+    public ResponseEntity<List<VoiceCardListResponse>> readAllSortedByLikes() {
+        return new ResponseEntity<>(voiceService.readAllSortedByLikes(), HttpStatus.OK);
+    }
+
 
     @GetMapping("/search")
     public ResponseEntity<List<VoiceCardListResponse>> searchVoice(@RequestParam("keyword") String keyword) {
@@ -52,8 +58,8 @@ public class VoiceController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<VoiceCardListResponse>> filterVoiceByCategory(@RequestBody CategoryInfoRequest request) {
-        List<VoiceCardListResponse> findVoiceByCategory = voiceService.filterVoiceByCategory(request.mediaClassification(), request.voiceTone(), request.voiceStyle(), request.gender(), request.age());
+    public ResponseEntity<List<VoiceCardListResponse>> filterVoiceByCategory(@RequestBody CategoryInfoListRequest request) {
+        List<VoiceCardListResponse> findVoiceByCategory = voiceService.filterVoiceByCategory(request.mediaClassificationValueList(), request.voiceToneValueList(), request.voiceStyleValueList(), request.genderValueList(), request.ageValueList());
         return new ResponseEntity<>(findVoiceByCategory, HttpStatus.OK);
     }
 }

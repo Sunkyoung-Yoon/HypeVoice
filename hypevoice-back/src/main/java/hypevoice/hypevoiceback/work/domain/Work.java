@@ -8,8 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static jakarta.persistence.CascadeType.PERSIST;
-
 
 @Getter
 @Entity
@@ -36,7 +34,7 @@ public class Work extends BaseTimeEntity {
     private String info;
     private int isRep;
 
-    @OneToOne(mappedBy = "work", cascade = PERSIST, orphanRemoval = true)
+    @OneToOne(mappedBy = "work", cascade = CascadeType.ALL, orphanRemoval = true)
     private CategoryInfo categoryInfo;
 
     @Builder

@@ -10,7 +10,7 @@ public record VoiceCard(
         CategoryInfo categoryInfo,
         String title,
         String recordUrl,
-        String profileUrl,
+        String imageUrl,
         String name,
         int likes
 ) {

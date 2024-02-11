@@ -28,4 +28,9 @@ public class VoiceFindService {
                 .orElseThrow(() -> BaseException.type(VoiceErrorCode.KEYWORD_NOT_FOUND));
     }
 
+    public List<Voice> findAllSortedByLikes(){
+        return voiceRepository.findAllSortedByLikes()
+                .orElseThrow(() -> BaseException.type(VoiceErrorCode.VOICE_NOT_FOUND));
+    }
+
 }

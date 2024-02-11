@@ -4,6 +4,7 @@ import hypevoice.hypevoiceback.common.ServiceTest;
 import hypevoice.hypevoiceback.member.domain.Member;
 import hypevoice.hypevoiceback.voice.domain.Voice;
 import hypevoice.hypevoiceback.voice.domain.VoiceRepository;
+import hypevoice.hypevoiceback.voice.dto.VoiceCardListResponse;
 import hypevoice.hypevoiceback.voice.dto.VoiceReadResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import static hypevoice.hypevoiceback.fixture.MemberFixture.JAESIK;
 import static hypevoice.hypevoiceback.fixture.VoiceFixture.VOICE_01;
@@ -66,7 +68,6 @@ public class VoiceServiceTest extends ServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(voiceReadResponse.memberId()).isEqualTo(voice.getId()),
                 () -> assertThat(voiceReadResponse.name()).isEqualTo(voice.getName()),
                 () -> assertThat(voiceReadResponse.imageUrl()).isEqualTo(voice.getImageUrl()),
                 () -> assertThat(voiceReadResponse.intro()).isEqualTo(voice.getIntro()),
@@ -75,5 +76,15 @@ public class VoiceServiceTest extends ServiceTest {
                 () -> assertThat(voiceReadResponse.addInfo()).isEqualTo(voice.getAddInfo()),
                 () -> assertThat(voiceReadResponse.likes()).isEqualTo(voice.getLikes())
         );
+    }
+
+    @Test
+    @DisplayName("보이스를 전체 조회한다")
+    void readAllVoice() {
+        // when
+        List<VoiceCardListResponse> voiceCardListResponses = voiceService.readAllVoice();
+
+        // then
+        assertThat(voiceCardListResponses.get(0).voiceId()).isEqualTo(voice.getName());
     }
 }

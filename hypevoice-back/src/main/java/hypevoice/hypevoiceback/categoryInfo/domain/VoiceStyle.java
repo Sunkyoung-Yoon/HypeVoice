@@ -27,8 +27,6 @@ public enum VoiceStyle implements EnumStandard {
     }
 
     public static VoiceStyle from(String value) {
-        if(value == null) return null;
-
         return Arrays.stream(values())
                 .filter(VoiceStyle -> VoiceStyle.value.equals(value))
                 .findFirst()

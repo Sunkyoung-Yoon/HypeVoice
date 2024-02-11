@@ -15,7 +15,6 @@ import hypevoice.hypevoiceback.board.controller.BoardListApiController;
 import hypevoice.hypevoiceback.board.service.BoardFindService;
 import hypevoice.hypevoiceback.board.service.BoardListService;
 import hypevoice.hypevoiceback.board.service.BoardService;
-import hypevoice.hypevoiceback.categoryInfo.controller.CategoryInfoController;
 import hypevoice.hypevoiceback.categoryInfo.service.CategoryInfoFindService;
 import hypevoice.hypevoiceback.categoryInfo.service.CategoryInfoService;
 import hypevoice.hypevoiceback.comment.controller.CommentApiController;
@@ -59,7 +58,6 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
         WorkController.class,
         StudioController.class,
         BoardListApiController.class,
-        CategoryInfoController.class
 })
 @WithMockUser("test")
 public abstract class ControllerTest {

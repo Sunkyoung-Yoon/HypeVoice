@@ -17,7 +17,7 @@ public class CategoryInfo {
     @Column(name = "category_info_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "work_id", referencedColumnName = "work_id")
     private Work work;
 

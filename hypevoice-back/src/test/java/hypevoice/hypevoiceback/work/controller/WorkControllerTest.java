@@ -1,6 +1,8 @@
 package hypevoice.hypevoiceback.work.controller;
 
 import hypevoice.hypevoiceback.auth.exception.AuthErrorCode;
+import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoRequest;
+import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoValue;
 import hypevoice.hypevoiceback.common.ControllerTest;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.work.dto.WorkRequest;
@@ -14,10 +16,13 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
+import static hypevoice.hypevoiceback.fixture.CategoryInfoFixture.*;
 import static hypevoice.hypevoiceback.fixture.TokenFixture.ACCESS_TOKEN;
 import static hypevoice.hypevoiceback.fixture.TokenFixture.BEARER_TOKEN;
-import static hypevoice.hypevoiceback.fixture.WorkFixture.WORK_01;
+import static hypevoice.hypevoiceback.fixture.WorkFixture.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -315,7 +320,7 @@ public class WorkControllerTest extends ControllerTest {
     }
 
     @Nested
-    @DisplayName("작업물 상세조회 API [GET /api/{voiceId}/works/{workId}]")
+    @DisplayName("작업물 상세조회 API [GET /api/voices/{voiceId}/works/{workId}]")
     class getDetailWork {
         private static final String BASE_URL = "/api/voices/{voiceId}/works/{workId}";
 
@@ -339,7 +344,7 @@ public class WorkControllerTest extends ControllerTest {
     }
 
     @Nested
-    @DisplayName("스크립트 상세조회 API [GET /api/{voiceId}/works/{workId}/script]")
+    @DisplayName("스크립트 상세조회 API [GET /api/voices/{voiceId}/works/{workId}/script]")
     class getDetailWorkScript {
         private static final String BASE_URL = "/api/voices/{voiceId}/works/{workId}/script";
 
@@ -363,7 +368,7 @@ public class WorkControllerTest extends ControllerTest {
     }
 
     @Nested
-    @DisplayName("영상 상세조회 API [GET /api/{voiceId}/works/{workId}/video]")
+    @DisplayName("영상 상세조회 API [GET /api/voices/{voiceId}/works/{workId}/video]")
     class getDetailWorkVideo {
         private static final String BASE_URL = "/api/voices/{voiceId}/works/{workId}/video";
 
@@ -387,7 +392,7 @@ public class WorkControllerTest extends ControllerTest {
     }
 
     @Nested
-    @DisplayName("작업물 대표 정보 수정 API [GET /api/{voiceId}/works/{workId}/video]")
+    @DisplayName("작업물 대표 정보 수정 API [GET /api/voices/{voiceId}/works/{workId}]")
     class updateRepresentationWork {
         private static final String BASE_URL = "/api/voices/{voiceId}/works/{workId}";
 
@@ -440,12 +445,61 @@ public class WorkControllerTest extends ControllerTest {
         }
     }
 
+    @Nested
+    @DisplayName("작업물 전체 조회 API [GET /api/voices/{voiceId}/works]")
+    class readAllWork {
+        private static final String BASE_URL = "/api/voices/{voiceId}/works";
+
+        @Test
+        @DisplayName("작업물 전체 조회에 성공한다")
+        void success() throws Exception {
+            // given
+            doReturn(createWorkResponseList())
+                    .when(workService)
+                    .readAllWork(VOICE_ID);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .get(BASE_URL, VOICE_ID);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isOk());
+        }
+    }
+
+    @Nested
+    @DisplayName("카테고리를 이용한 작업물 조회 API [GET /api/voices/{voiceId}/works/filter]")
+    class filterWork {
+        private static final String BASE_URL = "/api/voices/{voiceId}/works/filter";
+
+        @Test
+        @DisplayName("카테고리를 이용한 작업물 전체 조회에 성공한다")
+        void success() throws Exception {
+            // given
+            doReturn(createWorkResponseList())
+                    .when(workService)
+                    .readCategoryWork(anyLong(), any(), any(), any(), any(), any());
+
+            // when
+            final CategoryInfoRequest request = createCategoryInfoRequest();
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .get(BASE_URL, VOICE_ID)
+                    .contentType(APPLICATION_JSON)
+                    .content(convertObjectToJson(request));
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(status().isOk());
+        }
+    }
+
     private WorkRequest createWorkRequest() {
-        return new WorkRequest(WORK_01.getTitle(), WORK_01.getVideoLink(), WORK_01.getInfo(), WORK_01.getIsRep());
+        return new WorkRequest(WORK_01.getTitle(), WORK_01.getVideoLink(), WORK_01.getInfo(), WORK_01.getIsRep(), createCategoryInfoRequest());
     }
 
     private WorkResponse readWorkResponse() {
-        return new WorkResponse(VOICE_ID, WORK_ID, WORK_01.getTitle(), WORK_01.getVideoLink(), WORK_01.getPhotoUrl(), WORK_01.getScriptUrl(), WORK_01.getRecordUrl(), WORK_01.getInfo(), WORK_01.getIsRep());
+        return new WorkResponse(VOICE_ID, WORK_ID, WORK_01.getTitle(), WORK_01.getVideoLink(), WORK_01.getPhotoUrl(), WORK_01.getScriptUrl(), WORK_01.getRecordUrl(), WORK_01.getInfo(), WORK_01.getIsRep(), createCategoryInfoValue());
     }
 
     private String readScriptResponse() {
@@ -454,5 +508,25 @@ public class WorkControllerTest extends ControllerTest {
 
     private String readVideoResponse() {
         return WORK_01.getVideoLink();
+    }
+
+    private CategoryInfoRequest createCategoryInfoRequest() {
+        return new CategoryInfoRequest(CATEGORY_INFO_01.getMediaClassification().getValue(), CATEGORY_INFO_01.getVoiceTone().getValue(), CATEGORY_INFO_01.getVoiceStyle().getValue(), CATEGORY_INFO_01.getGender().getValue(), CATEGORY_INFO_01.getAge().getValue());
+    }
+
+    private CategoryInfoValue createCategoryInfoValue() {
+        return new CategoryInfoValue(WORK_ID, CATEGORY_INFO_01.getMediaClassification().getValue(), CATEGORY_INFO_01.getVoiceTone().getValue(), CATEGORY_INFO_01.getVoiceStyle().getValue(), CATEGORY_INFO_01.getGender().getValue(), CATEGORY_INFO_01.getAge().getValue());
+    }
+
+    private List<WorkResponse> createWorkResponseList() {
+        List<WorkResponse> workResponseList = new ArrayList<>();
+        CategoryInfoValue categoryInfoValue1 = new CategoryInfoValue(1L, CATEGORY_INFO_01.getMediaClassification().getValue(), CATEGORY_INFO_01.getVoiceTone().getValue(), CATEGORY_INFO_01.getVoiceStyle().getValue(), CATEGORY_INFO_01.getGender().getValue(), CATEGORY_INFO_01.getAge().getValue());
+        CategoryInfoValue categoryInfoValue2 = new CategoryInfoValue(2L, CATEGORY_INFO_02.getMediaClassification().getValue(), CATEGORY_INFO_02.getVoiceTone().getValue(), CATEGORY_INFO_02.getVoiceStyle().getValue(), CATEGORY_INFO_02.getGender().getValue(), CATEGORY_INFO_02.getAge().getValue());
+        CategoryInfoValue categoryInfoValue3 = new CategoryInfoValue(3L, CATEGORY_INFO_03.getMediaClassification().getValue(), CATEGORY_INFO_03.getVoiceTone().getValue(), CATEGORY_INFO_03.getVoiceStyle().getValue(), CATEGORY_INFO_03.getGender().getValue(), CATEGORY_INFO_03.getAge().getValue());
+        workResponseList.add(new WorkResponse(1L, 1L, WORK_01.getTitle(), WORK_01.getVideoLink(), WORK_01.getPhotoUrl(), WORK_01.getScriptUrl(), WORK_01.getScriptUrl(), WORK_01.getInfo(), WORK_01.getIsRep(), categoryInfoValue1));
+        workResponseList.add(new WorkResponse(1L, 2L, WORK_02.getTitle(), WORK_02.getVideoLink(), WORK_02.getPhotoUrl(), WORK_02.getScriptUrl(), WORK_02.getScriptUrl(), WORK_02.getInfo(), WORK_02.getIsRep(), categoryInfoValue2));
+        workResponseList.add(new WorkResponse(1L, 3L, WORK_03.getTitle(), WORK_03.getVideoLink(), WORK_03.getPhotoUrl(), WORK_03.getScriptUrl(), WORK_03.getScriptUrl(), WORK_03.getInfo(), WORK_03.getIsRep(), categoryInfoValue3));
+
+        return workResponseList;
     }
 }

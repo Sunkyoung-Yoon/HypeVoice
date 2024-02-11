@@ -26,8 +26,6 @@ public enum Gender implements EnumStandard {
     }
 
     public static Gender from(String value) {
-        if(value == null) return null;
-
         return Arrays.stream(values())
                 .filter(Gender -> Gender.value.equals(value))
                 .findFirst()

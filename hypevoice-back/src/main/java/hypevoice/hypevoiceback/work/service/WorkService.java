@@ -131,8 +131,8 @@ public class WorkService {
 
     // 카테고리를 이용한 조회
     @Transactional
-    public List<WorkResponse> readCategoryWork(Long voiceId, String mediaClassificationValue, String voiceToneValue, String voiceStyleValue, String genderValue, String ageValue) {
-        List<Long> workIdList = categoryInfoService.getWorkIdList(mediaClassificationValue, voiceToneValue, voiceStyleValue, genderValue, ageValue);
+    public List<WorkResponse> readCategoryWork(Long voiceId, List<String> mediaValueList, List<String> voiceToneValueList, List<String> voiceStyleValueList, List<String> genderValueList, List<String> ageValueList) {
+        List<Long> workIdList = categoryInfoService.getWorkIdListByCategories(mediaValueList, voiceToneValueList, voiceStyleValueList, genderValueList, ageValueList);
         List<WorkResponse> findWorkResponse = new ArrayList<>();
 
         for (Long workId : workIdList) {
@@ -141,7 +141,12 @@ public class WorkService {
                     new WorkResponse(
                             voiceId, workId, work.getTitle(), work.getVideoLink(), work.getPhotoUrl(), work.getScriptUrl(), work.getRecordUrl(), work.getInfo(), work.getIsRep(),
                             new CategoryInfoValue(
-                                    workId, mediaClassificationValue, voiceToneValue, voiceStyleValue, genderValue, ageValue
+                                    workId,
+                                    work.getCategoryInfo().getMediaClassification().getValue(),
+                                    work.getCategoryInfo().getVoiceTone().getValue(),
+                                    work.getCategoryInfo().getVoiceStyle().getValue(),
+                                    work.getCategoryInfo().getGender().getValue(),
+                                    work.getCategoryInfo().getAge().getValue()
                             )
                     )
             );

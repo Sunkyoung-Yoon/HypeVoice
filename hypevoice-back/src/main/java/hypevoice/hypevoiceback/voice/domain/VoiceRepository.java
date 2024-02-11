@@ -9,10 +9,16 @@ import java.util.Optional;
 
 public interface VoiceRepository extends JpaRepository<Voice, Long> {
 
-    @Query("select distinct new hypevoice.hypevoiceback.voice.dto.VoiceCard(v.id, w.photoUrl, w.categoryInfo, w.title, w.recordUrl, v.imageUrl, v.name, v.likes) " +
+    @Query( "select distinct new hypevoice.hypevoiceback.voice.dto.VoiceCard(v.id, w.photoUrl, w.categoryInfo, w.title, w.recordUrl, v.imageUrl, v.name, v.likes) " +
             "from Voice v right join Work w " +
             "on v.id = w.voice.id " +
             "where w.isRep = 1 and (v.name like concat('%', :keyword, '%') or w.title like concat('%', :keyword, '%')) " )
     Optional <List<VoiceCard>> findByKeyword(String keyword);
+
+
+    @Query( "select v " +
+            "from Voice v " +
+            "order by v.likes desc ")
+    Optional <List<Voice>> findAllSortedByLikes();
 
 }

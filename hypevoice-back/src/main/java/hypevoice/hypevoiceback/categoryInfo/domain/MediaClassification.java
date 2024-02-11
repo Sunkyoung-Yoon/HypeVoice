@@ -29,8 +29,6 @@ public enum MediaClassification implements EnumStandard {
     }
 
     public static MediaClassification from(String value) {
-        if(value == null) return null;
-
         return Arrays.stream(values())
                 .filter(MediaClassification -> MediaClassification.value.equals(value))
                 .findFirst()
