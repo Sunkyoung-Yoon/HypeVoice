@@ -13,7 +13,6 @@ const WorkWrapper = styled.div.attrs<WorkWrapperProps>(
 )<WorkWrapperProps>`
   display: flex;
   flex-direction: column;
-  border: 5px solid black;
   border-radius: 25px;
   padding: 15px;
   margin: 15px;
@@ -21,12 +20,8 @@ const WorkWrapper = styled.div.attrs<WorkWrapperProps>(
   height: 390px;
   cursor: pointer;
 
-  opacity: ${(props) => (props.isHovered ? 0.4 : 1)};
-  transition: opacity 0.3s;
-`;
-
-const NonTransparentDiv = styled.div`
-  opacity: 1 !important;
+  border: 5px solid ${(props) => (props.isHovered ? "#5b5ff4" : "black")};
+  transition: border-color 0.3s, border-width 0.3s;
 `;
 
 const InfoWrapper = styled.div`
@@ -72,11 +67,9 @@ function WorkTemplate({ work }: { work: WorkInfo }) {
           throw new Error("Function not implemented.");
         }}
       />
-      <NonTransparentDiv>
-        <InfoWrapper>
-          <p>{work.info}</p>
-        </InfoWrapper>
-      </NonTransparentDiv>
+      <InfoWrapper>
+        <p>{work.info}</p>
+      </InfoWrapper>
     </WorkWrapper>
   );
 }

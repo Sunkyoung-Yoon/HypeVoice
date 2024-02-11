@@ -2,15 +2,16 @@ import React, { Suspense } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@mui/material';
 import styled from 'styled-components';
-import { QueryClient, useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import LoadingComponent from './LoadingComponent';
 import PostDeleteButtonComponent from './PostDeleteButtonComponent';
 import { GetPostType } from './CommunityType';
 import { useRecoilValue } from 'recoil';
-import { LoginState } from '@/recoil/Auth';
+import { CurrentMemberAtom, LoginState } from '@/recoil/Auth';
 import CommentListComponent from './CommentListComponent';
 import CommentInputComponent from './CommentInputComponent';
+import { Quill } from 'react-quill';
 
 const PostStyleDiv = styled.div`
 	.post-component {
@@ -135,13 +136,14 @@ const PostStyleDiv = styled.div`
 	}
 `;
 
-const queryClient = new QueryClient();
 const base_server_url = 'http://localhost:8080';
+Quill.register('formats/align', Quill.import('attributors/style/align'));
 
 const PostComponent: React.FC = () => {
+	const queryClient = useQueryClient();
 	const navigation = useNavigate();
 	const isLogin = useRecoilValue(LoginState);
-
+	const userInfo = useRecoilValue(CurrentMemberAtom);
 	// ▼ GetPost ▼
 	const { id } = useParams();
 
@@ -150,13 +152,18 @@ const PostComponent: React.FC = () => {
 		return response.data;
 	};
 
-	const { data, isLoading, isFetched, isError } = useQuery<GetPostType>({
-		queryKey: ['get-post'],
-		queryFn: getPost,
-		staleTime: 1000 * 60 * 5, // 5 minutes
-	});
+	const { data, isSuccess, isLoading, isFetched, isError } =
+		useQuery<GetPostType>({
+			queryKey: [`get-post-${id}`],
+			queryFn: getPost,
+			staleTime: 10000 * 60 * 10,
+		});
 
 	console.log(data);
+	if (isSuccess) {
+		console.log('Post : isSuccess');
+	}
+
 	if (isLoading) {
 		console.log('Post : isLoading');
 		return <LoadingComponent />;
@@ -164,12 +171,15 @@ const PostComponent: React.FC = () => {
 
 	if (isFetched) {
 		console.log('Post : isFetched');
-		queryClient.invalidateQueries({ queryKey: ['get-post'] });
 	}
 
 	if (isError) {
 		console.log('Post : isError');
-		return <div>게시물을 불러올 수 없습니다</div>;
+		return (
+			<div className="post-error">
+				<p>게시물을 불러올 수 없습니다</p>
+			</div>
+		);
 	}
 
 	const getPostData = data;
@@ -196,15 +206,16 @@ const PostComponent: React.FC = () => {
 		console.log(comment);
 	};
 
+	console.log(getPostData?.content);
 	return (
 		<PostStyleDiv>
 			<div className="post-component">
 				<Button
 					variant="contained"
 					className="post-tolist-button"
-					onClick={() => {
+					onClick={async () => {
+						queryClient.invalidateQueries({ queryKey: ['community-posts'] });
 						navigation('/community');
-						queryClient.invalidateQueries();
 					}}
 				>
 					<p>목록</p>
@@ -238,19 +249,28 @@ const PostComponent: React.FC = () => {
 						) : (
 							<div></div>
 						)}*/}
-						<p className="post-content">{getPostData.content}</p>
+						<div
+							className="post-content"
+							dangerouslySetInnerHTML={{ __html: getPostData.content }}
+						></div>
 						<div className="post-footer">
-							<Button
-								variant="contained"
-								color="warning"
-								className="post-modify-button"
-								onClick={() =>
-									navigation(`/community/modify`, { state: { id: id } })
-								}
-							>
-								<p>수정</p>
-							</Button>
-							<PostDeleteButtonComponent id={getPostData.boardId} />
+							{userInfo.memberId === getPostData.writerId ? (
+								<div>
+									<Button
+										variant="contained"
+										color="warning"
+										className="post-modify-button"
+										onClick={() =>
+											navigation(`/community/modify`, { state: { id: id } })
+										}
+									>
+										<p>수정</p>
+									</Button>
+									<PostDeleteButtonComponent id={getPostData.boardId} />
+								</div>
+							) : (
+								<div></div>
+							)}
 						</div>
 						<div>
 							<Suspense fallback={<LoadingComponent />}>
@@ -260,7 +280,7 @@ const PostComponent: React.FC = () => {
 						<div>
 							<CommentInputComponent
 								onSubmit={handleSubmitComment}
-								nickname="2"
+								nickname={userInfo.nickname}
 							/>
 						</div>
 					</>
