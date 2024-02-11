@@ -6,6 +6,9 @@ import hypevoice.hypevoiceback.member.domain.Member;
 import hypevoice.hypevoiceback.member.domain.Role;
 import hypevoice.hypevoiceback.member.dto.MemberResponse;
 import hypevoice.hypevoiceback.member.exception.MemberErrorCode;
+import hypevoice.hypevoiceback.voice.domain.Voice;
+import hypevoice.hypevoiceback.voice.exception.VoiceErrorCode;
+import hypevoice.hypevoiceback.voice.service.VoiceFindService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static hypevoice.hypevoiceback.fixture.MemberFixture.GABIN;
 import static hypevoice.hypevoiceback.fixture.MemberFixture.SUNKYOUNG;
+import static hypevoice.hypevoiceback.fixture.VoiceFixture.VOICE_03;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -26,13 +30,18 @@ public class MemberServiceTest extends ServiceTest {
     @Autowired
     private MemberFindService memberFindService;
 
+    @Autowired
+    private VoiceFindService voiceFindService;
+
     private Member member1;
     private Member member2;
+    private Voice voice;
 
     @BeforeEach
     void setUp() {
         member1 = memberRepository.save(SUNKYOUNG.toMember());
         member2 = memberRepository.save(GABIN.toMember());
+        voice = voiceRepository.save(VOICE_03.toVoice(member1));
     }
 
     @Nested
@@ -110,5 +119,8 @@ public class MemberServiceTest extends ServiceTest {
         assertThatThrownBy(() -> memberFindService.findById(member1.getId()))
                 .isInstanceOf(BaseException.class)
                 .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
+        assertThatThrownBy(() -> voiceFindService.findById(voice.getId()))
+                .isInstanceOf(BaseException.class)
+                .hasMessage(VoiceErrorCode.VOICE_NOT_FOUND.getMessage());
     }
 }

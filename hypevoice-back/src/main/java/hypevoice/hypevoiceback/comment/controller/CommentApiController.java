@@ -5,9 +5,9 @@ import hypevoice.hypevoiceback.comment.service.CommentService;
 import hypevoice.hypevoiceback.global.annotation.ExtractPayload;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,8 +17,9 @@ public class CommentApiController {
 
     @PostMapping("/{boardId}")
     public ResponseEntity<Void> create(@ExtractPayload Long writerId, @PathVariable("boardId") Long boardId,
-                                       @RequestBody @Valid CommentRequest request) {
-        commentService.create(writerId, boardId, request.content(), request.voiceCommentUrl());
+                                       @RequestPart(value = "request") @Valid CommentRequest request,
+                                       @RequestPart(value = "file", required = false) MultipartFile multipartFile) {
+        commentService.create(writerId, boardId, request.content(), multipartFile);
         return ResponseEntity.ok().build();
     }
 

@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.PERSIST;
@@ -36,7 +37,7 @@ public class Voice extends BaseTimeEntity {
     private int likes;
 
     @OneToMany(mappedBy = "voice", cascade = PERSIST, orphanRemoval = true)
-    private List<Work> work;
+    private List<Work> workList = new ArrayList<>();
 
     @Builder
     private Voice(Member member, String name, String imageUrl, String intro, String email, String phone, String addInfo) {
@@ -72,3 +73,7 @@ public class Voice extends BaseTimeEntity {
     }
 
 }
+
+
+
+

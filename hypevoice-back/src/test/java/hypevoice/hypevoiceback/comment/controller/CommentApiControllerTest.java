@@ -8,8 +8,11 @@ import hypevoice.hypevoiceback.global.exception.BaseException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.nio.charset.StandardCharsets;
 
 import static hypevoice.hypevoiceback.fixture.CommentFixture.COMMENT_0;
 import static hypevoice.hypevoiceback.fixture.TokenFixture.ACCESS_TOKEN;
@@ -36,11 +39,16 @@ public class CommentApiControllerTest extends ControllerTest {
         void withoutAccessToken() throws Exception {
             // when
             final CommentRequest request = createCommentRequest();
+            MockMultipartFile file = new MockMultipartFile("file", null,
+                    "multipart/form-data", new byte[]{});
+            MockMultipartFile mockRequest = new MockMultipartFile("request", null,
+                    "application/json", convertObjectToJson(request).getBytes(StandardCharsets.UTF_8));
 
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL, BOARD_ID)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .multipart(BASE_URL, BOARD_ID)
+                    .file(file)
+                    .file(mockRequest)
+                    .accept(APPLICATION_JSON);
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
@@ -66,11 +74,17 @@ public class CommentApiControllerTest extends ControllerTest {
 
             // when
             final CommentRequest request = createCommentRequest();
+            MockMultipartFile file = new MockMultipartFile("file", null,
+                    "multipart/form-data", new byte[]{});
+            MockMultipartFile mockRequest = new MockMultipartFile("request", null,
+                    "application/json", convertObjectToJson(request).getBytes(StandardCharsets.UTF_8));
+
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL, BOARD_ID)
-                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
-                    .contentType(APPLICATION_JSON)
-                    .content(convertObjectToJson(request));
+                    .multipart(BASE_URL, BOARD_ID)
+                    .file(file)
+                    .file(mockRequest)
+                    .accept(APPLICATION_JSON)
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
 
             // then
             mockMvc.perform(requestBuilder)
@@ -153,6 +167,6 @@ public class CommentApiControllerTest extends ControllerTest {
     }
 
     private CommentRequest createCommentRequest() {
-        return new CommentRequest(COMMENT_0.getContent(), COMMENT_0.getVoiceCommentUrl());
+        return new CommentRequest(COMMENT_0.getContent());
     }
 }

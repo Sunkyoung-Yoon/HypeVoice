@@ -21,9 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Service
 public class VoiceService {
 
     private final VoiceRepository voiceRepository;
@@ -181,6 +181,16 @@ public class VoiceService {
             );
         }
         return searchVoiceCardListResponseList;
+    }
+
+    @Transactional
+    public void delete(Long memberId) {
+        Voice voice = voiceFindService.findByMemberId(memberId);
+
+        if(voice.getImageUrl() != null)
+            fileService.deleteFiles(voice.getImageUrl());
+
+        voiceRepository.delete(voice);
     }
 
     private void validateMember(Long voiceId, Long memberId) {
