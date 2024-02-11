@@ -30,7 +30,7 @@ public enum MediaClassification implements EnumStandard {
 
     public static MediaClassification from(String value) {
         return Arrays.stream(values())
-                .filter(MediaClassification -> MediaClassification.value.equals(value))
+                .filter(MediaClassification -> MediaClassification.title.equals(value))
                 .findFirst()
                 .orElseThrow(() -> BaseException.type(CategoryInfoErrorCode.CATEGORY_NOT_FOUND));
     }

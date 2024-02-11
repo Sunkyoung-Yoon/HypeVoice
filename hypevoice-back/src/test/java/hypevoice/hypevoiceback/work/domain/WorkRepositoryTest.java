@@ -72,10 +72,9 @@ public class WorkRepositoryTest extends RepositoryTest {
     @Test
     @DisplayName("ID(PK)로 가장 최근에 수정된 대표 작업물을 조회한다")
     void findRepWorkByVoiceId() {
-
         Work findWork = workRepository.findRepWorkByVoiceId(voice.getId());
 
-        assertThat(findWork.getId()).isEqualTo(workLists[2].workId());
+        assertThat(findWork.getId()).isEqualTo(workLists[workLists.length - 1].workId());
 
     }
 }

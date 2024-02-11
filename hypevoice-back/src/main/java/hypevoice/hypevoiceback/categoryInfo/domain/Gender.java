@@ -27,7 +27,7 @@ public enum Gender implements EnumStandard {
 
     public static Gender from(String value) {
         return Arrays.stream(values())
-                .filter(Gender -> Gender.value.equals(value))
+                .filter(Gender -> Gender.title.equals(value))
                 .findFirst()
                 .orElseThrow(() -> BaseException.type(CategoryInfoErrorCode.CATEGORY_NOT_FOUND));
     }

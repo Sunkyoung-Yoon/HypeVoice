@@ -51,7 +51,6 @@ public class VoiceController {
         return new ResponseEntity<>(voiceService.readAllSortedByLikes(), HttpStatus.OK);
     }
 
-
     @GetMapping("/search")
     public ResponseEntity<List<VoiceCardListResponse>> searchVoice(@RequestParam("keyword") String keyword) {
         return new ResponseEntity<>(voiceService.searchVoice(keyword), HttpStatus.OK);

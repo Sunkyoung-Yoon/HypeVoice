@@ -455,14 +455,6 @@ public class WorkControllerTest extends ControllerTest {
         return new WorkResponse(VOICE_ID, WORK_ID, WORK_01.getTitle(), WORK_01.getVideoLink(), WORK_01.getPhotoUrl(), WORK_01.getScriptUrl(), WORK_01.getRecordUrl(), WORK_01.getInfo(), WORK_01.getIsRep(), createCategoryInfoValue());
     }
 
-    private String readScriptResponse() {
-        return WORK_01.getScriptUrl();
-    }
-
-    private String readVideoResponse() {
-        return WORK_01.getVideoLink();
-    }
-
     private CategoryInfoRequest createCategoryInfoRequest() {
         return new CategoryInfoRequest(CATEGORY_INFO_01.getMediaClassification().getValue(), CATEGORY_INFO_01.getVoiceTone().getValue(), CATEGORY_INFO_01.getVoiceStyle().getValue(), CATEGORY_INFO_01.getGender().getValue(), CATEGORY_INFO_01.getAge().getValue());
     }

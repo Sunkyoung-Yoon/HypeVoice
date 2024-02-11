@@ -46,7 +46,7 @@ public class CategoryInfoServiceTest extends ServiceTest {
     @DisplayName("카테고리 정보 생성에 성공한다")
     void createSuccess() {
         // when
-        categoryInfoService.createCategoryInfo(member.getId(), work1.getId(), "M01", "T04", "S02", "G01", "A04");
+        categoryInfoService.createCategoryInfo(member.getId(), work1.getId(), "게임", "따뜻한", "중음", "남성", "청년");
 
         // then
         CategoryInfo findCategoryInfo = categoryInfoFindService.findByWorkId(work1.getId());
@@ -67,7 +67,7 @@ public class CategoryInfoServiceTest extends ServiceTest {
         @DisplayName("카테고리 수정에 성공한다")
         void updateSuccess() {
             // given
-            categoryInfoService.updateCategoryInfo(member.getId(), work2.getId(), "M06", "T07", "S04", "G03", "A06");
+            categoryInfoService.updateCategoryInfo(member.getId(), work2.getId(), "기타", "기타", "기타", "기타", "노년");
 
             // when
             CategoryInfo findCategoryInfo = categoryInfoFindService.findByWorkId(work2.getId());

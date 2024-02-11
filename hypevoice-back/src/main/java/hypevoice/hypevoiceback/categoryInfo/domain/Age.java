@@ -30,7 +30,7 @@ public enum Age implements EnumStandard {
 
     public static Age from(String value) {
         return Arrays.stream(values())
-                .filter(Age -> Age.value.equals(value))
+                .filter(Age -> Age.title.equals(value))
                 .findFirst()
                 .orElseThrow(() -> BaseException.type(CategoryInfoErrorCode.CATEGORY_NOT_FOUND));
     }

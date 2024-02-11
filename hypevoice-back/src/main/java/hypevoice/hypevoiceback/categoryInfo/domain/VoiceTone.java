@@ -31,7 +31,7 @@ public enum VoiceTone implements EnumStandard {
 
     public static VoiceTone from(String value) {
         return Arrays.stream(values())
-                .filter(VoiceTone -> VoiceTone.value.equals(value))
+                .filter(VoiceTone -> VoiceTone.title.equals(value))
                 .findFirst()
                 .orElseThrow(() -> BaseException.type(CategoryInfoErrorCode.CATEGORY_NOT_FOUND));
     }
