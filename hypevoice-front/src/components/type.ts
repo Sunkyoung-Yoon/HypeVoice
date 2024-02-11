@@ -81,6 +81,23 @@ export type WorkInfo = {
   };
 };
 
+// // 보이스 한 개의 정보
+// // url :
+export type VoiceInfo = {
+  ageValue: string;
+  genderValue: string;
+  imageUrl: string;
+  likes: number
+  mediaClassificationValue: string;
+  name: string;
+  photoUrl: string;
+  recordUrl: string;
+  title: string;
+  voiceId: number
+  voiceStyleValue: string;
+  voiceToneValue: string;
+};
+
 // // 카테고리 선택한 값
 // // url : /api/members
 export type CategoryInfoValue = {
