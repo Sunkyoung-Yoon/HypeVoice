@@ -1,5 +1,6 @@
 package hypevoice.hypevoiceback.voice.service.like;
 
+import hypevoice.hypevoiceback.board.dto.BoardResponse;
 import hypevoice.hypevoiceback.common.ServiceTest;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.member.domain.Member;
@@ -26,13 +27,14 @@ public class VoiceLikeServiceTest extends ServiceTest {
 
     private Member member1;
     private Member member2;
-
+    private Member member3;
     private Voice voice;
 
     @BeforeEach
     void setup() {
         member1 = memberRepository.save(SUNKYOUNG.toMember());
         member2 = memberRepository.save(GABIN.toMember());
+        member3 = memberRepository.save(GABIN.toMember());
         voice = voiceRepository.save(VOICE_01.toVoice(member1));
     }
 
@@ -112,5 +114,26 @@ public class VoiceLikeServiceTest extends ServiceTest {
 
         // then
         assertThat(voiceLikeRepository.existsByMemberIdAndVoiceId(member2.getId(), voice.getId())).isFalse();
+    }
+
+    @Nested
+    @DisplayName("보이스좋아요 여부 확인")
+    class checkLike {
+        @Test
+        @DisplayName("보이스좋아요 여부 확인에 성공한다")
+        void success() {
+            //given
+            voiceLikeService.register(member2.getId(), voice.getId());
+
+            // when
+            boolean checkLike1 = voiceLikeService.check(member2.getId(), voice.getId());
+            boolean checkLike2 = voiceLikeService.check(member3.getId(), voice.getId());
+
+            // then
+            assertAll(
+                    () -> assertThat(checkLike1).isTrue(),
+                    () -> assertThat(checkLike2).isFalse()
+            );
+        }
     }
 }

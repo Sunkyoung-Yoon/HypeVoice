@@ -43,6 +43,10 @@ public class VoiceLikeService {
         voiceLikeRepository.deleteByMember(member);
     }
 
+    @Transactional
+    public boolean check(Long memberId, Long voiceId) {
+        return voiceLikeRepository.existsByMemberIdAndVoiceId(memberId, voiceId);
+    }
 
     private void validateSelfVoiceLike(Long memberId, Long voiceId) {
         Voice voice = voiceFindService.findById(voiceId);

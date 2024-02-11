@@ -196,4 +196,29 @@ public class VoiceLikeControllerTest extends ControllerTest {
                     );
         }
     }
+
+    @Nested
+    @DisplayName("보이스좋아요 여부 확인 API [GET /api/voices/{voiceId}/likes]")
+    class checkLike {
+        private static final String BASE_URL = "/api/voices/{voiceId}/likes";
+        private static final Long VOICE_ID = 1L;
+
+        @Test
+        @DisplayName("보이스 좋아요 상세조회에 성공한다")
+        void success() throws Exception {
+            // given
+            doReturn(true)
+                    .when(voiceLikeService)
+                    .check(anyLong(), anyLong());
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .get(BASE_URL, VOICE_ID)
+                    .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(status().isOk());
+        }
+    }
 }
