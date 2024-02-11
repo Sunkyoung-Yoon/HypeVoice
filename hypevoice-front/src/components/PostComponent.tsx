@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@mui/material';
 import styled from 'styled-components';
 import { QueryClient, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { Post } from './CommunityComponent';
 import LoadingComponent from './LoadingComponent';
+import PostDeleteButtonComponent from './PostDeleteButtonComponent';
+import { GetPostType } from './CommunityType';
+import { useRecoilValue } from 'recoil';
+import { LoginState } from '@/recoil/Auth';
+import CommentListComponent from './CommentListComponent';
+import CommentInputComponent from './CommentInputComponent';
 
 const PostStyleDiv = styled.div`
 	.post-component {
@@ -131,23 +136,27 @@ const PostStyleDiv = styled.div`
 `;
 
 const queryClient = new QueryClient();
+const base_server_url = 'http://localhost:8080';
+
 const PostComponent: React.FC = () => {
 	const navigation = useNavigate();
+	const isLogin = useRecoilValue(LoginState);
 
 	// ▼ GetPost ▼
-	const post_id = useParams();
-	const id = post_id.id;
+	const { id } = useParams();
 
-	const getPost = async () => {
-		return await axios.get(`/api/boards/${id}`);
+	const getPost = async (): Promise<GetPostType> => {
+		const response = await axios.get(base_server_url + `/api/boards/${id}`);
+		return response.data;
 	};
 
-	const { data, isLoading, isFetched, isError } = useQuery({
-		queryKey: ['community-post', id],
+	const { data, isLoading, isFetched, isError } = useQuery<GetPostType>({
+		queryKey: ['get-post'],
 		queryFn: getPost,
-		staleTime: 60000,
+		staleTime: 1000 * 60 * 5, // 5 minutes
 	});
 
+	console.log(data);
 	if (isLoading) {
 		console.log('Post : isLoading');
 		return <LoadingComponent />;
@@ -155,7 +164,7 @@ const PostComponent: React.FC = () => {
 
 	if (isFetched) {
 		console.log('Post : isFetched');
-		queryClient.invalidateQueries({ queryKey: ['post', id] });
+		queryClient.invalidateQueries({ queryKey: ['get-post'] });
 	}
 
 	if (isError) {
@@ -163,8 +172,24 @@ const PostComponent: React.FC = () => {
 		return <div>게시물을 불러올 수 없습니다</div>;
 	}
 
-	const getPostData: Post = data?.data;
+	const getPostData = data;
 	// ▲ GetPost ▲
+
+	const modifiedTime = (time: string) => {
+		const date = new Date(time);
+
+		const formattedTime = date.toLocaleString('ko-KR', {
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit',
+			hour12: false,
+		});
+
+		return formattedTime;
+	};
 
 	const handleSubmitComment = (comment: string) => {
 		// 댓글 작성 처리 로직 (아직 미작성)
@@ -198,7 +223,7 @@ const PostComponent: React.FC = () => {
 									</p>
 									<p className="post-header-lower-divline"> | </p>
 									<p className="post-date">
-										등록일 : {getPostData.createdDate}
+										등록일 : {modifiedTime(getPostData.createdDate)}
 									</p>
 								</div>
 								<div className="post-header-lower-right">
@@ -206,18 +231,28 @@ const PostComponent: React.FC = () => {
 								</div>
 							</div>
 						</div>
+						{/*{getPostData.recordUrl ? (
+							<div>
+								<img src={`${getPostData.recordUrl}`} />
+							</div>
+						) : (
+							<div></div>
+						)}*/}
 						<p className="post-content">{getPostData.content}</p>
 						<div className="post-footer">
 							<Button
 								variant="contained"
 								color="warning"
 								className="post-modify-button"
+								onClick={() =>
+									navigation(`/community/modify`, { state: { id: id } })
+								}
 							>
 								<p>수정</p>
 							</Button>
-							<DeletePost id={getPostData.boardId} />
+							<PostDeleteButtonComponent id={getPostData.boardId} />
 						</div>
-						{/* <div>
+						<div>
 							<Suspense fallback={<LoadingComponent />}>
 								<CommentListComponent />
 							</Suspense>
@@ -227,7 +262,7 @@ const PostComponent: React.FC = () => {
 								onSubmit={handleSubmitComment}
 								nickname="2"
 							/>
-						</div> */}
+						</div>
 					</>
 				) : (
 					<p>잘못된 경로입니다</p>
