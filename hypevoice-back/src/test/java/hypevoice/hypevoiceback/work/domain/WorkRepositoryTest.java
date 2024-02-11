@@ -64,7 +64,7 @@ public class WorkRepositoryTest extends RepositoryTest {
         List<WorkList> findWorkLists = workRepository.findAllByVoiceId(voice.getId());
 
         for(int i = 0 ; i < findWorkLists.size(); i++){
-            assertThat(findWorkLists.get(i)).isEqualTo(workLists[2 - i]);
+            assertThat(findWorkLists.get(i)).isEqualTo(workLists[findWorkLists.size() - 1 - i]);
         }
 
     }

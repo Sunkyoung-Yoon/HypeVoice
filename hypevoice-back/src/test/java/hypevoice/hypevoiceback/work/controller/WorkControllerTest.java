@@ -5,6 +5,7 @@ import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoRequest;
 import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoValue;
 import hypevoice.hypevoiceback.common.ControllerTest;
 import hypevoice.hypevoiceback.global.exception.BaseException;
+import hypevoice.hypevoiceback.voice.exception.VoiceErrorCode;
 import hypevoice.hypevoiceback.work.dto.WorkRequest;
 import hypevoice.hypevoiceback.work.dto.WorkResponse;
 import hypevoice.hypevoiceback.work.exception.WorkErrorCode;
@@ -111,7 +112,7 @@ public class WorkControllerTest extends ControllerTest {
         @DisplayName("작업물 등록에 성공한다")
         void success() throws Exception {
             // given
-            doNothing()
+            doReturn(1L)
                     .when(workService)
                     .registerWork(anyLong(), anyLong(), any(), any(), any(), anyInt(), any());
 
@@ -400,20 +401,20 @@ public class WorkControllerTest extends ControllerTest {
         @DisplayName("다른 사람의 작업물의 대표정보를 수정할 수 없다")
         void throwExceptionByMemberIsNotVoiceMember() throws Exception {
             // given
-            doThrow(BaseException.type(WorkErrorCode.MEMBER_IS_NOT_VOICE_MEMBER))
+            doThrow(BaseException.type(VoiceErrorCode.USER_IS_NOT_VOICE_MEMBER))
                     .when(workService)
                     .updateRepresentationWork(anyLong(), anyLong(), anyLong());
 
             // when
             final WorkRequest request = createWorkRequest();
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL, VOICE_ID, WORK_ID)
+                    .put(BASE_URL, VOICE_ID, WORK_ID)
                     .header(AUTHORIZATION, BEARER_TOKEN + ACCESS_TOKEN)
                     .contentType(APPLICATION_JSON)
                     .content(convertObjectToJson(request));
 
             // then
-            final WorkErrorCode expectedError = WorkErrorCode.MEMBER_IS_NOT_VOICE_MEMBER;
+            final VoiceErrorCode expectedError = VoiceErrorCode.USER_IS_NOT_VOICE_MEMBER;
             mockMvc.perform(requestBuilder)
                     .andExpectAll(
                             status().isBadRequest(),

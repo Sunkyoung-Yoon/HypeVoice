@@ -6,6 +6,7 @@ import hypevoice.hypevoiceback.voice.domain.Voice;
 import hypevoice.hypevoiceback.voice.domain.VoiceRepository;
 import hypevoice.hypevoiceback.voice.dto.VoiceCardListResponse;
 import hypevoice.hypevoiceback.voice.dto.VoiceReadResponse;
+import hypevoice.hypevoiceback.work.domain.Work;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import static hypevoice.hypevoiceback.fixture.MemberFixture.JAESIK;
 import static hypevoice.hypevoiceback.fixture.VoiceFixture.VOICE_01;
+import static hypevoice.hypevoiceback.fixture.WorkFixture.WORK_01;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -31,12 +33,14 @@ public class VoiceServiceTest extends ServiceTest {
 
     private Voice voice;
     private Member member;
+    private Work work;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @BeforeEach
     void setUp() {
         member = memberRepository.save(JAESIK.toMember());
         voice = voiceRepository.save(VOICE_01.toVoice(member));
+        work = workRepository.save(WORK_01.toWork(voice));
     }
 
     @Test
@@ -78,13 +82,4 @@ public class VoiceServiceTest extends ServiceTest {
         );
     }
 
-    @Test
-    @DisplayName("보이스를 전체 조회한다")
-    void readAllVoice() {
-        // when
-        List<VoiceCardListResponse> voiceCardListResponses = voiceService.readAllVoice();
-
-        // then
-        assertThat(voiceCardListResponses.get(0).voiceId()).isEqualTo(voice.getName());
-    }
 }

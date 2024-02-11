@@ -170,9 +170,9 @@ public class VoiceControllerTest extends ControllerTest {
     }
 
     @Nested
-    @DisplayName("보이스 전체 조회 API [GET /api/voices]")
+    @DisplayName("보이스 전체 조회 API [GET /api/voices/list/date]")
     class readAllVoice {
-        private static final String BASE_URL = "/api/voices";
+        private static final String BASE_URL = "/api/voices/list/date";
 
         @Test
         @DisplayName("보이스 전체 조회에 성공한다")

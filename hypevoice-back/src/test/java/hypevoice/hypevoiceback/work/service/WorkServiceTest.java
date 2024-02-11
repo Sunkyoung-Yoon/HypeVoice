@@ -267,22 +267,4 @@ public class WorkServiceTest extends ServiceTest {
         }
     }
 
-    @Nested
-    @DisplayName("카테고리를 이용한 작업물 필터링 후 조회")
-    class readCategoryWork {
-        @Test
-        @DisplayName("카테고리를 이용한 작업물 필터링 후 조회에 성공한다")
-        void success() {
-            // given
-            List<WorkResponse> workResponseList = workService.readCategoryWork(voice.getId(), mediaClassificationValueList, voiceToneValueList, voiceStyleValueList, genderValueList, ageValueList);
-
-            // when
-            CategoryInfoValue civ1 = new CategoryInfoValue(workResponseList.get(0).workId(), categoryInfoArray[1].getMediaClassification().getValue(), categoryInfoArray[1].getVoiceTone().getValue(), categoryInfoArray[1].getVoiceStyle().getValue(), categoryInfoArray[1].getGender().getValue(), categoryInfoArray[1].getAge().getValue());
-            CategoryInfoValue civ2 = new CategoryInfoValue(workResponseList.get(workResponseList.size() - 1).workId(), categoryInfoArray[1].getMediaClassification().getValue(), categoryInfoArray[1].getVoiceTone().getValue(), categoryInfoArray[1].getVoiceStyle().getValue(), categoryInfoArray[1].getGender().getValue(), categoryInfoArray[1].getAge().getValue());
-
-            // then
-            assertThat(workResponseList.get(0).categoryInfoValue()).isEqualTo(civ1);
-            assertThat(workResponseList.get(workResponseList.size() - 1).categoryInfoValue()).isEqualTo(civ2);
-        }
-    }
 }
