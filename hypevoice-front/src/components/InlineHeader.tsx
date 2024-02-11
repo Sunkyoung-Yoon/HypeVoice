@@ -33,12 +33,11 @@ function InlineHeader(props: OwnProps) {
           style={{ display: "flex", justifyContent: "right", fontSize: "16px" }}
         >
           {props.worksCnt > 0 && (
-            <div style={{ marginRight: "5px" }}>
-              [작업물] {props.worksCnt}개
-            </div>
+            <div style={{ marginRight: "5px" }}>작업물: {props.worksCnt}개</div>
           )}
+          &nbsp;&nbsp;&nbsp;
           {props.storageSpace > 0 && (
-            <div>[저장 공간] {props.storageSpace}MB</div>
+            <div>저장 공간: {props.storageSpace}MB</div>
           )}
         </div>
       </div>

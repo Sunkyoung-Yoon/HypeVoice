@@ -81,7 +81,7 @@ export type WorkInfo = {
   };
 };
 
-// // 내용
+// // 카테고리 선택한 값
 // // url : /api/members
 export type CategoryInfoValue = {
   mediaClassification: string;
@@ -92,7 +92,7 @@ export type CategoryInfoValue = {
 };
 
 // // 내용
-// // url : /api/members
+// // url :
 // export type CategoryInfoValue = {};
 
 // // 내용

@@ -22,7 +22,7 @@ function Voice() {
         <WorkGrid setWorkCount={setWorkCount} />
       </section>
       <section id="addInfo">
-        <InlineHeader title={"🔎 추가 정보"} worksCnt={0} storageSpace={0} />
+        <InlineHeader title={"🔎 추가 정보"} />
         <AddInfo />
         <section id="bottom"></section>
       </section>
