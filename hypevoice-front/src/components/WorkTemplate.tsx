@@ -1,6 +1,5 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { WorkInfo } from "./type";
-import CustomAudioPlayer from "./CustomAudioPlayer";
 import styled from "styled-components";
 import RepWork from "./RepWork";
 
@@ -59,14 +58,7 @@ function WorkTemplate({ work }: { work: WorkInfo }) {
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
     >
-      <RepWork
-        work={work}
-        isHovered={isHovered}
-        isRep={false}
-        handleStarClick={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-      />
+      <RepWork work={work} />
       <InfoWrapper>
         <p>{work.info}</p>
       </InfoWrapper>

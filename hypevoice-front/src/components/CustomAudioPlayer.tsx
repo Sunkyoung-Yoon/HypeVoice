@@ -1,5 +1,3 @@
-import { blue } from "@mui/material/colors";
-
 export default function CustomAudioPlayer({ src }: { src: string }) {
   return (
     <audio

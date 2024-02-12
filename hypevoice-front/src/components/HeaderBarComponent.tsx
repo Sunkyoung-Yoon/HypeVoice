@@ -84,7 +84,7 @@ export default function HeaderBarComponent() {
     // 비로그인 상태면 로그인 페이지로 이동
     if (loginState) {
       if (window.confirm("정말로 로그아웃 하시겠습니까?")) {
-        setLoginState(!loginState);
+        navigation("/logout");
       }
     } else {
       navigation("/login");

@@ -87,13 +87,13 @@ export type VoiceInfo = {
   ageValue: string;
   genderValue: string;
   imageUrl: string;
-  likes: number
+  likes: number;
   mediaClassificationValue: string;
   name: string;
   photoUrl: string;
   recordUrl: string;
   title: string;
-  voiceId: number
+  voiceId: number;
   voiceStyleValue: string;
   voiceToneValue: string;
 };
@@ -146,4 +146,12 @@ export type WorkModalProps = {
   role: string;
   voiceId: number;
   workId: number;
+};
+
+export type SelectedCategory = {
+  미디어: string;
+  목소리톤: string;
+  목소리스타일: string;
+  성별: string;
+  연령: string;
 };

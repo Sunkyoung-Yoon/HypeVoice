@@ -6,7 +6,6 @@ import { LoginState, CurrentMemberAtom } from "../recoil/Auth";
 export default function useRequireLogin() {
   const navigate = useNavigate();
   const isLoggedIn: boolean = useRecoilValue(LoginState); // 로그인 상태
-  const { nickname } = useRecoilValue(CurrentMemberAtom); // CurrentMemberAtom에서 nickname 추출
 
   // 이 함수는 클릭 이벤트 핸들러에서 사용됩니다.
   return function (togo: string) {
@@ -27,7 +26,7 @@ export default function useRequireLogin() {
     else {
       if (togo) {
         if (togo === "/MyPage") {
-          alert(`${nickname}님의 마이페이지로 이동합니다.`); // 알림 메시지 표시
+          // alert(`${nickname}님의 마이페이지로 이동합니다.`); // 알림 메시지 표시
           // navigate("/myPage");
           // } else {
           navigate(togo);
