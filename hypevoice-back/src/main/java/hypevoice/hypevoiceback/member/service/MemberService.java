@@ -29,7 +29,9 @@ public class MemberService {
     @Transactional
     public void update(Long memberId, String nickname, MultipartFile file) {
         Member member = memberFindService.findById(memberId);
-        validateDuplicateNickname(nickname);
+
+        if(!member.getNickname().equals(nickname))
+            validateDuplicateNickname(nickname);
 
         String profileUrl = null;
         if (file != null)
