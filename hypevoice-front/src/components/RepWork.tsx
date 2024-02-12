@@ -16,7 +16,7 @@ const WorkWrapper = styled.div`
 
 // 별 아이콘에 대표 여부 알려주는 props
 interface StarProps {
-  isRep: number;
+  isrep: number;
 }
 // 별 아이콘
 const Star = styled.span<StarProps>`
@@ -24,7 +24,7 @@ const Star = styled.span<StarProps>`
   top: 8px;
   left: 8px;
   cursor: pointer;
-  color: ${(props) => (props.isRep === 1 ? "yellow" : "grey")};
+  color: ${(props) => (props.isrep === 1 ? "yellow" : "grey")};
   border-radius: 50%;
   width: 20px;
   height: 20px;
@@ -89,33 +89,22 @@ const Tag = styled.span`
   font-size: 12px;
 `;
 
-const handleStarClick = async (targetWork: WorkInfo) => {
-  const beforeVoiceId = targetWork.voiceId;
-  const beforWorkId = targetWork.workId;
-  const before: ChangeIsRep = {
-    voiceId: beforeVoiceId,
-    workId: beforWorkId,
-  };
-  try {
-    const repOrNot = await changeIsRep(before);
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 export default function RepWork({ work }: { work: WorkInfo }) {
   const currentMember = useRecoilValue(CurrentMemberAtom);
+  const handleStarClick = async () => {
+    if (currentMember && work.voiceId === currentMember.memberId) {
+      try {
+        await changeIsRep(work);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
   return (
     <WorkWrapper>
-      {work.voiceId === currentMember.memberId ? (
-        <div onClick={handleStarClick}>
-          <Star isRep={work.isRep}>{work.isRep ? "★" : "☆"}</Star>
-        </div>
-      ) : (
-        <div>
-          <Star isRep={work.isRep}>{work.isRep ? "★" : "☆"}</Star>
-        </div>
-      )}
+      <div onClick={handleStarClick}>
+        <Star isrep={work.isRep}>{work.isRep ? "★" : "☆"}</Star>
+      </div>
       <div>
         <div style={{ display: "flex", marginBottom: "15px" }}>
           <ImageContainer>

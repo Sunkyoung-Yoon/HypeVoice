@@ -140,7 +140,59 @@ export default function WorkModal({
   // 작업물 등록 API 요청
   const createWork = async () => {
     const accessToken = getCookie("access_token");
+    const formData = new FormData();
+    const request = {
+      title,
+      videoLink: youtubeUrl,
+      info: intro,
+      isRep: 0,
+      CategoryInfoRequest: selectedCategory,
+    };
+    formData.append(
+      "request",
+      new Blob([JSON.stringify(request)], { type: "application/json" })
+    );
+
+    const files = new File[];
+
+    imageFile && formData.append("files", imageFile);
+    scriptFile && formData.append("files", scriptFile);
+    recordFile && formData.append("files", recordFile);
+
+    // for (let i = 0; i < files.length; i++) {
+    //   formData.append("files", files[i]);
+    // }
+
+    console.log(...formData);
+
+    // // 로그 찍기
+    // for (const pair of formData.entries()) {
+    //   console.log(pair[0] + ", " + pair[1]);
+    // }
+
+    try {
+      const response = await axios.post(
+        `/api/voices/${voiceId}/works`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const updateWork = async () => {
+    const accessToken = getCookie("access_token");
+    console.log("보이스 아이디는");
     console.log(voiceId);
+    console.log("작업물 아이디는");
+    console.log(workId);
     const formData = new FormData();
 
     // 사용자가 입력한 값들
@@ -166,31 +218,48 @@ export default function WorkModal({
     }
 
     try {
-      const response = await axios.post(
-        `/api/voices/${voiceId}/works`,
+      const response = await axios.patch(
+        `/api/voices/${voiceId}/works/${workId}`,
         formData,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
-            // "Content-Type": "multipart/form-data",
+            "Content-Type": "multipart/form-data",
           },
         }
       );
-      alert("작업물 등록 성공!");
+      alert("작업물 수정 성공!");
       return response.data;
     } catch (error) {
-      alert("작업물 등록 실패!");
+      alert("작업물 수정 실패!");
       console.error(error);
       return null;
     }
   };
 
-  const updateWork = async () => {
-    // 수정 버튼 클릭 시 실행할 로직 작성
-  };
-
   const deleteWork = async () => {
-    // 삭제 버튼 클릭 시 실행할 로직 작성
+    const accessToken = getCookie("access_token");
+    console.log("보이스 아이디는");
+    console.log(voiceId);
+    console.log("작업물 아이디는");
+    console.log(workId);
+
+    try {
+      const response = await axios.patch(
+        `/api/voices/${voiceId}/works/${workId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      alert("작업물 삭제 성공!");
+      return response.data;
+    } catch (error) {
+      alert("작업물 삭제 실패!");
+      console.error(error);
+      return null;
+    }
   };
 
   const confirmAndExecute = async (action: () => Promise<void>) => {

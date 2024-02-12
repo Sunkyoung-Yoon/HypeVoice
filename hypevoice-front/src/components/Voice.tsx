@@ -4,6 +4,7 @@ import InlineHeader from "./InlineHeader";
 import MyInfo from "./MyInfo";
 import WorkGrid from "./WorkGrid";
 import ScrollNavigation from "./ScrollNavigation";
+import { MyInfoVoiceId } from "@/recoil/CurrentVoiceId/MyInfoVoiceId";
 
 function Voice() {
   const [workCount, setWorkCount] = useState(0);
