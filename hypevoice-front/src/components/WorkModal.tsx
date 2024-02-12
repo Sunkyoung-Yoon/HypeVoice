@@ -10,14 +10,25 @@ import {
   DialogContent,
   DialogActions,
   DialogTitle,
-  Grid,
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import TextSnippetIcon from "@mui/icons-material/TextSnippet";
+import MicIcon from "@mui/icons-material/Mic";
+import YouTubeIcon from "@mui/icons-material/YouTube";
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { WorkModalProps } from "./type";
 import { categories } from "./Category";
+import { getCookie } from "@/api/cookie";
+
+const categoryNames = {
+  미디어: "mediaClassification",
+  목소리톤: "voiceTone",
+  목소리스타일: "voiceStyle",
+  성별: "gender",
+  연령: "age",
+};
 
 export default function WorkModal({
   open, // 모달창 열림
@@ -26,10 +37,26 @@ export default function WorkModal({
   voiceId, // 보이스 아이디
   workId, // 작업물 아이디
 }: WorkModalProps) {
-  const [title, setTitle] = useState(""); // 제목 상태 관리
-  const [youtubeUrl, setYoutubeUrl] = useState(""); // 유튜브 링크 상태 관리
-  const [intro, setIntro] = useState(""); // 작업물 소개 상태 관리
-  const [category, setCategory] = useState(""); // 고른 카테고리 상태 관리
+  // 허용하는 텍스트 파일 확장자
+  const TEXT_EXTENSIONS = [".txt", ".doc", ".docx", ".pdf", ".csv", ".xlsx"];
+
+  // 허용하는 음성 파일 확장자
+  const AUDIO_EXTENSIONS = [".mp3", ".wav", ".ogg", ".m4a"];
+
+  // 허용하는 이미지 파일 확장자
+  const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png"];
+
+  // 파일 확장자 확인 함수
+  function checkExtension(file: File, allowedExtensions: string[]) {
+    const extension = file.name
+      .substring(file.name.lastIndexOf("."))
+      .toLowerCase();
+    return allowedExtensions.includes(extension);
+  }
+
+  const [title, setTitle] = useState(""); // 제목 입력 값 상태 관리
+  const [youtubeUrl, setYoutubeUrl] = useState(""); // 유튜브 링크 입력 값 상태 관리
+  const [intro, setIntro] = useState(""); // 작업물 소개 입력 값 상태 관리
   const [scriptFile, setScriptFile] = useState<File | null>(null); // 대본 파일 상태 관리
   const [recordFile, setRecordFile] = useState<File | null>(null); // 음성 파일 상태 관리
   const [imageFile, setImageFile] = useState<File | null>(null); // 이미지 파일 상태 관리
@@ -37,28 +64,59 @@ export default function WorkModal({
   const scriptFileInput = useRef<HTMLInputElement | null>(null); // 입력한 대본 파일 상태 관리
   const recordFileInput = useRef<HTMLInputElement | null>(null); // 녹음한 음성 파일 상태 관리
   const imageFileInput = useRef<HTMLInputElement | null>(null); // 추가한 사진 파일 상태 관리
+  const [scriptFileUrl, setScriptFileUrl] = useState<string | null>(""); // 대본 파일 다운로드 링크
+  const [recordFileUrl, setRecordFileUrl] = useState<string | null>(""); // 음성 파일 다운로드 링크
+  const [selectedCategory, setSelectedCategory] = useState({
+    mediaClassification: "",
+    voiceTone: "",
+    voiceStyle: "",
+    gender: "",
+    age: "",
+  });
 
   // 대본 파일 수정
   const handleScriptFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setScriptFile(e.target.files ? e.target.files[0] : null);
+    const file = e.target.files?.[0];
+    if (file) {
+      if (checkExtension(file, TEXT_EXTENSIONS)) {
+        setScriptFile(file);
+      } else {
+        alert("허용되지 않는 파일 형식입니다.");
+        e.target.value = "";
+      }
+    }
   };
 
   // 음성 파일 수정
   const handleRecordFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRecordFile(e.target.files ? e.target.files[0] : null);
+    const file = e.target.files?.[0];
+    if (file) {
+      if (checkExtension(file, AUDIO_EXTENSIONS)) {
+        setRecordFile(file);
+      } else {
+        alert("허용되지 않는 파일 형식입니다.");
+        e.target.value = "";
+      }
+    }
   };
 
-  // 사진 파일 수정 및 preview 설정
+  // 사진 파일 수정 및 preview 설정 원본
   const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setImageFile(e.target.files ? e.target.files[0] : null);
-
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setPreview(e.target ? (e.target.result as string) : null);
-      };
-      reader.readAsDataURL(e.target.files[0]);
+    const file = e.target.files?.[0];
+    if (file) {
+      if (checkExtension(file, IMAGE_EXTENSIONS)) {
+        setImageFile(file);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setPreview(e.target ? (e.target.result as string) : null);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        alert("허용되지 않는 파일 형식입니다.");
+        e.target.value = "";
+      }
     } else {
+      // 파일 없이 올리면 preview에 아무것도 안보이게 끔!
       setPreview(null);
     }
   };
@@ -70,20 +128,41 @@ export default function WorkModal({
     setPreview(null);
   };
 
+  // 카테고리 변경 핸들러
+  const handleCategoryChange = (event) => {
+    const { name, value } = event.target;
+    setSelectedCategory({
+      ...selectedCategory,
+      [categoryNames[name]]: value,
+    });
+  };
+
+  // 작업물 등록 API 요청
   const createWork = async () => {
+    const accessToken = getCookie("access_token");
+    console.log(voiceId);
     const formData = new FormData();
+
+    // 사용자가 입력한 값들
     formData.append("title", title);
-    formData.append("intro", intro);
-    formData.append("youtubeUrl", youtubeUrl);
-    formData.append("category", category);
+    formData.append("videoLink", youtubeUrl);
+    formData.append("info", intro);
+    formData.append("isRep", "0"); // 대표작업물 여부
+
+    console.log(selectedCategory);
+
+    // 고른 카테고리 문자열화
+    formData.append("CategoryInfoRequest", JSON.stringify(selectedCategory));
+
+    // 추가한 파일들
+    if (imageFile) {
+      formData.append("multipartFile[photo]", imageFile);
+    }
     if (scriptFile) {
-      formData.append("scriptFile", scriptFile);
+      formData.append("multipartFile[script]", scriptFile);
     }
     if (recordFile) {
-      formData.append("recordFile", recordFile);
-    }
-    if (imageFile) {
-      formData.append("imageFile", imageFile);
+      formData.append("multipartFile[record]", recordFile);
     }
 
     try {
@@ -92,12 +171,15 @@ export default function WorkModal({
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${accessToken}`,
+            // "Content-Type": "multipart/form-data",
           },
         }
       );
+      alert("작업물 등록 성공!");
       return response.data;
     } catch (error) {
+      alert("작업물 등록 실패!");
       console.error(error);
       return null;
     }
@@ -120,13 +202,16 @@ export default function WorkModal({
   useEffect(() => {
     if (role === "change" || role === "read") {
       // workId를 이용하여 작업물 정보를 가져와 상태값 설정
+      // 파일 다운로드 링크도 설정
+      // setScriptFileUrl(받아온 대본 파일 URL);
+      // setRecordFileUrl(받아온 음성 파일 URL);
     }
   }, [role, workId]);
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xl" fullWidth={true}>
-      <DialogTitle style={{ display: "flex", justifyContent: "flex-end" }}>
-        {" "}
+      <DialogTitle style={{ display: "flex", justifyContent: "space-between" }}>
+        <h2 style={{ color: "#5b5ff4", fontFamily: "inherit" }}>HYPE VOICE</h2>
         {/* 닫기 버튼*/}
         <IconButton
           edge="end"
@@ -147,10 +232,11 @@ export default function WorkModal({
           display: "flex",
           flexDirection: "column",
           height: "80%",
+          flexWrap: "nowrap",
         }}
       >
         <div style={{ display: "flex", height: "100%" }}>
-          <div style={{ flex: 0.8, marginRight: "8px" }}>
+          <div style={{ flex: 1, marginRight: "8px", marginBottom: "115px" }}>
             {/* 사진 파일 첨부 */}
             <input
               type="file"
@@ -164,7 +250,7 @@ export default function WorkModal({
               component="label" // 이를 통해 Button이 input 엘리먼트를 감싸게 됩니다.
               style={{
                 width: "100%", // 버튼의 너비를 설정합니다.
-                height: "70%", // 버튼의 높이를 설정합니다.
+                height: "100%", // 버튼의 높이를 설정합니다.
                 background: preview
                   ? `url(${preview}) center/cover`
                   : "#f0f0f0", // 사진이 있으면 사진을, 없으면 회색 배경을 보여줍니다.
@@ -194,7 +280,25 @@ export default function WorkModal({
               }}
               disabled={role === "read"}
             >
-              {!preview && "사진 추가"} {/* 사진이 없으면 "사진 추가"*/}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  textAlign: "center",
+                  height: "100%",
+                }}
+              >
+                {!preview && (
+                  <>
+                    사진 추가
+                    <br />
+                    jpg, jpeg 또는 png
+                  </>
+                )}
+              </div>
+              {/* 사진이 없으면 "사진 추가"*/}
               <input
                 type="file"
                 hidden
@@ -203,46 +307,62 @@ export default function WorkModal({
                 accept="image/*"
               />
             </Button>
-            {/* 사진 삭제 버튼 */}
-            {preview && ( // 이미지가 있을 때만 삭제 버튼을 보여줍니다.
-              <Button
-                onClick={handleImageFileRemove}
-                style={{
-                  marginLeft: "10px",
-                  backgroundColor: "transparent",
-                  color: "#5b5ff4",
-                  padding: "5px 10px",
-                }} // 버튼의 스타일을 변경합니다.
-              >
-                사진 삭제
-              </Button>
-            )}
+            {/* 사진 삭제 버튼 공간 */}
+            <div
+              style={{ height: "20px", marginTop: "1px", marginBottom: "5px" }}
+            >
+              {preview && ( // 이미지가 있을 때만 삭제 버튼 보이게 함
+                <Button
+                  onClick={handleImageFileRemove}
+                  style={{
+                    marginLeft: "10px",
+                    backgroundColor: "transparent",
+                    color: "#5b5ff4",
+                    height: "10px",
+                  }}
+                >
+                  사진 삭제
+                </Button>
+              )}
+            </div>
             {/* 제목 입력 */}
             <TextField
               label="제목"
               variant="outlined"
               fullWidth
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => {
+                if (e.target.value.length <= 20) {
+                  setTitle(e.target.value);
+                } else {
+                  alert("제목은 최대 20자까지 입력 가능합니다!");
+                }
+              }}
               disabled={role === "read"}
-              style={{ marginBottom: "8px" }}
             />
+            <FormHelperText>최대 20자</FormHelperText>
           </div>
           {/* ------------------------------------------------------------ */}
           {/* ------------------------------------------------------------ */}
           {/* ------------------------------------------------------------ */}
           <div style={{ flex: 2, display: "flex", flexDirection: "column" }}>
             {/* 카테고리 부분 */}
-            <div style={{ display: "flex", flexWrap: "wrap" }}>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                marginBottom: "5px",
+              }}
+            >
               {Object.keys(categories).map(
                 (
-                  category // 각 카테고리별로 `Select` 컴포넌트를 생성합니다.
+                  category // 각 카테고리별로 `Select` 컴포넌트를 생성
                 ) => (
                   <FormControl
                     variant="outlined"
                     style={{
                       marginBottom: "10px",
-                      width: "18%",
+                      width: "19%",
                       marginRight: "1%",
                     }}
                   >
@@ -250,17 +370,16 @@ export default function WorkModal({
                     <Select
                       labelId={`${category}-label`}
                       id={category}
-                      // value={values[category]}
-                      // onChange={handleChange(category)}
+                      value={selectedCategory[category]}
+                      onChange={handleCategoryChange}
                       label={category}
+                      name={category} // 카테고리 자체의 이름으로 해당 value의 옵션 구성
                     >
-                      {categories[category].map(
-                        (
-                          option // 각 카테고리별로 선택 가능한 옵션을 생성합니다.
-                        ) => (
-                          <MenuItem value={option}>{option}</MenuItem>
-                        )
-                      )}
+                      {categories[category].map((option) => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 )
@@ -272,13 +391,20 @@ export default function WorkModal({
               label="소개"
               variant="outlined"
               multiline
-              rows={4}
+              rows={7}
               fullWidth
               value={intro}
-              onChange={(e) => setIntro(e.target.value)}
+              onChange={(e) => {
+                if (e.target.value.length <= 100) {
+                  setIntro(e.target.value);
+                } else {
+                  alert("소개는 최대 100자까지 입력 가능합니다!");
+                }
+              }}
               disabled={role === "read"}
               style={{ flexGrow: 1 }}
             />
+            <FormHelperText>최대 100자</FormHelperText>
           </div>
         </div>
         {/* ------------------------------------------------------------ */}
@@ -287,43 +413,150 @@ export default function WorkModal({
         {/* ------------------------------------------------------------ */}
         {/* ------------------------------------------------------------ */}
         <div
-          style={{ display: "flex", flexDirection: "column", height: "20%" }}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            height: "20%",
+            border: "1px solid gray",
+            borderRadius: "10px",
+          }}
         >
           {/* 대본 파일 첨부 */}
-          <input
-            type="file"
-            hidden
-            ref={scriptFileInput}
-            onChange={handleScriptFileChange}
-          />
-          <Button
-            variant="contained"
-            onClick={() => scriptFileInput.current?.click()}
-            disabled={role === "read"}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              margin: "10px",
+            }}
           >
-            대본 파일 첨부
-          </Button>
+            <TextSnippetIcon style={{ fontSize: 30 }} />
+            <a
+              href={scriptFileUrl}
+              download
+              style={{ flexGrow: 1, marginLeft: "10px" }}
+            >
+              {scriptFile ? scriptFile.name : ""}
+            </a>
+            {role !== "read" && (
+              <>
+                <Button
+                  variant="contained"
+                  onClick={() => scriptFileInput.current?.click()}
+                  sx={{
+                    backgroundColor: "#5b5ff4",
+                    color: "#ffffff",
+                    borderRadius: "25px",
+                    marginLeft: "10px",
+                    "&:hover": {
+                      backgroundColor: "#5b5ff4",
+                    },
+                  }}
+                >
+                  {scriptFile ? "변경" : "추가"}
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => setScriptFile(null)}
+                  sx={{
+                    backgroundColor: "#ee2727",
+                    color: "#ffffff",
+                    borderRadius: "25px",
+                    marginLeft: "10px",
+                    "&:hover": {
+                      backgroundColor: "#ee2727",
+                    },
+                  }}
+                >
+                  삭제
+                </Button>
+              </>
+            )}
+            <input
+              type="file"
+              hidden
+              ref={scriptFileInput}
+              onChange={handleScriptFileChange}
+              accept="text/*"
+            />
+          </div>
           {/* 음성 파일 첨부 */}
-          <input
-            type="file"
-            hidden
-            ref={recordFileInput}
-            onChange={handleRecordFileChange}
-          />
-          <Button
-            variant="contained"
-            onClick={() => recordFileInput.current?.click()}
-            disabled={role === "read"}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              margin: "10px",
+            }}
           >
-            음성 파일 첨부
-          </Button>
+            <MicIcon style={{ fontSize: 30 }} />
+            {/* CustomAudioPlayer를 사용하신다면 이 부분에 추가하시면 됩니다. */}
+            <a
+              href={recordFileUrl}
+              download
+              style={{ flexGrow: 1, marginLeft: "10px" }}
+            >
+              {recordFile ? recordFile.name : ""}
+            </a>
+            {role !== "read" && (
+              <>
+                <Button
+                  variant="contained"
+                  onClick={() => recordFileInput.current?.click()}
+                  sx={{
+                    backgroundColor: "#5b5ff4",
+                    color: "#ffffff",
+                    borderRadius: "25px",
+                    marginLeft: "10px",
+                    "&:hover": {
+                      backgroundColor: "#5b5ff4",
+                    },
+                  }}
+                >
+                  {recordFile ? "변경" : "추가"}
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => setRecordFile(null)}
+                  sx={{
+                    backgroundColor: "#ee2727",
+                    color: "#ffffff",
+                    borderRadius: "25px",
+                    marginLeft: "10px",
+                    "&:hover": {
+                      backgroundColor: "#ee2727",
+                    },
+                  }}
+                >
+                  삭제
+                </Button>
+              </>
+            )}
+            <input
+              type="file"
+              hidden
+              ref={recordFileInput}
+              onChange={handleRecordFileChange}
+              accept="audio/*"
+            />
+          </div>
           {/* 유튜브 링크 입력 */}
-          <TextField
-            label="유튜브 링크"
-            value={youtubeUrl}
-            onChange={(e) => setYoutubeUrl(e.target.value)}
-            disabled={role === "read"}
-          />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingBottom: "5px",
+            }}
+          >
+            <YouTubeIcon style={{ fontSize: 30, marginLeft: "10px" }} />
+            <TextField
+              label="유튜브 링크"
+              value={youtubeUrl}
+              onChange={(e) => setYoutubeUrl(e.target.value)}
+              disabled={role === "read"}
+              style={{ flexGrow: 1, marginLeft: "20px", marginInline: "10px" }}
+            />
+          </div>
         </div>
       </DialogContent>
       {/* ------------------------------------------------------------ */}

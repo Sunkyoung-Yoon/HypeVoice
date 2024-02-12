@@ -36,8 +36,7 @@ export default function AfterLogin() {
         const decoded: DecodedTokenPayload = jwtDecode(accessToken);
         const currentTime = Date.now() / 1000;
         const memberRole = decoded.role;
-        const memberId = decoded.id;
-        alert(memberRole + memberId + "님 환영합니다!");
+        alert(memberRole + "님 환영합니다!");
 
         if (decoded.exp > currentTime) {
           // 토큰이 유효하다면
@@ -53,10 +52,6 @@ export default function AfterLogin() {
                 ...memberInfo,
                 // accessToken: accessToken, // 엑세스 토큰은 제외하고!
               });
-              console.log("memberInfo is ");
-              console.log(memberInfo);
-              console.log("currentMember is ");
-              console.log(currentMember);
             })
             .catch((e) => {
               console.log(e);

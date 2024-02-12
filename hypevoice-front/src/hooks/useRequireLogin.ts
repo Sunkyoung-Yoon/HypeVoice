@@ -27,7 +27,7 @@ export default function useRequireLogin() {
     else {
       if (togo) {
         if (togo === "/MyPage") {
-          alert(`${nickname}님의 마이페이지로 이동합니다.`); // 알림 메시지 표시
+          // alert(`${nickname}님의 마이페이지로 이동합니다.`); // 알림 메시지 표시
           // navigate("/myPage");
           // } else {
         } else if (togo === "/voice") {

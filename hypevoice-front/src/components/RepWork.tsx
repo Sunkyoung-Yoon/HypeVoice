@@ -107,9 +107,15 @@ export default function RepWork({ work }: { work: WorkInfo }) {
   const currentMember = useRecoilValue(CurrentMemberAtom);
   return (
     <WorkWrapper>
-      <div onClick={handleStarClick}>
-        <Star isRep={work.isRep}>{work.isRep ? "★" : "☆"}</Star>
-      </div>
+      {work.voiceId === currentMember.memberId ? (
+        <div onClick={handleStarClick}>
+          <Star isRep={work.isRep}>{work.isRep ? "★" : "☆"}</Star>
+        </div>
+      ) : (
+        <div>
+          <Star isRep={work.isRep}>{work.isRep ? "★" : "☆"}</Star>
+        </div>
+      )}
       <div>
         <div style={{ display: "flex", marginBottom: "15px" }}>
           <ImageContainer>

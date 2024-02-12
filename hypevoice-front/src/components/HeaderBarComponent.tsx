@@ -79,17 +79,17 @@ export default function HeaderBarComponent() {
 		setMenuOpen(!menuOpen);
 	};
 
-	const handleLoginState = () => {
-		// 로그인 상태면 로그아웃 (확인 창 한 번 띄워서 의사 한 번 더 체크!)
-		// 비로그인 상태면 로그인 페이지로 이동
-		if (loginState) {
-			if (window.confirm('정말로 로그아웃 하시겠습니까?')) {
-				setLoginState(!loginState);
-			}
-		} else {
-			navigation('/login');
-		}
-	};
+  const handleLoginState = () => {
+    // 로그인 상태면 로그아웃 (확인 창 한 번 띄워서 의사 한 번 더 체크!)
+    // 비로그인 상태면 로그인 페이지로 이동
+    if (loginState) {
+      if (window.confirm("정말로 로그아웃 하시겠습니까?")) {
+        navigation("/logout");
+      }
+    } else {
+      navigation("/login");
+    }
+  };
 
 	const navigateAndCloseMenu = (path: string) => {
 		navigation(path);
