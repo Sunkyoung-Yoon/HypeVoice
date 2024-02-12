@@ -5,10 +5,9 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import ButtonBase from "@mui/material/ButtonBase";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { useNavigate } from "react-router-dom";
+import { axiosClient } from "@/api/axios";
 import { useRecoilValue } from "recoil";
-import { LoginState } from "../recoil/Auth";
-import useRequireLogin from "@/hooks/useRequireLogin";
+import { MyInfoVoiceId } from "@/recoil/CurrentVoiceId/MyInfoVoiceId";
 
 const Img = styled("img")({
   margin: "auto",
@@ -17,26 +16,44 @@ const Img = styled("img")({
   maxHeight: "100%",
 });
 
+type VoiceDataType = {
+  name: string,
+  imageUrl: string,
+  intro: string,
+  email: string,
+  phone: string,
+  addInfo: string,
+  likes: number
+}
+
+const getVoiceData = async (voiceId : number): Promise<VoiceDataType> => {
+  const response = await axiosClient.get(`/api/voices/${voiceId}`);
+  console.log(response.data);
+  return response.data;
+};
+
+function updateLike() {
+  alert("좋아요 수정");
+}
+
 function MyInfo() {
+  const currentVoiceId = useRecoilValue(MyInfoVoiceId);
   const [favoriteCnt, setFavoriteCnt] = useState(0);
-  const navigate = useNavigate();
-  const isLoggedIn = useRecoilValue(LoginState); // 로그인 상태
-  // const [isConfirmShown, setIsConfirmShown] = useState(false);
+  const [currentVoice, setCurrentVoice] = useState<VoiceDataType | null>(null);
 
   useEffect(() => {
-    if (
-      !isLoggedIn // && !isConfirmShown
-    ) {
-      // setIsConfirmShown(true);
-      if (
-        window.confirm("로그인이 필요한 서비스입니다. 로그인 하시겠습니까?")
-      ) {
-        navigate("/login");
-      } else navigate("/");
-    } else {
-      //setIsConfirmShown(false);
-    }
-  }, [isLoggedIn]);
+    const fetchVoiceData = async () => {
+      try {
+        const voiceData = await getVoiceData(currentVoiceId);
+        setCurrentVoice(voiceData);
+        setFavoriteCnt(voiceData.likes);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    
+    fetchVoiceData();
+  });
 
   return (
     <>
@@ -52,46 +69,38 @@ function MyInfo() {
         <Grid container spacing={2}>
           <Grid item>
             <ButtonBase sx={{ width: 128, height: 128 }}>
-              <Img alt="profileImg" src="src/assets/sunkyung.png" />
+              <Img alt="profileImg" src={currentVoice?.imageUrl} />
             </ButtonBase>
           </Grid>
           <Grid item xs={12} sm container>
             <Grid item xs container direction="column" spacing={2}>
               <Grid item xs>
                 <Typography gutterBottom variant="h4" component="div">
-                  윤선경
+                  {currentVoice?.name}
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                  Email : yskjdh@gmail.com
+                  Email : {currentVoice?.email}
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                  Call : 010 - 4321 - 5678
+                  Call : {currentVoice?.phone}
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                  Youtube : yskjdh@youtube.com
-                </Typography>
-                <Typography variant="body1" color="text.secondary">
-                  Instagram : yskjdh
+                  {currentVoice?.addInfo}
                 </Typography>
               </Grid>
               <></>
             </Grid>
             <Grid item>
               <FavoriteIcon color="error" fontSize="large" onClick={() => {
-                setFavoriteCnt(favoriteCnt + 1);
+                updateLike();
               }} />
               <span>{favoriteCnt}</span>
             </Grid>
           </Grid>
-          <Grid item>
-            <Typography sx={{ cursor: "pointer" }} variant="body2">
-              “ 성우는 기술자가 아니라 배우다 ”
-              <br />
-              맡은 배역 그 자체가 되어 목소리 뿐만 아니라 성격과 습관까지도 하나되는 연기를
-              지향합니다.
-            </Typography>
-          </Grid>
         </Grid>
+        <Typography variant="body2" sx={{ textAlign: "center", marginTop: "1rem" }}>
+          {currentVoice?.intro}
+        </Typography>
       </Paper>
     </>
   );

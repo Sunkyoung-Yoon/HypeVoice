@@ -3,6 +3,9 @@ import { VoiceInfo } from "./type";
 import styled from "styled-components";
 import RepWork from "./RepWork";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import { useSetRecoilState } from "recoil";
+import { MyInfoVoiceId } from "@/recoil/CurrentVoiceId/MyInfoVoiceId";
+import { useNavigate } from "react-router-dom";
 
 interface WorkWrapperProps {
   isHovered: boolean;
@@ -29,25 +32,6 @@ const NonTransparentDiv = styled.div`
   opacity: 1 !important;
 `;
 
-const InfoWrapper = styled.div`
-  box-sizing: border-box;
-  border: 1px solid #000;
-  border-radius: 10px;
-  padding: 1px;
-  width: 100%;
-  height: 90px;
-  overflow: auto;
-
-  @media (max-width: 480px) {
-    display: none;
-  }
-
-  p {
-    margin: 0.5rem;
-    line-height: 1.2;
-  }
-`;
-
 const StyledImg = styled.img`
   transition: opacity 0.3s ease;
   width: 100px;
@@ -71,8 +55,10 @@ const LikesSpan = styled.span`
 `;
 
 function MainVoicesTemplate({ voice }: { voice: VoiceInfo }) {
+  const navigate = useNavigate();
   const templateRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
+  const setMyInfoVoiceId = useSetRecoilState(MyInfoVoiceId);
 
   // imageUrl: string;
   // likes: number
@@ -99,7 +85,8 @@ function MainVoicesTemplate({ voice }: { voice: VoiceInfo }) {
   }
 
   const handleClick = () => {
-    
+    setMyInfoVoiceId(voice.voiceId);
+    navigate("/voice");
   };
 
   return (
