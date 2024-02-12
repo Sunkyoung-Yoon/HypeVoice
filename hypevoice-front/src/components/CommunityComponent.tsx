@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -7,7 +7,6 @@ import {
 	ListItem,
 	Button,
 	TextField,
-	ButtonGroup,
 	FormControl,
 	InputLabel,
 	Select,
@@ -187,9 +186,17 @@ const CommunityStyleDiv = styled.div`
 		align-items: center;
 		margin: 20px 0px;
 	}
-`;
 
-// type
+	.feedback-commu-nav {
+		font-size: xx-large;
+		margin-left: 10px;
+		padding: 5px 20px;
+		border-radius: 5px;
+		background-color: #bbb;
+		box-shadow: 2px 2px 2px;
+		cursor: pointer;
+	}
+`;
 
 const base_server_url = 'http://localhost:8080';
 const getAllPosts = async (): Promise<GetPostType[]> => {
@@ -208,6 +215,7 @@ const CommunityComponent: React.FC = () => {
 	const isLogin = useRecoilValue(LoginState);
 	const navigation = useNavigate();
 	const queryClient = useQueryClient();
+
 	const {
 		data: boardList,
 		isLoading,
@@ -215,12 +223,10 @@ const CommunityComponent: React.FC = () => {
 		isFetching,
 		isError,
 	} = useQuery<GetPostType[]>({
-		queryKey: ['get-posts'],
+		queryKey: ['community-posts'],
 		queryFn: getAllPosts,
-		staleTime: 100000,
+		staleTime: 1000000,
 	});
-
-	console.log(boardList);
 
 	if (isLoading) {
 		console.log('Community : isLoading');
@@ -228,35 +234,38 @@ const CommunityComponent: React.FC = () => {
 	}
 
 	if (isFetched) {
-		// queryClient.invalidateQueries();
 		console.log('Community : isFetched');
 	}
 
 	if (isFetching) {
 		console.log('Community : isFetching');
+		return <LoadingComponent />;
 	}
 
 	if (isError) {
 		console.log('Community : isError');
 		return <div>Error</div>;
 	}
-	const getCurrentTime = (): string => {
-		const now = new Date();
-		const hours = now.getHours().toString().padStart(2, '0');
-		const minutes = now.getMinutes().toString().padStart(2, '0');
-		return `${hours}:${minutes}`;
-	};
 
-	const formatDate = (dateString: string): string => {
-		const currentTime = getCurrentTime();
-		const currentDate = new Date().toISOString().split('T')[0];
-		const postDate = dateString.split('T')[0];
-
-		if (currentDate === postDate) {
-			return currentTime;
+	const postTime = (time: string) => {
+		const commentDate = new Date(time);
+		const currentDate = new Date();
+		if (
+			commentDate.getDate() === currentDate.getDate() &&
+			commentDate.getMonth() === currentDate.getMonth() &&
+			commentDate.getFullYear() === currentDate.getFullYear()
+		) {
+			// 당일 작성된 댓글인 경우 "HH:MM:SS" 형식으로 표기
+			const hours = commentDate.getHours().toString().padStart(2, '0');
+			const minutes = commentDate.getMinutes().toString().padStart(2, '0');
+			const seconds = commentDate.getSeconds().toString().padStart(2, '0');
+			return `${hours}:${minutes}:${seconds}`;
 		} else {
-			const [year, month, day] = postDate.split('-');
-			return `${year.slice(2)}.${month}.${day}`;
+			// 이전 날짜에 작성된 댓글인 경우 "YY.MM.DD" 형식으로 표기
+			const year = commentDate.getFullYear().toString().slice(-2);
+			const month = (commentDate.getMonth() + 1).toString().padStart(2, '0');
+			const day = commentDate.getDate().toString().padStart(2, '0');
+			return `${year}.${month}.${day}`;
 		}
 	};
 
@@ -305,12 +314,26 @@ const CommunityComponent: React.FC = () => {
 		setCurrentPage(1);
 	};
 
+	const handleInitializeSearch = () => {
+		setSearchTerm('');
+		setCurrentPage(1);
+	};
+
 	return (
 		<CommunityStyleDiv>
 			<div className="community-component">
 				<div className="community-header">
 					<div className="community-header-left">
-						<ButtonGroup
+						<div
+							className="feedback-commu-nav"
+							onClick={async () => {
+								handleInitializeSearch();
+								await queryClient.invalidateQueries();
+							}}
+						>
+							피드백 게시판
+						</div>
+						{/*<ButtonGroup
 							color="primary"
 							aria-label="category buttons"
 							sx={{ m: 1 }}
@@ -343,7 +366,7 @@ const CommunityComponent: React.FC = () => {
 							>
 								구인구직
 							</Button>
-						</ButtonGroup>
+						</ButtonGroup>*/}
 					</div>
 					<div className="community-header-right">
 						{isLogin ? (
@@ -405,7 +428,7 @@ const CommunityComponent: React.FC = () => {
 										{p.writerNickname}
 									</div>
 									<div className="community-post-date">
-										{formatDate(p.createdDate)}
+										{postTime(p.createdDate)}
 									</div>
 									<div className="community-post-view">{p.view}</div>
 								</ListItem>

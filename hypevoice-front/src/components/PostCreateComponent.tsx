@@ -1,15 +1,14 @@
-import { Button, FormControl, NativeSelect, TextField } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { Button, TextField } from '@mui/material';
+import React, { useState } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { QueryClient, useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { CreatePostType } from './CommunityType';
 import { useRecoilValue } from 'recoil';
 import { LoginState } from '@/recoil/Auth';
-import AudioRecorder from './AudioRecorder';
 // import AudioRecord from './AudioRecord';
 
 const PostEditorStyleDiv = styled.div`
@@ -73,7 +72,7 @@ const PostEditorStyleDiv = styled.div`
 	}
 
 	.post-editor-header-title {
-		flex-basis: 75%;
+		flex-basis: 95%;
 	}
 
 	.post-editor-header-title-textfield {
@@ -124,7 +123,6 @@ const formats = [
 	'color',
 	'align',
 	'link',
-	'image',
 	'video',
 	'clean',
 ];
@@ -135,7 +133,7 @@ const modules = {
 		['bold', 'underline', 'strike'],
 		[{ color: [] }],
 		[{ align: [] }],
-		['link', 'image', 'video'],
+		['link', 'video'],
 		['clean'],
 	],
 	clipboard: {
@@ -146,12 +144,11 @@ const modules = {
 Quill.register('formats/my-link', MyLink);
 Quill.register('formats/align', Quill.import('attributors/style/align'));
 
-const queryClient = new QueryClient();
-
 const base_server_url = 'http://localhost:8080';
 let id: number;
 const PostCreateComponent = () => {
 	const navigation = useNavigate();
+	const queryClient = useQueryClient();
 	const [title, setTitle] = useState<string>('');
 	const [content, setContent] = useState<string>('');
 	const [category, setCategory] = useState<string>('피드백');
@@ -223,13 +220,12 @@ const PostCreateComponent = () => {
 		},
 		onSuccess: () => {
 			console.log('createPost : Success');
-			queryClient.invalidateQueries({ queryKey: ['get-posts'] });
-			alert('등록 성공!');
+			queryClient.invalidateQueries();
 			console.log(data);
 			navigation(`/community/${id}`);
 		},
 		onSettled: () => {
-			queryClient.invalidateQueries({ queryKey: ['get-posts'] });
+			queryClient.invalidateQueries();
 			console.log('createPost : On Settled');
 		},
 	});
@@ -265,11 +261,11 @@ const PostCreateComponent = () => {
 		setContent(value);
 	};
 
-	const handleCategoryChange = (
-		event: React.ChangeEvent<{ value: unknown }>,
-	) => {
-		setCategory(event.target.value as string);
-	};
+	// const handleCategoryChange = (
+	// 	event: React.ChangeEvent<{ value: unknown }>,
+	// ) => {
+	// 	setCategory(event.target.value as string);
+	// };
 
 	const handlePublish = () => {
 		if (title.length < 5) {
@@ -317,7 +313,7 @@ const PostCreateComponent = () => {
 								</Button>
 							</div>
 							<div className="post-editor-header-lower">
-								<div className="post-editor-header-category">
+								{/* <div className="post-editor-header-category">
 									<p>분류</p>
 									<FormControl>
 										<NativeSelect
@@ -335,7 +331,7 @@ const PostCreateComponent = () => {
 											<option value="구인구직">구인구직</option>
 										</NativeSelect>
 									</FormControl>
-								</div>
+								</div> */}
 								<div className="post-editor-header-title">
 									<p>제목</p>
 									<TextField
@@ -368,9 +364,9 @@ const PostCreateComponent = () => {
 								<p>등록하기</p>
 							</Button>
 						</div>
-						<div>
+						{/* <div>
 							<AudioRecorder />
-						</div>
+						</div> */}
 					</div>
 				</div>
 			) : (
