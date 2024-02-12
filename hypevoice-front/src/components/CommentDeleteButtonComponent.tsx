@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Box, Button, Modal, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Box, Button, IconButton, Modal, Typography } from '@mui/material';
+import ClearIcon from '@mui/icons-material/Clear';
 import { useState } from 'react';
 import styled from 'styled-components';
 
@@ -27,16 +27,15 @@ const style = {
 	p: 4,
 };
 
-type PostIdType = {
+type CommentIdType = {
 	id: number;
 };
 
 const base_server_url = 'http://localhost:8080';
-export default function PostDeleteButtonComponent({
+export default function CommentDeleteButtonComponent({
 	id,
-}: PostIdType): React.ReactElement {
+}: CommentIdType): React.ReactElement {
 	const queryClient = useQueryClient();
-	const navigation = useNavigate();
 	const [open, setOpen] = useState(false);
 	const getAccessToken = () => {
 		console.log(document.cookie);
@@ -50,18 +49,15 @@ export default function PostDeleteButtonComponent({
 			return accessToken;
 		}
 	};
-	// const deletePost = async (id: number) => {
-	// 	return await axios.delete(`api/boards/${id}`);
-	// };
 
-	const deletePost = async (id: number) => {
+	const deleteComment = async (id: number) => {
 		const token = getAccessToken();
 		const headers = {
 			'Authorization': `Bearer ${token}`,
 		};
 
 		try {
-			await axios.delete(base_server_url + `/api/boards/${id}`, {
+			await axios.delete(base_server_url + `/api/comments/${id}`, {
 				headers,
 			});
 		} catch (error) {
@@ -70,18 +66,17 @@ export default function PostDeleteButtonComponent({
 	};
 
 	const { mutate } = useMutation({
-		mutationFn: deletePost,
+		mutationFn: deleteComment,
 		onError: () => {
-			console.log('deletePost : On Error');
+			console.log('deleteComment : On Error');
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['community-posts'] });
-			navigation('/community');
+			queryClient.invalidateQueries();
 			alert('삭제 성공');
-			console.log('deletePost : Success, id : ' + id);
+			console.log('deleteComment : Success, id : ' + id);
 		},
 		onSettled: () => {
-			console.log('deletePost : On Settled');
+			console.log('deleteComment : On Settled');
 		},
 	});
 
@@ -103,9 +98,9 @@ export default function PostDeleteButtonComponent({
 
 	return (
 		<DeleteBtnStyleDiv>
-			<Button variant="contained" color="error" onClick={handleOpen}>
-				삭제
-			</Button>
+			<IconButton aria-label="delete" size="small" onClick={handleOpen}>
+				<ClearIcon fontSize="small" />
+			</IconButton>
 			<Modal
 				open={open}
 				onClose={handleClose}
@@ -119,7 +114,7 @@ export default function PostDeleteButtonComponent({
 						component="h2"
 						textAlign="center"
 					>
-						정말 이 글을 삭제하시겠습니까?
+						정말 이 댓글을 삭제하시겠습니까?
 						<div className="modal-btns">
 							<Button
 								className="modal-cancel"

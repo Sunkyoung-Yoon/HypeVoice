@@ -25,6 +25,10 @@ export type GetCommentType = {
 	voiceCommentUrl: string;
 };
 
+export type CreateCommentType = {
+	content: string;
+};
+
 export type PostEditorProps = {
 	initialTitleValue?: string;
 	initialContentValue?: string;

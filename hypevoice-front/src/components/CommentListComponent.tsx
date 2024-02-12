@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import ClearIcon from '@mui/icons-material/Clear';
 import {
 	FormControl,
-	IconButton,
 	InputLabel,
 	ListItem,
 	MenuItem,
@@ -11,10 +9,13 @@ import {
 	Select,
 } from '@mui/material';
 import axios from 'axios';
-import { QueryClient, useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import LoadingComponent from './LoadingComponent';
 import { GetCommentType } from './CommunityType';
+import { useRecoilValue } from 'recoil';
+import { CurrentMemberAtom } from '@/recoil/Auth';
+import CommentDeleteButtonComponent from './CommentDeleteButtonComponent';
 
 const CommunityListStyleDiv = styled.div`
 	.comments-container {
@@ -40,23 +41,24 @@ const CommunityListStyleDiv = styled.div`
 		width: 95%;
 		margin-left: auto;
 		margin-right: auto;
-		padding: 20px;
+		padding: 10px;
 		border-bottom: 2px solid rgba(0, 0, 0, 0.1);
 		border-top: 2px solid rgba(0, 0, 0, 0.1);
 	}
 
 	.comments {
-		margin-left: 20px;
+		width: 95%;
+		margin-left: auto;
+		margin-right: auto;
 		margin-top: 20px;
 		margin-bottom: 20px;
-		padding: 5px;
+		padding: 10px;
 		border-bottom: 2px solid rgba(0, 0, 0, 0.1);
 		/* background-color: #ffffff; */
 	}
 
-	.comment-member-id {
+	.comment-writerNickname {
 		flex-basis: 15%;
-		max-width: 15%;
 		font-weight: bold;
 		text-align: left;
 		/* background-color: #ffffff; */
@@ -64,17 +66,15 @@ const CommunityListStyleDiv = styled.div`
 	}
 
 	.comment-content {
-		flex-basis: 67%;
-		max-width: 67%;
+		flex-basis: 75%;
 		text-align: left;
 		margin: 0 15px;
 		/* background-color: #ffffff; */
 	}
 
 	.comment-modified-date {
-		flex-basis: 12%;
-		max-width: 12%;
-		text-align: center;
+		flex-basis: 8%;
+		text-align: right;
 		font-size: 12px;
 		color: #888;
 		margin-right: 5px;
@@ -82,8 +82,10 @@ const CommunityListStyleDiv = styled.div`
 	}
 
 	.comment-delete-button {
-		flex-basis: 4%;
-		max-width: 4%;
+		flex-basis: 2%;
+		margin-left: 10px;
+		background-color: #fdadad;
+		border-radius: 100%;
 	}
 
 	.comments-header-counter {
@@ -100,16 +102,24 @@ const CommunityListStyleDiv = styled.div`
 		display: flex;
 		justify-content: center;
 	}
+
+	.comments-unavailable {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-left: auto;
+		margin-right: auto;
+		padding: 4%;
+	}
 `;
 
-const queryClient = new QueryClient();
 const CommentListComponent = () => {
-	const loginUserId = '';
+	const queryClient = useQueryClient();
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [commentsCount, setCommentsCount] = useState<number>(0);
 	const [commentsPerPage, setCommentsPerPage] = useState<number>(10);
+	const loginUser = useRecoilValue(CurrentMemberAtom);
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
 	let commentData: GetCommentType[] = [];
 
 	useEffect(() => {
@@ -117,15 +127,7 @@ const CommentListComponent = () => {
 	}, [commentData]);
 
 	// ▼ GetComments ▼
-	// const getComments = async () => {
-	// 	return await axios.get(`/api/comments/${currentPostId}`);
-	// };
 
-	// const { data, isLoading, isFetched, isFetching, isError } = useQuery({
-	// 	queryKey: ['post-comments'],
-	// 	queryFn: getComments,
-	// 	staleTime: 60000,
-	// });
 	const { id } = useParams();
 	const base_server_url = 'http://localhost:8080';
 	const getComments = async (): Promise<GetCommentType[]> => {
@@ -153,12 +155,6 @@ const CommentListComponent = () => {
 		console.log('Comments : isFetched');
 	}
 
-	// if (isFetching) {
-	// 	console.log('Comments : isFetching');
-	// 	queryClient.invalidateQueries({ queryKey: ['comments'] });
-	// 	return <LoadingComponent />;
-	// }
-
 	if (isError) {
 		console.log('Comments : isError');
 		return <div>Error</div>;
@@ -180,6 +176,29 @@ const CommentListComponent = () => {
 	const indexOfLastPost: number = currentPage * commentsPerPage;
 	const indexOfFirstPost: number = indexOfLastPost - commentsPerPage;
 	const currentComments = commentData.slice(indexOfFirstPost, indexOfLastPost);
+
+	const commentTime = (time: string) => {
+		const commentDate = new Date(time);
+		const currentDate = new Date();
+
+		if (
+			commentDate.getDate() === currentDate.getDate() &&
+			commentDate.getMonth() === currentDate.getMonth() &&
+			commentDate.getFullYear() === currentDate.getFullYear()
+		) {
+			// 당일 작성된 댓글인 경우 "HH:MM:SS" 형식으로 표기
+			const hours = commentDate.getHours().toString().padStart(2, '0');
+			const minutes = commentDate.getMinutes().toString().padStart(2, '0');
+			const seconds = commentDate.getSeconds().toString().padStart(2, '0');
+			return `${hours}:${minutes}:${seconds}`;
+		} else {
+			// 이전 날짜에 작성된 댓글인 경우 "YY.MM.DD" 형식으로 표기
+			const year = commentDate.getFullYear().toString().slice(-2);
+			const month = (commentDate.getMonth() + 1).toString().padStart(2, '0');
+			const day = commentDate.getDate().toString().padStart(2, '0');
+			return `${year}.${month}.${day}`;
+		}
+	};
 
 	return (
 		<CommunityListStyleDiv>
@@ -208,31 +227,39 @@ const CommentListComponent = () => {
 					</div>
 				</div>
 				<div className="comments">
-					{currentComments.map((comment) => (
-						<ListItem key={comment.comment_id} className="comment">
-							<div className="comment-member-id">{comment.member_id}</div>
-							<div className="comment-content">{comment.content}</div>
-							<div className="comment-modified-date">
-								{comment.modified_date}
+					{currentComments.length >= 1 ? (
+						<div className="comments-available">
+							{currentComments.map((comment) => (
+								<ListItem key={comment.commentId} className="comment">
+									<div className="comment-writerNickname">
+										{comment.writerNickname}
+									</div>
+									<div className="comment-content">{comment.content}</div>
+									<div className="comment-createdDate">
+										{commentTime(comment.createdDate)}
+									</div>
+									<div className="comment-delete-button">
+										{loginUser.memberId === comment.writerId ? (
+											<CommentDeleteButtonComponent id={comment.commentId} />
+										) : (
+											<div></div>
+										)}
+									</div>
+								</ListItem>
+							))}
+							<div className="pagination">
+								<Pagination
+									count={pageCount}
+									page={currentPage}
+									onChange={handlePageClick}
+								/>
 							</div>
-							<div className="comment-delete-button">
-								{loginUserId === comment.member_id ? (
-									<IconButton aria-label="delete" size="small">
-										<ClearIcon fontSize="small" />
-									</IconButton>
-								) : (
-									''
-								)}
-							</div>
-						</ListItem>
-					))}
-				</div>
-				<div className="pagination">
-					<Pagination
-						count={pageCount}
-						page={currentPage}
-						onChange={handlePageClick}
-					/>
+						</div>
+					) : (
+						<div>
+							<div className="comments-unavailable">댓글이 없습니다.</div>
+						</div>
+					)}
 				</div>
 			</div>
 		</CommunityListStyleDiv>

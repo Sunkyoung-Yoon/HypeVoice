@@ -8,7 +8,7 @@ import LoadingComponent from './LoadingComponent';
 import PostDeleteButtonComponent from './PostDeleteButtonComponent';
 import { GetPostType } from './CommunityType';
 import { useRecoilValue } from 'recoil';
-import { CurrentMemberAtom, LoginState } from '@/recoil/Auth';
+import { CurrentMemberAtom } from '@/recoil/Auth';
 import CommentListComponent from './CommentListComponent';
 import CommentInputComponent from './CommentInputComponent';
 import { Quill } from 'react-quill';
@@ -110,7 +110,9 @@ const PostStyleDiv = styled.div`
 		margin-right: auto;
 		margin-top: 20px;
 		margin-bottom: 20px;
-		padding: 50px 5px;
+		padding: 50px 20px;
+		background-color: #fff;
+		border-radius: 5px;
 	}
 
 	.post-tolist-button {
@@ -142,7 +144,6 @@ Quill.register('formats/align', Quill.import('attributors/style/align'));
 const PostComponent: React.FC = () => {
 	const queryClient = useQueryClient();
 	const navigation = useNavigate();
-	const isLogin = useRecoilValue(LoginState);
 	const userInfo = useRecoilValue(CurrentMemberAtom);
 	// ▼ GetPost ▼
 	const { id } = useParams();
@@ -214,7 +215,6 @@ const PostComponent: React.FC = () => {
 					variant="contained"
 					className="post-tolist-button"
 					onClick={async () => {
-						queryClient.invalidateQueries({ queryKey: ['community-posts'] });
 						navigation('/community');
 					}}
 				>
@@ -253,19 +253,20 @@ const PostComponent: React.FC = () => {
 							className="post-content"
 							dangerouslySetInnerHTML={{ __html: getPostData.content }}
 						></div>
-						<div className="post-footer">
+						<div>
 							{userInfo.memberId === getPostData.writerId ? (
-								<div>
-									<Button
+								<div className="post-footer">
+									{/* <Button
 										variant="contained"
 										color="warning"
 										className="post-modify-button"
-										onClick={() =>
-											navigation(`/community/modify`, { state: { id: id } })
-										}
+										onClick={() => {
+											queryClient.invalidateQueries();
+											navigation(`/community/modify`, { state: { id: id } });
+										}}
 									>
 										<p>수정</p>
-									</Button>
+									</Button> */}
 									<PostDeleteButtonComponent id={getPostData.boardId} />
 								</div>
 							) : (
@@ -278,10 +279,7 @@ const PostComponent: React.FC = () => {
 							</Suspense>
 						</div>
 						<div>
-							<CommentInputComponent
-								onSubmit={handleSubmitComment}
-								nickname={userInfo.nickname}
-							/>
+							<CommentInputComponent />
 						</div>
 					</>
 				) : (
