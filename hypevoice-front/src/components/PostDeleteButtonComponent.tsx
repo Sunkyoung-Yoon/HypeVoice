@@ -4,6 +4,7 @@ import { Box, Button, Modal, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import styled from 'styled-components';
+import { axiosClient } from '@/api/axios';
 
 const DeleteBtnStyleDiv = styled.div`
 	.modal-btns {
@@ -31,7 +32,6 @@ type PostIdType = {
 	id: number;
 };
 
-const base_server_url = 'http://localhost:8080';
 export default function PostDeleteButtonComponent({
 	id,
 }: PostIdType): React.ReactElement {
@@ -61,7 +61,7 @@ export default function PostDeleteButtonComponent({
 		};
 
 		try {
-			await axios.delete(base_server_url + `/api/boards/${id}`, {
+			await axiosClient.delete(`/api/boards/${id}`, {
 				headers,
 			});
 		} catch (error) {

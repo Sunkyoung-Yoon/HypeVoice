@@ -9,7 +9,6 @@ import axios from 'axios';
 import { GetPostType } from './CommunityType';
 import LoadingComponent from './LoadingComponent';
 import { CreatePostType } from './CommunityType';
-import PostEditor from './PostEditor';
 // import AudioRecord from './AudioRecord';
 
 const PostEditorStyleDiv = styled.div`
@@ -142,12 +141,12 @@ const modules = {
 	},
 };
 
-Quill.register('formats/my-link', MyLink);
+// Quill.register('formats/my-link', MyLink);
 // Quill.register('formats/align', Quill.import('attributors/style/align'));
 
 const queryClient = new QueryClient();
 
-const base_server_url = 'http://localhost:8080';
+const base_server_url = 'http://localhost:8081';
 
 const PostModifyComponent = () => {
 	const navigation = useNavigate();

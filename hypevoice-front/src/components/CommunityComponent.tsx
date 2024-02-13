@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import {
 	List,
@@ -16,9 +15,10 @@ import Pagination from '@mui/material/Pagination';
 import styled from 'styled-components';
 import LoadingComponent from './LoadingComponent';
 import ScrollToTopComponent from './ScrollToTopComponent';
-import { GetPostType } from './CommunityType';
+import { GetPageInfo, GetPostType } from './CommunityType';
 import { useRecoilValue } from 'recoil';
 import { LoginState } from '@/recoil/Auth';
+import { axiosClient } from '@/api/axios';
 
 const CommunityStyleDiv = styled.div`
 	.community-component {
@@ -198,34 +198,42 @@ const CommunityStyleDiv = styled.div`
 	}
 `;
 
-const base_server_url = 'http://localhost:8080';
-const getAllPosts = async (): Promise<GetPostType[]> => {
-	const response = await axios.get<{ boardList: GetPostType[] }>(
-		base_server_url + '/api/boards',
-	);
-	return response.data.boardList;
-};
-
 const CommunityComponent: React.FC = () => {
 	const [searchTermInput, setSearchTermInput] = useState('');
 	const [searchTerm, setSearchTerm] = useState('');
+	const [searchCriteria, setSearchCriteria] = useState('제목과내용');
 	const [currentPage, setCurrentPage] = useState<number>(1);
-	const [currentcategory, setCurrentcategory] = useState<string>('전체');
-	const [postsPerPage, setPostsPerPage] = useState<number>(10);
+	// const [currentcategory, setCurrentcategory] = useState<string>('전체');
+	const [postsCount, setPostsCount] = useState<number>(0);
 	const isLogin = useRecoilValue(LoginState);
 	const navigation = useNavigate();
 	const queryClient = useQueryClient();
 
-	const {
-		data: boardList,
-		isLoading,
-		isFetched,
-		isFetching,
-		isError,
-	} = useQuery<GetPostType[]>({
-		queryKey: ['community-posts'],
+	useEffect(() => {
+		setPostsCount(postsCount);
+	}, [postsCount]);
+
+	useEffect(() => {
+		setCurrentPage(currentPage);
+	}, [currentPage]);
+
+	const getAllPosts = async () => {
+		const response = await axiosClient.get('/api/boards', {
+			params: {
+				page: currentPage - 1,
+				search: '제목',
+				word: searchTerm,
+			},
+		});
+		return response.data;
+	};
+
+	const { data, isLoading, isFetched, isFetching, isError } = useQuery({
+		queryKey: [
+			`community-posts-${currentPage}-${searchCriteria}-${searchTerm}`,
+		],
 		queryFn: getAllPosts,
-		staleTime: 1000000,
+		staleTime: 100000,
 	});
 
 	if (isLoading) {
@@ -246,6 +254,11 @@ const CommunityComponent: React.FC = () => {
 		console.log('Community : isError');
 		return <div>Error</div>;
 	}
+
+	const boardList: GetPostType[] = data.boardList;
+	const pageInfo: GetPageInfo = data.pageInfo;
+	console.log(pageInfo);
+	console.log(data);
 
 	const postTime = (time: string) => {
 		const commentDate = new Date(time);
@@ -271,37 +284,32 @@ const CommunityComponent: React.FC = () => {
 
 	// FilteredCategoryPosts : Category에 따라 글을 출력
 	// (전체, 자유, 피드백, 구인구직)
-	const FilteredCategoryPosts: GetPostType[] =
-		currentcategory === '전체'
-			? boardList
-			: boardList.filter((post) => post.category === currentcategory);
+	// const FilteredCategoryPosts: GetPostType[] =
+	// 	currentcategory === '전체'
+	// 		? boardList
+	// 		: boardList.filter((post) => post.category === currentcategory);
 
 	// searchedPosts : 검색 결과에 따라 글을 출력
-	const searchedPosts: GetPostType[] = searchTerm
-		? FilteredCategoryPosts.filter((post) => post.title.includes(searchTerm))
-		: FilteredCategoryPosts;
+	const currentPosts: GetPostType[] = searchTerm
+		? boardList.filter((post) => post.title.includes(searchTerm))
+		: boardList;
 
 	// Pagination에 따라 글을 출력
-	const pageCount: number = Math.ceil(searchedPosts.length / postsPerPage);
-	const indexOfLastPost: number = currentPage * postsPerPage;
-	const indexOfFirstPost: number = indexOfLastPost - postsPerPage;
-	const currentPosts: GetPostType[] = searchedPosts.slice(
-		indexOfFirstPost,
-		indexOfLastPost,
-	);
+	const pageCount: number = Math.ceil(pageInfo.totalElements / 10);
 
 	// 각종 EventHandler
 	const handlePageClick = (
 		event: React.ChangeEvent<unknown>,
 		pageNumber: number,
-	): void => {
+	) => {
 		setCurrentPage(pageNumber);
+		queryClient.invalidateQueries();
 	};
 
-	const handleButtonClick = (category: string): void => {
-		setCurrentcategory(category);
-		setCurrentPage(1);
-	};
+	// const handleButtonClick = (category: string): void => {
+	// 	setCurrentcategory(category);
+	// 	setCurrentPage(1);
+	// };
 
 	const handleInputChange = (
 		event: React.ChangeEvent<HTMLInputElement>,
@@ -312,11 +320,13 @@ const CommunityComponent: React.FC = () => {
 	const handleSearchClick = () => {
 		setSearchTerm(searchTermInput);
 		setCurrentPage(1);
+		queryClient.invalidateQueries();
 	};
 
 	const handleInitializeSearch = () => {
 		setSearchTerm('');
 		setCurrentPage(1);
+		queryClient.invalidateQueries();
 	};
 
 	return (
@@ -328,7 +338,6 @@ const CommunityComponent: React.FC = () => {
 							className="feedback-commu-nav"
 							onClick={async () => {
 								handleInitializeSearch();
-								await queryClient.invalidateQueries();
 							}}
 						>
 							피드백 게시판
@@ -380,7 +389,7 @@ const CommunityComponent: React.FC = () => {
 						) : (
 							<div></div>
 						)}
-						<FormControl variant="standard" sx={{ m: 1, minWidth: 90 }}>
+						{/* <FormControl variant="standard" sx={{ m: 1, minWidth: 90 }}>
 							<InputLabel id="community-header-postsperpage">
 								페이지 글 개수
 							</InputLabel>
@@ -396,7 +405,7 @@ const CommunityComponent: React.FC = () => {
 								<MenuItem value={20}>20개</MenuItem>
 								<MenuItem value={30}>30개</MenuItem>
 							</Select>
-						</FormControl>
+						</FormControl> */}
 					</div>
 				</div>
 				{currentPosts ? (
@@ -442,6 +451,25 @@ const CommunityComponent: React.FC = () => {
 							/>
 						</div>
 						<div className="search-bar">
+							{/* <FormControl variant="standard" sx={{ m: 1, minWidth: 90 }}>
+								<InputLabel id="community-header-postsperpage">
+									검색기준
+								</InputLabel>
+								<Select
+									name="selectPostsPerPage"
+									value={searchCriteria}
+									onChange={(e) => {
+										setSearchCriteria(e.target.value);
+										setCurrentPage(1);
+										console.log(searchCriteria);
+									}}
+								>
+									<MenuItem value="제목과내용">제목&내용</MenuItem>
+									<MenuItem value="제목">제목</MenuItem>
+									<MenuItem value="내용">내용</MenuItem>
+									<MenuItem value="작성자">작성자</MenuItem>
+								</Select>
+							</FormControl> */}
 							<TextField
 								id="standard-basic"
 								label="검색어"

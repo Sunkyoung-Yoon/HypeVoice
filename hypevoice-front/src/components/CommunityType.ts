@@ -10,6 +10,13 @@ export interface GetPostType {
 	writerNickname: string;
 }
 
+export interface GetPageInfo {
+	hasNext: boolean;
+	numberOfElements: number;
+	totalElements: number;
+	totalPages: number;
+}
+
 export type CreatePostType = {
 	title: string;
 	content: string;
