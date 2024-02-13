@@ -8,6 +8,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { axiosClient } from "@/api/axios";
 import { useRecoilValue } from "recoil";
 import { MyInfoVoiceId } from "@/recoil/CurrentVoiceId/MyInfoVoiceId";
+import { getCookie } from "@/api/cookie";
 
 const Img = styled("img")({
   margin: "auto",
@@ -32,9 +33,62 @@ const getVoiceData = async (voiceId: number): Promise<VoiceDataType> => {
   return response.data;
 };
 
-function updateLike() {
-  alert("좋아요 수정");
-}
+const registerLike = async (
+  voiceId: number,
+  accessToken: string
+): Promise<void> => {
+  try {
+    const response = await axiosClient.post(
+      `/api/voices/${voiceId}/likes`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log(response.data);
+  } catch (error) {
+    alert("내 보이스의 좋아요는 누를 수 없습니다.");
+    console.error(error);
+  }
+};
+
+const deleteLike = async (
+  voiceId: number,
+  accessToken: string
+): Promise<void> => {
+  try {
+    const response = await axiosClient.delete(`/api/voices/${voiceId}/likes`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const checkLike = async (
+  voiceId: number,
+  accessToken: string
+): Promise<boolean> => {
+  try {
+    const response = await axiosClient.get(`/api/voices/${voiceId}/likes`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+
+
 
 function MyInfo() {
   const currentVoiceId = useRecoilValue(MyInfoVoiceId);
@@ -54,6 +108,20 @@ function MyInfo() {
 
     fetchVoiceData();
   }, [currentVoiceId]);
+
+  const updateLike = async () => {
+    const accessToken = getCookie("access_token");
+    const isLiked = await checkLike(currentVoiceId, accessToken);
+    if (isLiked) {
+      await deleteLike(currentVoiceId, accessToken);
+    } else {
+      await registerLike(currentVoiceId, accessToken);
+    }
+    // Refresh the favorite count and the current voice data
+    const voiceData = await getVoiceData(currentVoiceId);
+    setCurrentVoice(voiceData);
+    setFavoriteCnt(voiceData.likes);
+  }
 
   return (
     <>
@@ -95,9 +163,7 @@ function MyInfo() {
               <FavoriteIcon
                 color="error"
                 fontSize="large"
-                onClick={() => {
-                  updateLike();
-                }}
+                onClick={updateLike}
               />
               <span>{favoriteCnt}</span>
             </Grid>
