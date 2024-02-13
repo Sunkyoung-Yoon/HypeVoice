@@ -24,13 +24,12 @@ public class MemberService {
     private final AuthService authService;
     private final FileService fileService;
     private final VoiceService voiceService;
-    private final VoiceFindService voiceFindService;
 
     @Transactional
     public void update(Long memberId, String nickname, MultipartFile file) {
         Member member = memberFindService.findById(memberId);
 
-        if(!member.getNickname().equals(nickname))
+        if(!(member.getNickname()==null) && !member.getNickname().equals(nickname))
             validateDuplicateNickname(nickname);
 
         String profileUrl = null;
