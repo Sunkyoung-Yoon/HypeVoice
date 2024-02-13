@@ -149,6 +149,9 @@ public class StudioService {
         if (studioMemberRepository.existsById(loginId)) {
             throw new BaseException(StudioErrorCode.STUDIO_ALREADY_JOINED);
         }
+        if(studio.getOnAir() == 1){
+            throw new BaseException(StudioErrorCode.STUDIO_ONAIR);
+        }
         if (password == null ^ studio.getPassword() == null) {
             throw BaseException.type(StudioErrorCode.NULL_PASSWORD_OF_STUDIO_OR_REQUEST);
         } else {
