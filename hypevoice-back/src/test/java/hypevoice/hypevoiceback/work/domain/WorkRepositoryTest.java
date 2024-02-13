@@ -61,7 +61,7 @@ public class WorkRepositoryTest extends RepositoryTest {
     @DisplayName("보이스ID로 모든 작업물을 조회한다")
     void findAllByVoiceId() {
 
-        List<WorkList> findWorkLists = workRepository.findAllByVoiceId(voice.getId());
+        List<WorkList> findWorkLists = workRepository.findAllByVoiceId(voice.getId()).orElseThrow();
 
         for(int i = 0 ; i < findWorkLists.size(); i++){
             assertThat(findWorkLists.get(i)).isEqualTo(workLists[findWorkLists.size() - 1 - i]);

@@ -15,7 +15,7 @@ public interface WorkRepository extends JpaRepository<Work, Long> {
             "from Work w " +
             "where w.voice.id = :voiceId " +
             "order by w.isRep desc, w.modifiedDate desc ")
-    List<WorkList> findAllByVoiceId(@Param("voiceId") Long voiceId);
+    Optional <List<WorkList>> findAllByVoiceId(@Param("voiceId") Long voiceId);
 
     @Query(value =
             "select * " +
@@ -23,5 +23,5 @@ public interface WorkRepository extends JpaRepository<Work, Long> {
             "where (w.voice_id = :voiceId) and (w.is_rep = 1) " +
             "order by w.modified_date desc " +
             "limit 1 ", nativeQuery = true)
-    Work findRepWorkByVoiceId(@Param("voiceId") Long voiceId);
+     Work findRepWorkByVoiceId(@Param("voiceId") Long voiceId);
 }

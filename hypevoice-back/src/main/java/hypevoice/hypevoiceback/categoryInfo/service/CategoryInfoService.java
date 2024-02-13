@@ -1,6 +1,7 @@
 package hypevoice.hypevoiceback.categoryInfo.service;
 
 import hypevoice.hypevoiceback.categoryInfo.domain.*;
+import hypevoice.hypevoiceback.categoryInfo.exception.CategoryInfoErrorCode;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.voice.exception.VoiceErrorCode;
 import hypevoice.hypevoiceback.work.domain.Work;
@@ -24,6 +25,7 @@ public class CategoryInfoService {
     @Transactional
     public void createCategoryInfo(Long memberId, Long workId, String mediaClassification, String voiceTone, String voiceStyle, String gender, String age) {
         validateMember(workId, memberId);
+        validateCategoryInfo(mediaClassification, voiceTone, voiceStyle, gender, age);
 
         Work work = workFindService.findById(workId);
         MediaClassification findMediaClassification = MediaClassification.from(mediaClassification);
@@ -40,6 +42,7 @@ public class CategoryInfoService {
     @Transactional
     public void updateCategoryInfo(Long memberId, Long workId, String mediaClassification, String voiceTone, String voiceStyle, String gender, String age) {
         validateMember(workId, memberId);
+        validateCategoryInfo(mediaClassification, voiceTone, voiceStyle, gender, age);
 
         Work work = workFindService.findById(workId);
         CategoryInfo categoryInfo = categoryInfoFindService.findByWorkId(work.getId());
@@ -90,6 +93,12 @@ public class CategoryInfoService {
         Work work = workFindService.findById(workId);
         if (!work.getVoice().getMember().getId().equals(memberId)) {
             throw BaseException.type(VoiceErrorCode.USER_IS_NOT_VOICE_MEMBER);
+        }
+    }
+
+    private void validateCategoryInfo(String mediaClassification, String voiceTone, String voiceStyle, String gender, String age) {
+        if (mediaClassification.equals(null) || voiceTone.equals(null) || voiceStyle.equals(null) || gender.equals(null) || age.equals(null)) {
+            throw BaseException.type(CategoryInfoErrorCode.CATEGORY_NOT_FOUND);
         }
     }
 
