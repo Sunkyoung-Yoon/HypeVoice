@@ -201,12 +201,12 @@ public class OpenViduClient {
 
     public Recording startRecording(String sessionId, Boolean isIndividual) {
         if(isIndividual){
+            System.out.println("let's individual");
             recordingProperties = new RecordingProperties.Builder()
                     .outputMode(Recording.OutputMode.INDIVIDUAL)
                     .hasAudio(true)
                     .hasVideo(false)
                     .name(UUID.randomUUID().toString())
-
                     .build();
         }
         try {

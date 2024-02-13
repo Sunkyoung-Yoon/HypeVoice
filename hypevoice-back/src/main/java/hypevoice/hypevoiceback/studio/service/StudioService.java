@@ -22,9 +22,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 @Service
 @Transactional
@@ -149,7 +157,7 @@ public class StudioService {
         if (studioMemberRepository.existsById(loginId)) {
             throw new BaseException(StudioErrorCode.STUDIO_ALREADY_JOINED);
         }
-        if(studio.getOnAir() == 1){
+        if (studio.getOnAir() == 1) {
             throw new BaseException(StudioErrorCode.STUDIO_ONAIR);
         }
         if (password == null ^ studio.getPassword() == null) {
@@ -230,14 +238,14 @@ public class StudioService {
 
     }
 
-    public String getRecordingUrl(String recordingId, Long loginId, Long studioId) {
+    public List<String> getRecordingUrl(String recordingId, Long loginId, Long studioId) {
         Studio studio = studioFindService.findById(studioId);
         Recording recording = null;
         if (studioMemberFindService.findByMemberIdAndStudioId(loginId, studioId).getIsHost() == 1) {
             recording = openViduClient.getRecording(recordingId);
             String status = recording.getStatus().name();
             if (status.equals("ready")) {
-                return recording.getUrl();
+                return processFile(recording.getUrl(), recording.getName());
             } else {
                 throw new BaseException(StudioErrorCode.UNABLE_RECORDING);
             }
@@ -254,6 +262,95 @@ public class StudioService {
 
         } else {
             throw new BaseException(StudioErrorCode.UNABLE_RECORDING);
+        }
+    }
+
+
+    public List<String> processFile(String fileUrl, String name) {
+        System.out.println(fileUrl);
+        try {
+            String fileExtension = getFileExtension(fileUrl);
+
+            if ("webm".equalsIgnoreCase(fileExtension)) {
+                System.out.println("현재 파일 webm");
+                // .webm 파일 처리
+                return processWebmFile(fileUrl, name);
+            } else if ("zip".equalsIgnoreCase(fileExtension)) {
+                // .zip 파일 처리
+                System.out.println("현재파일 zip");
+                return processZipFile(fileUrl, name);
+            } else {
+                // 지원하지 않는 파일 형식인 경우
+                throw new RuntimeException();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
+
+    private String getFileExtension(String fileUrl) {
+        // 파일 URL에서 확장자 추출
+        String[] parts = fileUrl.split("\\.");
+        if (parts.length > 0) {
+            return parts[parts.length - 1];
+        } else {
+            return "";
+        }
+    }
+
+    private List<String> processWebmFile(String fileUrl, String name) {
+        // .webm 파일 처리 로직 작성
+        // 여기서는 간단히 파일 이름을 변경하여 URL을 생성하는 예시를 보여줍니다.
+        List<String> urls = new ArrayList<>();
+        String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+        String fileUrlWithName = "https://hypevoice.site/openvidu/recordings/" + name + "/" + fileName;
+        urls.add(fileUrlWithName);
+        return urls;
+    }
+
+    private List<String> processZipFile(String fileUrl, String name) throws IOException {
+        byte[] zipBytes = downloadFile(fileUrl);
+
+        List<String> internalUrls = new ArrayList<>();
+
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(zipBytes);
+
+             ZipInputStream zis = new ZipInputStream(bis)) {
+            ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null) {
+                if (!entry.isDirectory()) {
+                    // 각 파일의 URL을 생성하여 리스트에 추가
+                    String fileName = entry.getName();
+                    String outPutFileUrl = "https://hypevoice.site/openvidu/recordings/" + name + "/" + fileName;
+                    internalUrls.add(outPutFileUrl);
+                }
+            }
+        }
+
+        return internalUrls;
+    }
+
+    private byte[] downloadFile(String fileUrl) throws IOException {
+        // 파일 URL을 열어서 바이트 배열로 읽어옴
+        URL url = new URL(fileUrl);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+
+        int responseCode = connection.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            try (InputStream inputStream = connection.getInputStream();
+                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                // 파일의 내용을 바이트 배열로 읽어옴
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+                return outputStream.toByteArray();
+            }
+        } else {
+            throw new IOException("Failed to download file from " + fileUrl + ". Response code: " + responseCode);
         }
     }
 }

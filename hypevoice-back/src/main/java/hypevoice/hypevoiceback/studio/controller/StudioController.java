@@ -51,13 +51,13 @@ public class StudioController {
     }
 
     @PostMapping("/{studioId}/connect/public")
-    public ResponseEntity<StudioJoinResponse> joinPublicStudio(@ExtractPayload Long loginId,  @PathVariable("studioId") Long studioId){
-        return ResponseEntity.status(HttpStatus.OK).body(studioService.joinStudio(loginId,studioId,null));
+    public ResponseEntity<StudioJoinResponse> joinPublicStudio(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId) {
+        return ResponseEntity.status(HttpStatus.OK).body(studioService.joinStudio(loginId, studioId, null));
     }
 
     @PostMapping("/{studioId}/connect/private")
-    public ResponseEntity<StudioJoinResponse> joinPrivateStudio(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId, @RequestBody StudioJoinRequest studioJoinRequest){
-        return ResponseEntity.status(HttpStatus.OK).body(studioService.joinStudio(loginId,studioId,studioJoinRequest.password()));
+    public ResponseEntity<StudioJoinResponse> joinPrivateStudio(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId, @RequestBody StudioJoinRequest studioJoinRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(studioService.joinStudio(loginId, studioId, studioJoinRequest.password()));
     }
 
     @GetMapping()
@@ -67,9 +67,9 @@ public class StudioController {
 
     // 녹음 시작
     @PostMapping("/{studioId}/recording/start/individual")
-    public ResponseEntity<String> startRecordingIndividual(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId){
+    public ResponseEntity<String> startRecordingIndividual(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId) {
         System.out.println("레코딩 시작 ");
-        String response = studioService.startRecording(studioId,loginId, true);
+        String response = studioService.startRecording(studioId, loginId, true);
         System.out.println("레코딩 시작 서비스 완료");
         System.out.println(response);
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -77,9 +77,9 @@ public class StudioController {
     }
 
     @PostMapping("/{studioId}/recording/start")
-    public ResponseEntity<String> startRecording(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId){
+    public ResponseEntity<String> startRecording(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId, @RequestParam(value = "isIndividual") Boolean isIndividual) {
         System.out.println("레코딩 시작 ");
-        String response = studioService.startRecording(studioId,loginId, false);
+        String response = studioService.startRecording(studioId, loginId, isIndividual);
         System.out.println("레코딩 시작 서비스 완료");
         System.out.println(response);
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -87,20 +87,24 @@ public class StudioController {
     }
 
     @PostMapping("/{studioId}/recording/stop/{recordingId}")
-    public ResponseEntity<String> stopRecording(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId, @PathVariable("recordingId") String recordingId){
-        String status = studioService.stopRecording(recordingId,loginId,studioId);
+    public ResponseEntity<String> stopRecording(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId, @PathVariable("recordingId") String recordingId) {
+        String status = studioService.stopRecording(recordingId, loginId, studioId);
         return ResponseEntity.status(HttpStatus.OK).body(status);
     }
 
     @GetMapping("/{studioId}/recording/{recordingId}")
-    public ResponseEntity<String> getRecording(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId, @PathVariable("recordingId") String recordingId) {
-        String response = studioService.getRecordingUrl(recordingId,loginId,studioId);
+    public ResponseEntity<List<String>> getRecording(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId, @PathVariable("recordingId") String recordingId) {
+        List<String> response = studioService.getRecordingUrl(recordingId, loginId, studioId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping("/{studioId}/recording/{recordingId}")
     public ResponseEntity<Void> deleteRecording(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId, @PathVariable("recordingId") String recordingId) {
-        studioService.deleteRecording(recordingId,loginId,studioId);
+        studioService.deleteRecording(recordingId, loginId, studioId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+
+
+
 }
