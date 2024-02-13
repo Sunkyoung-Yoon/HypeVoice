@@ -6,9 +6,10 @@ import Typography from "@mui/material/Typography";
 import ButtonBase from "@mui/material/ButtonBase";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { axiosClient } from "@/api/axios";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { MyInfoVoiceId } from "@/recoil/CurrentVoiceId/MyInfoVoiceId";
 import { getCookie } from "@/api/cookie";
+import { likeState } from "@/recoil/likeState";
 
 const Img = styled("img")({
   margin: "auto",
@@ -94,6 +95,7 @@ function MyInfo() {
   const currentVoiceId = useRecoilValue(MyInfoVoiceId);
   const [favoriteCnt, setFavoriteCnt] = useState(0);
   const [currentVoice, setCurrentVoice] = useState<VoiceDataType | null>(null);
+  const [like, setLike] = useRecoilState(likeState);
 
   useEffect(() => {
     const fetchVoiceData = async () => {
@@ -121,6 +123,8 @@ function MyInfo() {
     const voiceData = await getVoiceData(currentVoiceId);
     setCurrentVoice(voiceData);
     setFavoriteCnt(voiceData.likes);
+
+    setLike(!like);
   }
 
   return (

@@ -1,4 +1,6 @@
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
+import MyLikeVoices from "./MyLikeVoices";
 
 const RightSideDiv = styled.div`
   height: 90vh;
@@ -7,8 +9,22 @@ const RightSideDiv = styled.div`
   float: right;
 `;
 
+const MyLikeVoiceseDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
 function RightSide() {
-  return <RightSideDiv>Right Side</RightSideDiv>;
+  const location = useLocation();
+
+  return (
+    <RightSideDiv>
+      Right Side
+      {/* {location.pathname === "/voice" && <MyLikeVoiceseDiv><MyLikeVoices /></MyLikeVoiceseDiv>} */}
+      <MyLikeVoiceseDiv><MyLikeVoices /></MyLikeVoiceseDiv>
+    </RightSideDiv>
+  );
 }
 
 export default RightSide;
