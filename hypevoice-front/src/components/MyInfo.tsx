@@ -53,7 +53,7 @@ function MyInfo() {
     };
     
     fetchVoiceData();
-  });
+  }, [currentVoiceId]);
 
   return (
     <>
