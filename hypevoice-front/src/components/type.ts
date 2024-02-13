@@ -5,7 +5,7 @@ export type RequestHeader = {
 
 export type MemberInfo = {
   memberId: string;
-  email?: string;
+  email: string;
   profileUrl?: string;
   nickname?: string;
 };
