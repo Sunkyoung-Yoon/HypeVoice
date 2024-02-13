@@ -17,12 +17,10 @@ const FloatingScrollNavigation = styled.nav`
   .link {
     display: block;
     cursor: pointer;
-    /* color: #5b5ff4; */
+    color: #5B5FF4;
 
     &:hover {
-      /* background-color: lightgray; */
-      border: 1px solid #5b5ff4;
-      border-radius: 25px;
+        background-color: lightgray;
     }
   }
 `;
@@ -44,8 +42,8 @@ function ScrollNavigation() {
         </Link>
       </p>
       <p>
-        <Link
-          className="link"
+              <Link
+                  className="link"
           activeClass="active"
           to="work"
           spy={true}
@@ -57,8 +55,8 @@ function ScrollNavigation() {
         </Link>
       </p>
       <p>
-        <Link
-          className="link"
+              <Link
+                  className="link"
           activeClass="active"
           to="addInfo"
           spy={true}
@@ -70,8 +68,8 @@ function ScrollNavigation() {
         </Link>
       </p>
       <p>
-        <Link
-          className="link"
+              <Link
+                  className="link"
           activeClass="active"
           to="bottom"
           spy={true}

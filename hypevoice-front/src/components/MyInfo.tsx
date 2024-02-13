@@ -17,16 +17,16 @@ const Img = styled("img")({
 });
 
 type VoiceDataType = {
-  name: string;
-  imageUrl: string;
-  intro: string;
-  email: string;
-  phone: string;
-  addInfo: string;
-  likes: number;
-};
+  name: string,
+  imageUrl: string,
+  intro: string,
+  email: string,
+  phone: string,
+  addInfo: string,
+  likes: number
+}
 
-const getVoiceData = async (voiceId: number): Promise<VoiceDataType> => {
+const getVoiceData = async (voiceId : number): Promise<VoiceDataType> => {
   const response = await axiosClient.get(`/api/voices/${voiceId}`);
   console.log(response.data);
   return response.data;
@@ -51,7 +51,7 @@ function MyInfo() {
         console.error(error);
       }
     };
-
+    
     fetchVoiceData();
   }, [currentVoiceId]);
 
@@ -63,8 +63,7 @@ function MyInfo() {
           margin: "auto",
           maxWidth: 500,
           flexGrow: 1,
-          backgroundColor: (theme) =>
-            theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+          backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#1A2027" : "#fff"),
         }}
       >
         <Grid container spacing={2}>
@@ -92,21 +91,14 @@ function MyInfo() {
               <></>
             </Grid>
             <Grid item>
-              <FavoriteIcon
-                color="error"
-                fontSize="large"
-                onClick={() => {
-                  updateLike();
-                }}
-              />
+              <FavoriteIcon color="error" fontSize="large" onClick={() => {
+                updateLike();
+              }} />
               <span>{favoriteCnt}</span>
             </Grid>
           </Grid>
         </Grid>
-        <Typography
-          variant="body2"
-          sx={{ textAlign: "center", marginTop: "1rem" }}
-        >
+        <Typography variant="body2" sx={{ textAlign: "center", marginTop: "1rem" }}>
           {currentVoice?.intro}
         </Typography>
       </Paper>

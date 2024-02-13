@@ -1,7 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { useLocation } from "react-router-dom";
-import ScrollNavigation from "./ScrollNavigation";
 
 const LeftSideDiv = styled.div`
   height: 90vh;
@@ -11,14 +9,7 @@ const LeftSideDiv = styled.div`
 `;
 
 function LeftSide() {
-  const location = useLocation();
-
-  return (
-    <LeftSideDiv>
-      Left Side
-      {location.pathname === "/voice" && <ScrollNavigation />}
-    </LeftSideDiv>
-  );
+  return <LeftSideDiv>Left Side</LeftSideDiv>;
 }
 
 export default LeftSide;

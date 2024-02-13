@@ -48,7 +48,6 @@ export default function CategoryFilter({
   onConfirm,
 }: CategoryFilterProps) {
   const [filterState, setFilterState] = useRecoilState(MainCurrentFilterAtom);
-
   // 카테고리 선택 박스에서 '확인' 버튼을 눌렀을 때
   const handleConfirm = () => {
     onConfirm(filterState);
