@@ -21,6 +21,7 @@ import axios from "axios";
 import { WorkModalProps } from "./type";
 import { categories } from "./Category";
 import { getCookie } from "@/api/cookie";
+import { axiosClient } from "@/api/axios";
 
 const categoryNames = {
   미디어: "mediaClassification",
@@ -73,6 +74,35 @@ export default function WorkModal({
     gender: "",
     age: "",
   });
+
+  // 사전 유효성 검사
+  const validateWork = (
+    title: string,
+    selectedCategory: {
+      mediaClassification: string;
+      voiceTone: string;
+      voiceStyle: string;
+      gender: string;
+      age: string;
+    },
+    recordFile: File
+  ) => {
+    if (!title) {
+      return "제목을 입력해주세요.";
+    }
+
+    const { mediaClassification, voiceTone, voiceStyle, gender, age } =
+      selectedCategory;
+    if (!mediaClassification || !voiceTone || !voiceStyle || !gender || !age) {
+      return "카테고리를 모두 골라주세요!";
+    }
+
+    if (!recordFile) {
+      return "음성 파일은 필수입니다.";
+    }
+
+    return null;
+  };
 
   // 대본 파일 수정
   const handleScriptFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,6 +170,13 @@ export default function WorkModal({
   // 작업물 등록 API 요청
   const createWork = async () => {
     const accessToken = getCookie("access_token");
+    // 사전 유효성 검사
+    const errorMessage = validateWork(title, selectedCategory, recordFile);
+    if (errorMessage) {
+      alert(errorMessage);
+      return;
+    }
+
     const formData = new FormData();
     const request = {
       title,
@@ -153,25 +190,23 @@ export default function WorkModal({
       new Blob([JSON.stringify(request)], { type: "application/json" })
     );
 
-    const files = new File[];
+    const files = [];
+    files[0] = imageFile;
+    files[1] = scriptFile;
+    files[2] = recordFile;
+    files.forEach((file, index) => {
+      if (file) {
+        formData.append(`files[${index}]`, file);
+      }
+    });
 
-    imageFile && formData.append("files", imageFile);
-    scriptFile && formData.append("files", scriptFile);
-    recordFile && formData.append("files", recordFile);
-
-    // for (let i = 0; i < files.length; i++) {
-    //   formData.append("files", files[i]);
-    // }
-
-    console.log(...formData);
-
-    // // 로그 찍기
-    // for (const pair of formData.entries()) {
-    //   console.log(pair[0] + ", " + pair[1]);
-    // }
+    // imageFile && formData.append(files, imageFile);
+    // scriptFile && formData.append(files, scriptFile);
+    // recordFile && formData.append(files, recordFile);
+    // console.log(...formData);
 
     try {
-      const response = await axios.post(
+      const response = await axiosClient.post(
         `/api/voices/${voiceId}/works`,
         formData,
         {
@@ -218,7 +253,7 @@ export default function WorkModal({
     }
 
     try {
-      const response = await axios.patch(
+      const response = await axiosClient.patch(
         `/api/voices/${voiceId}/works/${workId}`,
         formData,
         {
@@ -245,7 +280,7 @@ export default function WorkModal({
     console.log(workId);
 
     try {
-      const response = await axios.patch(
+      const response = await axiosClient.patch(
         `/api/voices/${voiceId}/works/${workId}`,
         {
           headers: {
@@ -268,8 +303,26 @@ export default function WorkModal({
     }
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     if (role === "change" || role === "read") {
+      const accessToken = getCookie("access_token");
+      const response = await axiosClient.get(
+        `/api/voices/${voiceId}/works/${workId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      if (response) {
+        console.log(response.data);
+        console.log("title = ");
+        console.log(response.data.title);
+        setTitle(response.data.title);
+        setIntro(response.data.info);
+        setYoutubeUrl(response.data.videoLink);
+      }
       // workId를 이용하여 작업물 정보를 가져와 상태값 설정
       // 파일 다운로드 링크도 설정
       // setScriptFileUrl(받아온 대본 파일 URL);

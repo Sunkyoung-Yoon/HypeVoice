@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { jwtDecode } from "jwt-decode";
 import { LoginState } from "@/recoil/Auth";
 import { CurrentMemberAtom } from "@/recoil/Auth";
