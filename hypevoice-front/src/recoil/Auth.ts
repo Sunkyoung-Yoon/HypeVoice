@@ -18,7 +18,6 @@ export const CurrentMemberAtom = atom({
     memberId: 0,
     email: "",
     nickname: "",
-    profileUrl: "",
     accessToken: "",
   },
   effects_UNSTABLE: [persistAtom],

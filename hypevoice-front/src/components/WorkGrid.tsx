@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import { useRecoilValue } from "recoil";
-import { WorkInfo, WorkModalProps } from "./type";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { WorkInfo } from "./type";
 import { CurrentMemberAtom } from "@/recoil/Auth";
 import { axiosClient } from "@/api/axios";
 import WorkTemplate from "./WorkTemplate";
-import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import Pagination from "@mui/material/Pagination";
 import WorkModal from "./WorkModal";
+import { MyInfoVoiceId } from "@/recoil/CurrentVoiceId/MyInfoVoiceId";
 
 // 작업물 추가 버튼
 const CreateWorkButton = styled.button`
@@ -53,25 +53,31 @@ const PaginationContainer = styled.div`
 `;
 
 export default function WorkGrid({ setWorkCount }: WorkGridProps) {
-  const [activePage, setActivePage] = useState(1);
-  const worksPerPage = 12;
+  const [activePage, setActivePage] = useState(1); // 현재 페이지
+  const worksPerPage = 12; // 한 페이지당 작업물 갯수
   const indexOfLastWork = activePage * worksPerPage;
   const indexOfFirstWork = indexOfLastWork - worksPerPage;
   const currentMember = useRecoilValue(CurrentMemberAtom);
-  const voiceIdString = useParams<{ voiceId: string }>();
-  const voiceId = voiceIdString.voiceId
-    ? parseInt(voiceIdString.voiceId)
-    : null;
-  const [open, setOpen] = useState(false);
+  const voiceId = useRecoilValue(MyInfoVoiceId);
+  const [selectedWork, setSelectedWork] = useState<WorkInfo | null>(null);
+  const [isAddWorkModalOpen, setIsAddWorkModalOpen] = useState(false);
 
   // 작업물 추가 버튼 클릭 => 모달 창 열리기
-  const handleClick = () => {
-    setOpen(true);
+  const handleAddWorkClick = () => {
+    setIsAddWorkModalOpen(true);
+  };
+
+  // 작업물 하나 클릭
+  const handleWorkClick = (work: WorkInfo) => {
+    alert(voiceId);
+    alert(currentMember.memberId);
+    setSelectedWork(work);
   };
 
   // WorkModal 컴포넌트에서 모달을 닫음
   const handleClose = () => {
-    setOpen(false);
+    setSelectedWork(null);
+    setIsAddWorkModalOpen(false);
   };
 
   // const fetchWorks = async (): Promise<WorkInfo[]> => {
@@ -166,18 +172,39 @@ export default function WorkGrid({ setWorkCount }: WorkGridProps) {
 
   return (
     <>
-      <CreateWorkButton onClick={handleClick}>작업물 추가</CreateWorkButton>
-      <WorkModal
-        open={open}
-        onClose={handleClose}
-        role="create"
-        voiceId={voiceId}
-        workId={0}
-      />
+      {voiceId === currentMember.memberId && (
+        <CreateWorkButton onClick={handleAddWorkClick}>
+          작업물 추가
+        </CreateWorkButton>
+      )}
+      {isAddWorkModalOpen && (
+        <WorkModal
+          open={isAddWorkModalOpen}
+          onClose={handleClose}
+          role="create"
+          voiceId={voiceId}
+          workId={0}
+        />
+      )}
+      {selectedWork && (
+        <WorkModal
+          open={!!selectedWork}
+          onClose={handleClose}
+          role={
+            selectedWork.voiceId === currentMember.memberId ? "change" : "read"
+          }
+          voiceId={voiceId}
+          workId={selectedWork.workId}
+        />
+      )}
       <WorksGrid>
         {currentWorks ? (
           currentWorks.map((work) => (
-            <WorkTemplate key={work.workId} work={work} />
+            <WorkTemplate
+              key={work.workId}
+              work={work}
+              onWorkClick={handleWorkClick}
+            />
           ))
         ) : (
           <p>
