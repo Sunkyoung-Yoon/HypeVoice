@@ -10,8 +10,27 @@ import { MainCurrentFilterAtom } from "@/recoil/CurrentFilter/MainCurrentFilter"
 import { MainCurrentKeyword } from "@/recoil/CurrentKeyword/MainCurrentKeyword";
 
 const HomeGridDiv = styled.div`
-  height: 90vh;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   background-color: #f5f5f5;
+`;
+const VoicesContainer = styled.div`
+  flex-grow: 1;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+  padding: 15px;
+  margin: 15px;
+
+  @media (max-width: 1000px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 700px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
 `;
 
 export default function HomeGrid() {
@@ -60,9 +79,11 @@ export default function HomeGrid() {
       />
       <InlineHeader title={"🎶 보이스"} worksCnt={0} storageSpace={0} />
 
-      {voices.map((voice) => (
-        <MainVoicesTemplate key={voice.voiceId} voice={voice} />
-      ))}
+      <VoicesContainer>
+        {voices.map((voice) => (
+          <MainVoicesTemplate key={voice.voiceId} voice={voice} />
+        ))}
+      </VoicesContainer>
     </HomeGridDiv>
   );
 }
