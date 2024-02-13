@@ -24,11 +24,11 @@ public class CategoryInfo {
     @Convert(converter = MediaClassification.MediaClassificationConverter.class)
     private MediaClassification mediaClassification;
 
-    @Convert(converter = VoiceTone.VoiceToneConverter.class)
-    private VoiceTone voiceTone;
-
     @Convert(converter = VoiceStyle.VoiceStyleConverter.class)
     private VoiceStyle voiceStyle;
+
+    @Convert(converter = VoiceTone.VoiceToneConverter.class)
+    private VoiceTone voiceTone;
 
     @Convert(converter = Gender.GenderConverter.class)
     private Gender gender;
@@ -37,23 +37,23 @@ public class CategoryInfo {
     private Age age;
 
     @Builder
-    private CategoryInfo(Work work, MediaClassification mediaClassification, VoiceTone voiceTone, VoiceStyle voiceStyle, Gender gender, Age age) {
+    private CategoryInfo(Work work, MediaClassification mediaClassification, VoiceStyle voiceStyle, VoiceTone voiceTone, Gender gender, Age age) {
         this.work = work;
         this.mediaClassification = mediaClassification;
-        this.voiceTone = voiceTone;
         this.voiceStyle = voiceStyle;
+        this.voiceTone = voiceTone;
         this.gender = gender;
         this.age = age;
     }
 
-    public static CategoryInfo createCategoryInfo(Work work, MediaClassification mediaClassification, VoiceTone voiceTone, VoiceStyle voiceStyle, Gender gender, Age age) {
-        return new CategoryInfo(work, mediaClassification, voiceTone, voiceStyle, gender, age);
+    public static CategoryInfo createCategoryInfo(Work work, MediaClassification mediaClassification, VoiceStyle voiceStyle, VoiceTone voiceTone, Gender gender, Age age) {
+        return new CategoryInfo(work, mediaClassification, voiceStyle, voiceTone, gender, age);
     }
 
-    public void updateCategoryInfo(MediaClassification mediaClassification, VoiceTone voiceTone, VoiceStyle voiceStyle, Gender gender, Age age) {
+    public void updateCategoryInfo(MediaClassification mediaClassification, VoiceStyle voiceStyle, VoiceTone voiceTone, Gender gender, Age age) {
         this.mediaClassification = mediaClassification;
-        this.voiceTone = voiceTone;
         this.voiceStyle = voiceStyle;
+        this.voiceTone = voiceTone;
         this.gender = gender;
         this.age = age;
     }

@@ -138,9 +138,9 @@ public class VoiceService {
 
     // 카테고리를 이용한 조회
     @Transactional
-    public List<VoiceCardListResponse> filterVoiceByCategory(List<String> mediaValueList, List<String> voiceToneValueList, List<String> voiceStyleValueList, List<String> genderValueList, List<String> ageValueList) {
+    public List<VoiceCardListResponse> filterVoiceByCategory(List<String> mediaValueList, List<String> voiceStyleValueList, List<String> voiceToneValueList, List<String> genderValueList, List<String> ageValueList) {
         List<VoiceCardListResponse> voiceCardListResponseList = this.readAllVoice();
-        List<Long> workIdList = categoryInfoService.getWorkIdListByCategories(mediaValueList, voiceToneValueList, voiceStyleValueList, genderValueList, ageValueList);
+        List<Long> workIdList = categoryInfoService.getWorkIdListByCategories(mediaValueList, voiceStyleValueList, voiceToneValueList, genderValueList, ageValueList);
         List<VoiceCard> voiceCardList = new ArrayList<>();
 
         for (VoiceCardListResponse v : voiceCardListResponseList) {
@@ -176,8 +176,8 @@ public class VoiceService {
                             vcr.categoryInfo().getWork().getId(),
                             vcr.photoUrl(),
                             vcr.categoryInfo().getMediaClassification().getTitle(),
-                            vcr.categoryInfo().getVoiceTone().getTitle(),
                             vcr.categoryInfo().getVoiceStyle().getTitle(),
+                            vcr.categoryInfo().getVoiceTone().getTitle(),
                             vcr.categoryInfo().getGender().getTitle(),
                             vcr.categoryInfo().getAge().getTitle(),
                             vcr.title(),

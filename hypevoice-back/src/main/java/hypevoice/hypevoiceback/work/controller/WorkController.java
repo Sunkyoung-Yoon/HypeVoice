@@ -27,7 +27,7 @@ public class WorkController {
                                            @RequestPart(value = "request") WorkRequest request,
                                            @RequestPart(value = "files", required = false) MultipartFile[] multipartFiles) {
         Long workId = workService.registerWork(memberId, voiceId, request.title(), request.videoLink(), request.info(), request.isRep(), multipartFiles);
-        categoryInfoService.createCategoryInfo(memberId, workId, request.categoryInfoRequest().mediaClassification(), request.categoryInfoRequest().voiceTone(), request.categoryInfoRequest().voiceStyle(), request.categoryInfoRequest().gender(), request.categoryInfoRequest().age());
+        categoryInfoService.createCategoryInfo(memberId, workId, request.categoryInfoRequest().mediaClassification(), request.categoryInfoRequest().voiceStyle(), request.categoryInfoRequest().voiceTone(), request.categoryInfoRequest().gender(), request.categoryInfoRequest().age());
         return ResponseEntity.ok().build();
     }
 
@@ -36,7 +36,7 @@ public class WorkController {
                                            @PathVariable("workId") Long workId, @RequestPart(value = "request") WorkRequest request,
                                            @RequestPart(value = "files", required = false) MultipartFile[] multipartFiles) {
         workService.updateWork(memberId, voiceId, workId, request.title(), request.videoLink(), request.info(), request.isRep(), multipartFiles);
-        categoryInfoService.updateCategoryInfo(memberId, workId, request.categoryInfoRequest().mediaClassification(), request.categoryInfoRequest().voiceTone(), request.categoryInfoRequest().voiceStyle(), request.categoryInfoRequest().gender(), request.categoryInfoRequest().age());
+        categoryInfoService.updateCategoryInfo(memberId, workId, request.categoryInfoRequest().mediaClassification(), request.categoryInfoRequest().voiceStyle(), request.categoryInfoRequest().voiceTone(), request.categoryInfoRequest().gender(), request.categoryInfoRequest().age());
         return ResponseEntity.ok().build();
     }
 
@@ -67,7 +67,7 @@ public class WorkController {
 
     @GetMapping("/filter")
     public ResponseEntity<List<WorkResponse>> readWorkByCategory(@PathVariable("voiceId") Long voiceId, @RequestBody CategoryInfoListRequest request) {
-        List<WorkResponse> findWorkListByCategory = workService.readCategoryWork(voiceId, request.mediaClassificationValueList(), request.voiceToneValueList(), request.voiceStyleValueList(), request.genderValueList(), request.ageValueList());
+        List<WorkResponse> findWorkListByCategory = workService.readCategoryWork(voiceId, request.mediaClassificationValueList(), request.voiceStyleValueList(), request.voiceToneValueList(), request.genderValueList(), request.ageValueList());
         return new ResponseEntity<>(findWorkListByCategory, HttpStatus.OK);
     }
 }

@@ -1,8 +1,6 @@
 package hypevoice.hypevoiceback.work.service;
 
 import hypevoice.hypevoiceback.categoryInfo.domain.CategoryInfo;
-import hypevoice.hypevoiceback.categoryInfo.domain.MediaClassification;
-import hypevoice.hypevoiceback.categoryInfo.dto.CategoryInfoValue;
 import hypevoice.hypevoiceback.common.ServiceTest;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.member.domain.Member;
@@ -46,8 +44,8 @@ public class WorkServiceTest extends ServiceTest {
     private final Work[] workArray = new Work[10];
     private final CategoryInfo[] categoryInfoArray = new CategoryInfo[10];
     private List<String> mediaClassificationValueList = new ArrayList<>();
-    private List<String> voiceToneValueList = new ArrayList<>();
     private List<String> voiceStyleValueList = new ArrayList<>();
+    private List<String> voiceToneValueList = new ArrayList<>();
     private List<String> genderValueList = new ArrayList<>();
     private List<String> ageValueList = new ArrayList<>();
     private final int WORK_SIZE = 10;
@@ -82,15 +80,15 @@ public class WorkServiceTest extends ServiceTest {
         categoryInfoArray[9] = categoryInfoRepository.save(CATEGORY_INFO_10.toCategoryInfo(workArray[9]));
 
         mediaClassificationValueList = new ArrayList<>();
-        voiceToneValueList = new ArrayList<>();
         voiceStyleValueList = new ArrayList<>();
+        voiceToneValueList = new ArrayList<>();
         genderValueList = new ArrayList<>();
         ageValueList = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
             mediaClassificationValueList.add(categoryInfoArray[i].getMediaClassification().getValue());
-            voiceToneValueList.add(categoryInfoArray[i].getVoiceTone().getValue());
             voiceStyleValueList.add(categoryInfoArray[i].getVoiceStyle().getValue());
+            voiceToneValueList.add(categoryInfoArray[i].getVoiceTone().getValue());
             genderValueList.add(categoryInfoArray[i].getGender().getValue());
             ageValueList.add(categoryInfoArray[i].getAge().getValue());
         }

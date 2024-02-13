@@ -5,8 +5,8 @@ import hypevoice.hypevoiceback.categoryInfo.domain.*;
 // 작업물 리스트 안 CategoryInfoResponse
 public record CategoryInfoList(
         MediaClassification mediaClassification,
-        VoiceTone voiceTone,
         VoiceStyle voiceStyle,
+        VoiceTone voiceTone,
         Gender gender,
         Age age
 ) {

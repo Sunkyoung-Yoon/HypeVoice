@@ -456,18 +456,18 @@ public class WorkControllerTest extends ControllerTest {
     }
 
     private CategoryInfoRequest createCategoryInfoRequest() {
-        return new CategoryInfoRequest(CATEGORY_INFO_01.getMediaClassification().getValue(), CATEGORY_INFO_01.getVoiceTone().getValue(), CATEGORY_INFO_01.getVoiceStyle().getValue(), CATEGORY_INFO_01.getGender().getValue(), CATEGORY_INFO_01.getAge().getValue());
+        return new CategoryInfoRequest(CATEGORY_INFO_01.getMediaClassification().getValue(), CATEGORY_INFO_01.getVoiceStyle().getValue(), CATEGORY_INFO_01.getVoiceTone().getValue(), CATEGORY_INFO_01.getGender().getValue(), CATEGORY_INFO_01.getAge().getValue());
     }
 
     private CategoryInfoValue createCategoryInfoValue() {
-        return new CategoryInfoValue(WORK_ID, CATEGORY_INFO_01.getMediaClassification().getValue(), CATEGORY_INFO_01.getVoiceTone().getValue(), CATEGORY_INFO_01.getVoiceStyle().getValue(), CATEGORY_INFO_01.getGender().getValue(), CATEGORY_INFO_01.getAge().getValue());
+        return new CategoryInfoValue(WORK_ID, CATEGORY_INFO_01.getMediaClassification().getValue(), CATEGORY_INFO_01.getVoiceStyle().getValue(), CATEGORY_INFO_01.getVoiceTone().getValue(), CATEGORY_INFO_01.getGender().getValue(), CATEGORY_INFO_01.getAge().getValue());
     }
 
     private List<WorkResponse> createWorkResponseList() {
         List<WorkResponse> workResponseList = new ArrayList<>();
-        CategoryInfoValue categoryInfoValue1 = new CategoryInfoValue(1L, CATEGORY_INFO_01.getMediaClassification().getValue(), CATEGORY_INFO_01.getVoiceTone().getValue(), CATEGORY_INFO_01.getVoiceStyle().getValue(), CATEGORY_INFO_01.getGender().getValue(), CATEGORY_INFO_01.getAge().getValue());
-        CategoryInfoValue categoryInfoValue2 = new CategoryInfoValue(2L, CATEGORY_INFO_02.getMediaClassification().getValue(), CATEGORY_INFO_02.getVoiceTone().getValue(), CATEGORY_INFO_02.getVoiceStyle().getValue(), CATEGORY_INFO_02.getGender().getValue(), CATEGORY_INFO_02.getAge().getValue());
-        CategoryInfoValue categoryInfoValue3 = new CategoryInfoValue(3L, CATEGORY_INFO_03.getMediaClassification().getValue(), CATEGORY_INFO_03.getVoiceTone().getValue(), CATEGORY_INFO_03.getVoiceStyle().getValue(), CATEGORY_INFO_03.getGender().getValue(), CATEGORY_INFO_03.getAge().getValue());
+        CategoryInfoValue categoryInfoValue1 = new CategoryInfoValue(1L, CATEGORY_INFO_01.getMediaClassification().getValue(), CATEGORY_INFO_01.getVoiceStyle().getValue(), CATEGORY_INFO_01.getVoiceTone().getValue(), CATEGORY_INFO_01.getGender().getValue(), CATEGORY_INFO_01.getAge().getValue());
+        CategoryInfoValue categoryInfoValue2 = new CategoryInfoValue(2L, CATEGORY_INFO_02.getMediaClassification().getValue(), CATEGORY_INFO_02.getVoiceStyle().getValue(), CATEGORY_INFO_02.getVoiceTone().getValue(), CATEGORY_INFO_02.getGender().getValue(), CATEGORY_INFO_02.getAge().getValue());
+        CategoryInfoValue categoryInfoValue3 = new CategoryInfoValue(3L, CATEGORY_INFO_03.getMediaClassification().getValue(), CATEGORY_INFO_03.getVoiceStyle().getValue(), CATEGORY_INFO_03.getVoiceTone().getValue(), CATEGORY_INFO_03.getGender().getValue(), CATEGORY_INFO_03.getAge().getValue());
         workResponseList.add(new WorkResponse(1L, 1L, WORK_01.getTitle(), WORK_01.getVideoLink(), WORK_01.getPhotoUrl(), WORK_01.getScriptUrl(), WORK_01.getScriptUrl(), WORK_01.getInfo(), WORK_01.getIsRep(), categoryInfoValue1));
         workResponseList.add(new WorkResponse(1L, 2L, WORK_02.getTitle(), WORK_02.getVideoLink(), WORK_02.getPhotoUrl(), WORK_02.getScriptUrl(), WORK_02.getScriptUrl(), WORK_02.getInfo(), WORK_02.getIsRep(), categoryInfoValue2));
         workResponseList.add(new WorkResponse(1L, 3L, WORK_03.getTitle(), WORK_03.getVideoLink(), WORK_03.getPhotoUrl(), WORK_03.getScriptUrl(), WORK_03.getScriptUrl(), WORK_03.getInfo(), WORK_03.getIsRep(), categoryInfoValue3));

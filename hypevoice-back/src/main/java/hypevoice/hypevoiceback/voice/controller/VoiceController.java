@@ -56,9 +56,9 @@ public class VoiceController {
         return new ResponseEntity<>(voiceService.searchVoice(keyword), HttpStatus.OK);
     }
 
-    @GetMapping("/filter")
+    @PostMapping("/filter")
     public ResponseEntity<List<VoiceCardListResponse>> filterVoiceByCategory(@RequestBody CategoryInfoListRequest request) {
-        List<VoiceCardListResponse> findVoiceByCategory = voiceService.filterVoiceByCategory(request.mediaClassificationValueList(), request.voiceToneValueList(), request.voiceStyleValueList(), request.genderValueList(), request.ageValueList());
+        List<VoiceCardListResponse> findVoiceByCategory = voiceService.filterVoiceByCategory(request.mediaClassificationValueList(), request.voiceStyleValueList(), request.voiceToneValueList(), request.genderValueList(), request.ageValueList());
         return new ResponseEntity<>(findVoiceByCategory, HttpStatus.OK);
     }
 }

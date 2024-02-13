@@ -109,8 +109,8 @@ public class WorkService {
                 new CategoryInfoValue(
                         workId,
                         categoryInfo.getMediaClassification().getTitle(),
-                        categoryInfo.getVoiceTone().getTitle(),
                         categoryInfo.getVoiceStyle().getTitle(),
+                        categoryInfo.getVoiceTone().getTitle(),
                         categoryInfo.getGender().getTitle(),
                         categoryInfo.getAge().getTitle()
                 )
@@ -131,8 +131,8 @@ public class WorkService {
                             new CategoryInfoValue(
                                     wl.workId(),
                                     categoryInfoList.mediaClassification().getTitle(),
-                                    categoryInfoList.voiceTone().getTitle(),
                                     categoryInfoList.voiceStyle().getTitle(),
+                                    categoryInfoList.voiceTone().getTitle(),
                                     categoryInfoList.gender().getTitle(),
                                     categoryInfoList.age().getTitle()
                             )
@@ -145,8 +145,8 @@ public class WorkService {
 
     // 카테고리를 이용한 조회
     @Transactional
-    public List<WorkResponse> readCategoryWork(Long voiceId, List<String> mediaValueList, List<String> voiceToneValueList, List<String> voiceStyleValueList, List<String> genderValueList, List<String> ageValueList) {
-        List<Long> workIdList = categoryInfoService.getWorkIdListByCategories(mediaValueList, voiceToneValueList, voiceStyleValueList, genderValueList, ageValueList);
+    public List<WorkResponse> readCategoryWork(Long voiceId, List<String> mediaValueList, List<String> voiceStyleValueList, List<String> voiceToneValueList, List<String> genderValueList, List<String> ageValueList) {
+        List<Long> workIdList = categoryInfoService.getWorkIdListByCategories(mediaValueList, voiceStyleValueList, voiceToneValueList, genderValueList, ageValueList);
         List<WorkResponse> findWorkResponse = new ArrayList<>();
 
         for (Long workId : workIdList) {
@@ -157,8 +157,8 @@ public class WorkService {
                             new CategoryInfoValue(
                                     workId,
                                     work.getCategoryInfo().getMediaClassification().getTitle(),
-                                    work.getCategoryInfo().getVoiceTone().getTitle(),
                                     work.getCategoryInfo().getVoiceStyle().getTitle(),
+                                    work.getCategoryInfo().getVoiceTone().getTitle(),
                                     work.getCategoryInfo().getGender().getTitle(),
                                     work.getCategoryInfo().getAge().getTitle()
                             )

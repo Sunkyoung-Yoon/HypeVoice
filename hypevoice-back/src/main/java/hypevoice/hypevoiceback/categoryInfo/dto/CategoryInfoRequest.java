@@ -2,8 +2,8 @@ package hypevoice.hypevoiceback.categoryInfo.dto;
 
 public record CategoryInfoRequest (
         String mediaClassification,
-        String voiceTone,
         String voiceStyle,
+        String voiceTone,
         String gender,
         String age
 ){

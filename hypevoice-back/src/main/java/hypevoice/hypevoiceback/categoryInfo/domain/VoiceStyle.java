@@ -12,10 +12,13 @@ import java.util.Arrays;
 @Getter
 @RequiredArgsConstructor
 public enum VoiceStyle implements EnumStandard {
-    HIGH("S01", "고음"),
-    MIDDLE("S02", "중음"),
-    LOW("S03", "저음"),
-    ETC("S04", "기타"),
+    AUTHORITATIVE("S01", "권위있는"),
+    CUTE("S02", "귀여운"),
+    CHEERFUL("S03", "밝은"),
+    WARM("S04", "따뜻한"),
+    GLOOMY("S05", "어두운"),
+    COLD("S06", "차가운"),
+    ETC("S07", "기타"),
     ;
 
     private final String value;

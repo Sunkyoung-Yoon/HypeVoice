@@ -23,43 +23,43 @@ public class CategoryInfoService {
     private final WorkFindService workFindService;
 
     @Transactional
-    public void createCategoryInfo(Long memberId, Long workId, String mediaClassification, String voiceTone, String voiceStyle, String gender, String age) {
+    public void createCategoryInfo(Long memberId, Long workId, String mediaClassification, String voiceStyle, String voiceTone, String gender, String age) {
         validateMember(workId, memberId);
-        validateCategoryInfo(mediaClassification, voiceTone, voiceStyle, gender, age);
+        validateCategoryInfo(mediaClassification, voiceStyle, voiceTone, gender, age);
 
         Work work = workFindService.findById(workId);
         MediaClassification findMediaClassification = MediaClassification.from(mediaClassification);
-        VoiceTone findVoiceTone = VoiceTone.from(voiceTone);
         VoiceStyle findVoiceStyle = VoiceStyle.from(voiceStyle);
+        VoiceTone findVoiceTone = VoiceTone.from(voiceTone);
         Gender findGender = Gender.from(gender);
         Age findAge = Age.from(age);
 
-        CategoryInfo categoryInfo = CategoryInfo.createCategoryInfo(work, findMediaClassification, findVoiceTone, findVoiceStyle, findGender, findAge);
+        CategoryInfo categoryInfo = CategoryInfo.createCategoryInfo(work, findMediaClassification, findVoiceStyle, findVoiceTone, findGender, findAge);
 
         categoryInfoRepository.save(categoryInfo);
     }
 
     @Transactional
-    public void updateCategoryInfo(Long memberId, Long workId, String mediaClassification, String voiceTone, String voiceStyle, String gender, String age) {
+    public void updateCategoryInfo(Long memberId, Long workId, String mediaClassification, String voiceStyle, String voiceTone, String gender, String age) {
         validateMember(workId, memberId);
-        validateCategoryInfo(mediaClassification, voiceTone, voiceStyle, gender, age);
+        validateCategoryInfo(mediaClassification, voiceStyle, voiceTone, gender, age);
 
         Work work = workFindService.findById(workId);
         CategoryInfo categoryInfo = categoryInfoFindService.findByWorkId(work.getId());
         MediaClassification findMediaClassification = MediaClassification.from(mediaClassification);
-        VoiceTone findVoiceTone = VoiceTone.from(voiceTone);
         VoiceStyle findVoiceStyle = VoiceStyle.from(voiceStyle);
+        VoiceTone findVoiceTone = VoiceTone.from(voiceTone);
         Gender findGender = Gender.from(gender);
         Age findAge = Age.from(age);
 
-        categoryInfo.updateCategoryInfo(findMediaClassification, findVoiceTone, findVoiceStyle, findGender, findAge);
+        categoryInfo.updateCategoryInfo(findMediaClassification, findVoiceStyle, findVoiceTone, findGender, findAge);
     }
 
     @Transactional
-    public List<Long> getWorkIdListByCategories(List<String> mediaValueList, List<String> voiceToneValueList, List<String> voiceStyleValueList, List<String> genderValueList, List<String> ageValueList) {
+    public List<Long> getWorkIdListByCategories(List<String> mediaValueList, List<String> voiceStyleValueList, List<String> voiceToneValueList, List<String> genderValueList, List<String> ageValueList) {
         List<MediaClassification> mediaList = new ArrayList<>();
-        List<VoiceTone> voiceToneList = new ArrayList<>();
         List<VoiceStyle> voiceStyleList = new ArrayList<>();
+        List<VoiceTone> voiceToneList = new ArrayList<>();
         List<Gender> genderList = new ArrayList<>();
         List<Age> ageList = new ArrayList<>();
 
@@ -67,13 +67,13 @@ public class CategoryInfoService {
             if (mediaValueList.isEmpty()) break;
             mediaList.add(MediaClassification.from(s));
         }
-        for (String s : voiceToneValueList) {
-            if (voiceToneValueList.isEmpty()) break;
-            voiceToneList.add(VoiceTone.from(s));
-        }
         for (String s : voiceStyleValueList) {
             if (voiceStyleValueList.isEmpty()) break;
             voiceStyleList.add(VoiceStyle.from(s));
+        }
+        for (String s : voiceToneValueList) {
+            if (voiceToneValueList.isEmpty()) break;
+            voiceToneList.add(VoiceTone.from(s));
         }
         for (String s : genderValueList) {
             if (genderValueList.isEmpty()) break;
@@ -84,7 +84,7 @@ public class CategoryInfoService {
             ageList.add(Age.from(s));
         }
 
-        List<Long> workIdList = categoryInfoFindService.findWorkIdByCategory(mediaList, voiceToneList, voiceStyleList, genderList, ageList);
+        List<Long> workIdList = categoryInfoFindService.findWorkIdByCategory(mediaList, voiceStyleList, voiceToneList, genderList, ageList);
 
         return workIdList;
     }
@@ -96,8 +96,8 @@ public class CategoryInfoService {
         }
     }
 
-    private void validateCategoryInfo(String mediaClassification, String voiceTone, String voiceStyle, String gender, String age) {
-        if (mediaClassification.equals(null) || voiceTone.equals(null) || voiceStyle.equals(null) || gender.equals(null) || age.equals(null)) {
+    private void validateCategoryInfo(String mediaClassification, String voiceStyle, String voiceTone, String gender, String age) {
+        if (mediaClassification.equals(null) || voiceStyle.equals(null) || voiceTone.equals(null) || gender.equals(null) || age.equals(null)) {
             throw BaseException.type(CategoryInfoErrorCode.CATEGORY_NOT_FOUND);
         }
     }

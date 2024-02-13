@@ -1,6 +1,5 @@
 package hypevoice.hypevoiceback.categoryInfo.domain;
 
-import hypevoice.hypevoiceback.categoryInfo.domain.*;
 import hypevoice.hypevoiceback.member.domain.Member;
 import hypevoice.hypevoiceback.voice.domain.Voice;
 import hypevoice.hypevoiceback.work.domain.Work;
@@ -14,10 +13,10 @@ import static hypevoice.hypevoiceback.categoryInfo.domain.Gender.ETC;
 import static hypevoice.hypevoiceback.categoryInfo.domain.Gender.MALE;
 import static hypevoice.hypevoiceback.categoryInfo.domain.MediaClassification.GAME;
 import static hypevoice.hypevoiceback.categoryInfo.domain.MediaClassification.MOVIE;
-import static hypevoice.hypevoiceback.categoryInfo.domain.VoiceStyle.HIGH;
-import static hypevoice.hypevoiceback.categoryInfo.domain.VoiceStyle.LOW;
-import static hypevoice.hypevoiceback.categoryInfo.domain.VoiceTone.AUTHORITATIVE;
-import static hypevoice.hypevoiceback.categoryInfo.domain.VoiceTone.CUTE;
+import static hypevoice.hypevoiceback.categoryInfo.domain.VoiceTone.HIGH;
+import static hypevoice.hypevoiceback.categoryInfo.domain.VoiceTone.LOW;
+import static hypevoice.hypevoiceback.categoryInfo.domain.VoiceStyle.AUTHORITATIVE;
+import static hypevoice.hypevoiceback.categoryInfo.domain.VoiceStyle.CUTE;
 import static hypevoice.hypevoiceback.fixture.CategoryInfoFixture.CATEGORY_INFO_01;
 import static hypevoice.hypevoiceback.fixture.MemberFixture.JAESIK;
 import static hypevoice.hypevoiceback.fixture.VoiceFixture.VOICE_01;
@@ -47,8 +46,8 @@ public class CategoryInfoTest {
         assertAll(
                 () -> assertThat(category.getWork()).isEqualTo(work),
                 () -> assertThat(category.getMediaClassification()).isEqualTo(GAME),
-                () -> assertThat(category.getVoiceTone()).isEqualTo(AUTHORITATIVE),
-                () -> assertThat(category.getVoiceStyle()).isEqualTo(HIGH),
+                () -> assertThat(category.getVoiceStyle()).isEqualTo(AUTHORITATIVE),
+                () -> assertThat(category.getVoiceTone()).isEqualTo(HIGH),
                 () -> assertThat(category.getGender()).isEqualTo(MALE),
                 () -> assertThat(category.getAge()).isEqualTo(BABY)
         );
@@ -63,8 +62,8 @@ public class CategoryInfoTest {
         // then
         assertAll(
                 () -> assertThat(category.getMediaClassification()).isEqualTo(MOVIE),
-                () -> assertThat(category.getVoiceTone()).isEqualTo(CUTE),
-                () -> assertThat(category.getVoiceStyle()).isEqualTo(LOW),
+                () -> assertThat(category.getVoiceStyle()).isEqualTo(CUTE),
+                () -> assertThat(category.getVoiceTone()).isEqualTo(LOW),
                 () -> assertThat(category.getGender()).isEqualTo(ETC),
                 () -> assertThat(category.getAge()).isEqualTo(TEENAGER)
         );

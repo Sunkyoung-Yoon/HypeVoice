@@ -6,8 +6,8 @@ import lombok.Builder;
 public record CategoryInfoValue(
     Long workId,
     String mediaClassificationValue,
-    String voiceToneValue,
     String voiceStyleValue,
+    String voiceToneValue,
     String genderValue,
     String ageValue
 ){

@@ -52,8 +52,8 @@ public class CategoryInfoServiceTest extends ServiceTest {
         CategoryInfo findCategoryInfo = categoryInfoFindService.findByWorkId(work1.getId());
         assertAll(
                 () -> assertThat(findCategoryInfo.getMediaClassification()).isEqualTo(MediaClassification.GAME),
-                () -> assertThat(findCategoryInfo.getVoiceTone()).isEqualTo(VoiceTone.WARM),
-                () -> assertThat(findCategoryInfo.getVoiceStyle()).isEqualTo(VoiceStyle.MIDDLE),
+                () -> assertThat(findCategoryInfo.getVoiceStyle()).isEqualTo(VoiceStyle.WARM),
+                () -> assertThat(findCategoryInfo.getVoiceTone()).isEqualTo(VoiceTone.MIDDLE),
                 () -> assertThat(findCategoryInfo.getGender()).isEqualTo(Gender.MALE),
                 () -> assertThat(findCategoryInfo.getAge()).isEqualTo(Age.TWENTY)
         );
@@ -75,8 +75,8 @@ public class CategoryInfoServiceTest extends ServiceTest {
             // then
             assertAll(
                     () -> assertThat(findCategoryInfo.getMediaClassification()).isEqualTo(MediaClassification.ETC),
-                    () -> assertThat(findCategoryInfo.getVoiceTone()).isEqualTo(VoiceTone.ETC),
                     () -> assertThat(findCategoryInfo.getVoiceStyle()).isEqualTo(VoiceStyle.ETC),
+                    () -> assertThat(findCategoryInfo.getVoiceTone()).isEqualTo(VoiceTone.ETC),
                     () -> assertThat(findCategoryInfo.getGender()).isEqualTo(Gender.ETC),
                     () -> assertThat(findCategoryInfo.getAge()).isEqualTo(Age.OLDAGE)
             );

@@ -232,7 +232,7 @@ public class VoiceControllerTest extends ControllerTest {
             // when
             final CategoryInfoRequest request = createCategoryInfoRequest();
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .get(BASE_URL)
+                    .post(BASE_URL)
                     .contentType(APPLICATION_JSON)
                     .content(convertObjectToJson(request));
 
