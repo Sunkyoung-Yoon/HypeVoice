@@ -28,13 +28,15 @@ public class VoiceLikeService {
         Member member = memberFindService.findById(memberId);
         Voice voice = voiceFindService.findById(voiceId);
         VoiceLike voiceLike = VoiceLike.registerVoiceLike(member, voice);
-
+        voice.increaseLikes();
         voiceLikeRepository.save(voiceLike);
     }
 
     @Transactional
     public void cancel(Long memberId, Long voiceId){
         validateCancel(memberId, voiceId);
+        Voice voice = voiceFindService.findById(voiceId);
+        voice.decreaseLikes();
         voiceLikeRepository.deleteByMemberIdAndVoiceId(memberId, voiceId);
     }
 

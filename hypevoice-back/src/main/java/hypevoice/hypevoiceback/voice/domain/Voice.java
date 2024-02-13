@@ -2,6 +2,7 @@ package hypevoice.hypevoiceback.voice.domain;
 
 import hypevoice.hypevoiceback.global.BaseTimeEntity;
 import hypevoice.hypevoiceback.member.domain.Member;
+import hypevoice.hypevoiceback.voice.domain.like.VoiceLike;
 import hypevoice.hypevoiceback.work.domain.Work;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -25,9 +26,10 @@ public class Voice extends BaseTimeEntity {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", referencedColumnName = "member_id")
+    @JoinColumn(name = "member_id", referencedColumnName = "member_id", nullable = false)
     private Member member;
 
+    @Column(nullable = false)
     private String name;
     private String imageUrl;
     private String intro;
@@ -38,6 +40,9 @@ public class Voice extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "voice", cascade = PERSIST, orphanRemoval = true)
     private List<Work> workList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "voice" , cascade = PERSIST, orphanRemoval = true)
+    private List<VoiceLike> voiceLikeList = new ArrayList<>();
 
     @Builder
     private Voice(Member member, String name, String imageUrl, String intro, String email, String phone, String addInfo) {
