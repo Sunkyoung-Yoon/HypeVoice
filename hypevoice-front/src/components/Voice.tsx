@@ -3,11 +3,6 @@ import AddInfo from "./AddInfo";
 import InlineHeader from "./InlineHeader";
 import MyInfo from "./MyInfo";
 import WorkGrid from "./WorkGrid";
-import ScrollNavigation from "./ScrollNavigation";
-import { MyInfoVoiceId } from "@/recoil/CurrentVoiceId/MyInfoVoiceId";
-import SearchComponent from "./SearchComponent";
-import { VoiceCurrentFilterAtom } from "@/recoil/CurrentFilter/VoiceCurrentFilter";
-import { VoiceCurrentKeyword } from "@/recoil/CurrentKeyword/VoiceCurrentKeyword";
 
 function Voice() {
   const [workCount, setWorkCount] = useState(0);
@@ -18,10 +13,10 @@ function Voice() {
         <MyInfo />
       </section>
       <section id="work">
-        <SearchComponent
+        {/* <SearchComponent
           searchBarStateAtom={VoiceCurrentKeyword}
           filterAtom={VoiceCurrentFilterAtom}
-        />
+        /> */}
         <InlineHeader
           title={"💾 작업물"}
           worksCnt={workCount}

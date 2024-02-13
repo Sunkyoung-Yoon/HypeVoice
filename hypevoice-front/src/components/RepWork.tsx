@@ -11,7 +11,7 @@ const WorkWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 330px;
-  height: 390px;
+  /* height: 390px; */
 `;
 
 // 별 아이콘에 대표 여부 알려주는 props
@@ -57,7 +57,8 @@ const changeIsRep = async (targetWorkInfo: ChangeIsRep) => {
 const ImageContainer = styled.div`
   flex: 3;
   display: flex;
-
+  height: 210px;
+  width: 300px;
   @media (max-width: 480px) {
     display: none;
   }
@@ -123,11 +124,11 @@ export default function RepWork({ work }: { work: WorkInfo }) {
             }}
           >
             <TagContainer>
-              <Tag>{work.CategoryInfoValue.mediaClassification}</Tag>
-              <Tag>{work.CategoryInfoValue.voiceTone}</Tag>
-              <Tag>{work.CategoryInfoValue.voiceStyle}</Tag>
-              <Tag>{work.CategoryInfoValue.gender}</Tag>
-              <Tag>{work.CategoryInfoValue.age}</Tag>
+              <Tag>{work.categoryInfoValue.mediaClassificationValue}</Tag>
+              <Tag>{work.categoryInfoValue.voiceToneValue}</Tag>
+              <Tag>{work.categoryInfoValue.voiceStyleValue}</Tag>
+              <Tag>{work.categoryInfoValue.genderValue}</Tag>
+              <Tag>{work.categoryInfoValue.ageValue}</Tag>
             </TagContainer>
           </div>
         </div>

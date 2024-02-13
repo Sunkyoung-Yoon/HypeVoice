@@ -71,13 +71,13 @@ export type WorkInfo = {
   recordUrl: string; // 녹음 파일 링크
   info: string; // 소개 // 최대 100자
   isRep: number; // 대표 작업물 여부
-  CategoryInfoValue: {
+  categoryInfoValue: {
     workId: number; // 작업물 자체 번호
-    mediaClassification: string; // 미디어
-    voiceTone: string; // 톤
-    voiceStyle: string; // 스타일
-    gender: string; // 성별
-    age: string; // 나이
+    mediaClassificationValue: string; // 미디어
+    voiceToneValue: string; // 톤
+    voiceStyleValue: string; // 스타일
+    genderValue: string; // 성별
+    ageValue: string; // 나이
   };
 };
 

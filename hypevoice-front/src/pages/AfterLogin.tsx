@@ -54,7 +54,7 @@ export default function AfterLogin() {
                 ...memberInfo,
                 // accessToken: accessToken, // 엑세스 토큰은 제외하고!
               });
-              setMyInfoVoiceId(currentMember.memberId);
+              setMyInfoVoiceId(memberInfo.memberId);
             })
             .catch((e) => {
               console.log(e);

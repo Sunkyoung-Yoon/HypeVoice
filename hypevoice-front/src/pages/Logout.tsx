@@ -1,4 +1,4 @@
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { CurrentMemberAtom } from "@/recoil/Auth";
 import { LoginState } from "@/recoil/Auth";
 import { useNavigate } from "react-router-dom";
@@ -7,8 +7,8 @@ import { useEffect } from "react";
 
 export default function Logout() {
   const navigate = useNavigate();
-  const [loginState, setLoginState] = useRecoilState(LoginState);
-  const [currentMember, setCurrentMember] = useRecoilState(CurrentMemberAtom);
+  const setLoginState = useSetRecoilState(LoginState);
+  const setCurrentMember = useSetRecoilState(CurrentMemberAtom);
 
   useEffect(() => {
     const logout = async () => {
@@ -19,7 +19,12 @@ export default function Logout() {
 
         // 로그아웃 요청이 성공한 경우에만 아래 코드를 실행합니다.
         setLoginState(false); // 로그인 상태를 false로 변경
-        setCurrentMember(null); // 현재 유저 정보 초기화
+        setCurrentMember({
+          memberId: 0,
+          email: "",
+          nickname: "",
+          accessToken: "",
+        }); // 현재 유저 정보 초기화
 
         // 쿠키에서 엑세스 토큰을 제거합니다.
         removeCookie("access_token");

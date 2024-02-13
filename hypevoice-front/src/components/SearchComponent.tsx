@@ -16,12 +16,14 @@ interface Props {
   placeholder?: string;
   searchBarStateAtom?: RecoilState<string>;
   filterAtom: RecoilState<InitialState>;
+  fetchFilteredData: () => Promise<void>;
 }
 
 export default function SearchComponent({
   placeholder,
   searchBarStateAtom,
   filterAtom,
+  fetchFilteredData,
 }: Props) {
   return (
     <VoiceFilteringComponent>
@@ -31,7 +33,10 @@ export default function SearchComponent({
           stateAtom={searchBarStateAtom}
         />
       )}
-      <CategoryAndTag filterAtom={filterAtom} />
+      <CategoryAndTag
+        filterAtom={filterAtom}
+        fetchFilteredData={fetchFilteredData}
+      />
     </VoiceFilteringComponent>
   );
 }

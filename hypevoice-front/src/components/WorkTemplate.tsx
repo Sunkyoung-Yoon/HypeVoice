@@ -20,7 +20,6 @@ const WorkWrapper = styled.div.attrs<WorkWrapperProps>(
   padding: 15px;
   margin: 15px;
   width: 330px;
-  height: 390px;
   cursor: pointer;
 
   border: 5px solid ${(props) => (props.isHovered ? "#5b5ff4" : "black")};

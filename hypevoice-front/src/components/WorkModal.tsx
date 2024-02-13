@@ -17,13 +17,12 @@ import TextSnippetIcon from "@mui/icons-material/TextSnippet";
 import MicIcon from "@mui/icons-material/Mic";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import { useState, useRef, useEffect } from "react";
-import axios from "axios";
 import { WorkModalProps } from "./type";
 import { categories } from "./Category";
 import { getCookie } from "@/api/cookie";
 import { axiosClient } from "@/api/axios";
 
-const categoryNames = {
+export const categoryNames: Record<string, string> = {
   미디어: "mediaClassification",
   목소리톤: "voiceTone",
   목소리스타일: "voiceStyle",
@@ -303,31 +302,48 @@ export default function WorkModal({
     }
   };
 
-  useEffect(async () => {
-    if (role === "change" || role === "read") {
-      const accessToken = getCookie("access_token");
-      const response = await axiosClient.get(
-        `/api/voices/${voiceId}/works/${workId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+  useEffect(() => {
+    const fetchData = async () => {
+      if (role === "change" || role === "read") {
+        const accessToken = getCookie("access_token");
+        const response = await axiosClient.get(
+          `/api/voices/${voiceId}/works/${workId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
 
-      if (response) {
-        console.log(response.data);
-        console.log("title = ");
-        console.log(response.data.title);
-        setTitle(response.data.title);
-        setIntro(response.data.info);
-        setYoutubeUrl(response.data.videoLink);
+        if (response) {
+          console.log(response.data);
+          setTitle(response.data.title); // 모달 창 타이틀 설정
+          setIntro(response.data.info); // 모달 창 소개 설정
+          setYoutubeUrl(response.data.videoLink); // 모달창 유튜브 링크 설정
+
+          // 모달창 카테고리 설정
+          const newSelectedCategory = {
+            mediaClassification:
+              response.data.categoryInfoValue.mediaClassificationValue,
+            voiceTone: response.data.categoryInfoValue.voiceToneValue,
+            voiceStyle: response.data.categoryInfoValue.voiceStyleValue,
+            gender: response.data.categoryInfoValue.genderValue,
+            age: response.data.categoryInfoValue.ageValue,
+          };
+          console.log(newSelectedCategory);
+
+          // 모달창 카테고리 설정
+          setSelectedCategory(newSelectedCategory);
+          console.log(selectedCategory);
+        }
+        // workId를 이용하여 작업물 정보를 가져와 상태값 설정
+        // 파일 다운로드 링크도 설정
+        // setScriptFileUrl(받아온 대본 파일 URL);
+        // setRecordFileUrl(받아온 음성 파일 URL);
       }
-      // workId를 이용하여 작업물 정보를 가져와 상태값 설정
-      // 파일 다운로드 링크도 설정
-      // setScriptFileUrl(받아온 대본 파일 URL);
-      // setRecordFileUrl(받아온 음성 파일 URL);
-    }
+    };
+
+    fetchData();
   }, [role, workId]);
 
   return (
@@ -344,9 +360,6 @@ export default function WorkModal({
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      {/* ------------------------------------------------------------ */}
-      {/* ------------------------------------------------------------ */}
-      {/* ------------------------------------------------------------ */}
       {/* ------------------------------------------------------------ */}
       {/* ------------------------------------------------------------ */}
       <DialogContent
@@ -465,8 +478,6 @@ export default function WorkModal({
             <FormHelperText>최대 20자</FormHelperText>
           </div>
           {/* ------------------------------------------------------------ */}
-          {/* ------------------------------------------------------------ */}
-          {/* ------------------------------------------------------------ */}
           <div style={{ flex: 2, display: "flex", flexDirection: "column" }}>
             {/* 카테고리 부분 */}
             <div
@@ -492,10 +503,15 @@ export default function WorkModal({
                     <Select
                       labelId={`${category}-label`}
                       id={category}
-                      value={selectedCategory[category]}
+                      value={
+                        selectedCategory[
+                          category as keyof typeof selectedCategory
+                        ] || ""
+                      }
                       onChange={handleCategoryChange}
                       label={category}
-                      name={category} // 카테고리 자체의 이름으로 해당 value의 옵션 구성
+                      name={category}
+                      disabled={role === "read"}
                     >
                       {categories[category].map((option) => (
                         <MenuItem key={option} value={option}>
@@ -529,9 +545,6 @@ export default function WorkModal({
             <FormHelperText>최대 100자</FormHelperText>
           </div>
         </div>
-        {/* ------------------------------------------------------------ */}
-        {/* ------------------------------------------------------------ */}
-        {/* ------------------------------------------------------------ */}
         {/* ------------------------------------------------------------ */}
         {/* ------------------------------------------------------------ */}
         <div
@@ -681,9 +694,6 @@ export default function WorkModal({
           </div>
         </div>
       </DialogContent>
-      {/* ------------------------------------------------------------ */}
-      {/* ------------------------------------------------------------ */}
-      {/* ------------------------------------------------------------ */}
       {/* ------------------------------------------------------------ */}
       {/* ------------------------------------------------------------ */}
       <DialogActions>

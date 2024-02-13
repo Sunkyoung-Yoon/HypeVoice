@@ -21,7 +21,7 @@ const WorkWrapper = styled.div.attrs<WorkWrapperProps>(
   padding: 15px;
   margin: 15px;
   width: 330px;
-  height: 390px;
+  /* height: 390px; */
   cursor: pointer;
 
   opacity: ${(props) => (props.isHovered ? 0.4 : 1)};
@@ -57,12 +57,8 @@ const LikesSpan = styled.span`
 function MainVoicesTemplate({ voice }: { voice: VoiceInfo }) {
   const navigate = useNavigate();
   const templateRef = useRef(null);
-  const [isHovered, setIsHovered] = useState(false);
+  const [ishovered, setIshovered] = useState(false);
   const setMyInfoVoiceId = useSetRecoilState(MyInfoVoiceId);
-
-  // imageUrl: string;
-  // likes: number
-  // name: string;
 
   const work = {
     voiceId: voice.voiceId,
@@ -74,15 +70,15 @@ function MainVoicesTemplate({ voice }: { voice: VoiceInfo }) {
     recordUrl: voice.recordUrl,
     info: "tmp", // voice 넘어올 때 info는 없음
     isRep: 1, // voice 넘어올 때 무조건 대표 작업물만 넘어옴
-    CategoryInfoValue: {
+    categoryInfoValue: {
       workId: -1, // voice 넘어올 때 workId는 없음
-      mediaClassification: voice.mediaClassificationValue,
-      voiceTone: voice.voiceToneValue,
-      voiceStyle: voice.voiceStyleValue,
-      gender: voice.genderValue,
-      age: voice.ageValue,
+      mediaClassificationValue: voice.mediaClassificationValue,
+      voiceToneValue: voice.voiceToneValue,
+      voiceStyleValue: voice.voiceStyleValue,
+      genderValue: voice.genderValue,
+      ageValue: voice.ageValue,
     },
-  }
+  };
 
   const handleClick = () => {
     setMyInfoVoiceId(voice.voiceId);
@@ -92,27 +88,25 @@ function MainVoicesTemplate({ voice }: { voice: VoiceInfo }) {
   return (
     <WorkWrapper
       ref={templateRef}
-      isHovered={isHovered}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      isHovered={ishovered}
+      onMouseEnter={() => setIshovered(true)}
+      onMouseLeave={() => setIshovered(false)}
       onClick={handleClick}
     >
-      <RepWork
-        work={work}
-        isHovered={isHovered}
-        isRep={false}
-        handleStarClick={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-      />
+      <RepWork work={work} />
       <NonTransparentDiv>
         <InfoContainer>
-          <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+          <div style={{ display: "flex", alignItems: "flex-end" }}>
             <StyledImg alt="profileImg" src={voice.imageUrl} />
             <NameSpan>{voice.name}</NameSpan>
           </div>
-          <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-            <FavoriteIcon color="error" fontSize="large" style={{ fontSize: 40 }} /> {/* Adjust this value to your preference */}
+          <div style={{ display: "flex", alignItems: "flex-end" }}>
+            <FavoriteIcon
+              color="error"
+              fontSize="large"
+              style={{ fontSize: 40 }}
+            />{" "}
+            {/* Adjust this value to your preference */}
             <LikesSpan>{voice.likes}</LikesSpan>
           </div>
         </InfoContainer>

@@ -1,6 +1,6 @@
 // CategoryAndTag.tsx
 import React, { useState } from "react";
-import { useRecoilState } from "recoil";
+import { RecoilState, useRecoilState } from "recoil";
 import styled from "styled-components";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Button } from "@mui/material";
@@ -63,7 +63,15 @@ export type InitialState = {
   };
 };
 
-export default function CategoryAndTag({ filterAtom }) {
+interface Props {
+  filterAtom: RecoilState<InitialState>;
+  fetchFilteredData: () => void;
+}
+
+export default function CategoryAndTag({
+  filterAtom,
+  fetchFilteredData,
+}: Props) {
   const [voiceFilterCheck, setVoiceFilterCheck] = useRecoilState(filterAtom);
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -71,6 +79,7 @@ export default function CategoryAndTag({ filterAtom }) {
     if (showDropdown) {
       toggleDropdown();
     }
+    fetchFilteredData(); // 확인 버튼 클릭 시 상위 컴포넌트(homeGrid)의 fetchFilteredVoicesData 호출
   };
 
   const handleCheckChange = (event: React.ChangeEvent<HTMLInputElement>) => {
