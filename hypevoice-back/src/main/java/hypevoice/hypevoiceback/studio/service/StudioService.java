@@ -50,12 +50,12 @@ public class StudioService {
             throw new BaseException(StudioErrorCode.STUDIO_ALREADY_JOINED);
         }
 
-        if (studioRequest.isPublic() == 0 && studioRequest.password() != null)
-            throw new BaseException(StudioErrorCode.UNABLE_CONNECT_PRIVATE_ROOM);
-        else if (studioRequest.isPublic() == 1 && studioRequest.password() == null)
+        if (studioRequest.isPublic() == 0 && studioRequest.password() == null)
             throw new BaseException(StudioErrorCode.NULL_PASSWORD_OF_STUDIO_OR_REQUEST);
-        sessionId = openViduClient.createSession();
+        else if (studioRequest.isPublic() == 1 && studioRequest.password() != null)
+            throw new BaseException(StudioErrorCode.UNABLE_CONNECT_PRIVATE_ROOM);
 
+        sessionId = openViduClient.createSession();
         System.out.println(sessionId);
 
         Member member = memberFindService.findById(loginId);
