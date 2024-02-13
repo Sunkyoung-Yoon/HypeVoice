@@ -65,7 +65,7 @@ const CommentInputStyleDiv = styled.div`
 		margin: 5px;
 	}
 `;
-const base_server_url = 'http://localhost:8080';
+const base_server_url = 'http://localhost:8081';
 const CommentInputComponent = () => {
 	const [comment, setComment] = useState('');
 	const queryClient = useQueryClient();
