@@ -3,6 +3,7 @@ package hypevoice.hypevoiceback.member.domain;
 import hypevoice.hypevoiceback.board.domain.Board;
 import hypevoice.hypevoiceback.global.BaseTimeEntity;
 import hypevoice.hypevoiceback.voice.domain.Voice;
+import hypevoice.hypevoiceback.voice.domain.like.VoiceLike;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,6 +44,9 @@ public class Member extends BaseTimeEntity {
 
     @OneToOne(mappedBy = "member", cascade = PERSIST, orphanRemoval = true)
     private Voice voice;
+
+    @OneToMany(mappedBy = "member" , cascade = PERSIST, orphanRemoval = true)
+    private List<VoiceLike> voiceLikeList = new ArrayList<>();
 
     @Builder
     private Member(String username, String email, SocialType socialType, String socialId) {

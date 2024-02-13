@@ -8,7 +8,6 @@ import {
 	Pagination,
 	Select,
 } from '@mui/material';
-import axios from 'axios';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import LoadingComponent from './LoadingComponent';
@@ -16,6 +15,7 @@ import { GetCommentType } from './CommunityType';
 import { useRecoilValue } from 'recoil';
 import { CurrentMemberAtom } from '@/recoil/Auth';
 import CommentDeleteButtonComponent from './CommentDeleteButtonComponent';
+import { axiosClient } from '@/api/axios';
 
 const CommunityListStyleDiv = styled.div`
 	.comments-container {
@@ -129,9 +129,8 @@ const CommentListComponent = () => {
 	// ▼ GetComments ▼
 
 	const { id } = useParams();
-	const base_server_url = 'http://localhost:8080';
 	const getComments = async (): Promise<GetCommentType[]> => {
-		const response = await axios.get(base_server_url + `/api/comments/${id}`);
+		const response = await axiosClient.get(`/api/comments/${id}`);
 		return response.data.commentList;
 	};
 

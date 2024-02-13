@@ -119,7 +119,9 @@ public class WorkService {
 
     @Transactional
     public List<WorkResponse> readAllWork(Long voiceId) {
-        List<WorkList> workLists = workRepository.findAllByVoiceId(voiceId);
+        validateExistVoice(voiceId);
+
+        List<WorkList> workLists = workFindService.findAllByVoiceId(voiceId);
         List<WorkResponse> workResponseList = new ArrayList<>();
         for (WorkList wl : workLists) {
             CategoryInfoList categoryInfoList = categoryInfoFindService.findCategoryInfoListByWorkId(wl.workId());
@@ -189,6 +191,12 @@ public class WorkService {
         Work work = workFindService.findById(workId);
         if (!work.getVoice().getId().equals(voiceId)) {
             throw BaseException.type(WorkErrorCode.WORK_NOT_IN_VOICE);
+        }
+    }
+
+    private void validateExistVoice(Long voiceId){
+        if(voiceFindService.findById(voiceId).equals(null)){
+            throw BaseException.type(VoiceErrorCode.VOICE_NOT_FOUND);
         }
     }
 

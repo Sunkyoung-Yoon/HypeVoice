@@ -21,17 +21,24 @@ public class Work extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "voice_id", referencedColumnName = "voice_id")
+    @JoinColumn(name = "voice_id", referencedColumnName = "voice_id", nullable = false)
     private Voice voice;
 
     @Column(nullable = false)
     private String title;
 
+    @Column(length = 500)
     private String videoLink;
+
     private String photoUrl;
+
     private String scriptUrl;
+
     private String recordUrl;
+
     private String info;
+
+    @Column(nullable = false)
     private int isRep;
 
     @OneToOne(mappedBy = "work", cascade = CascadeType.ALL, orphanRemoval = true)
