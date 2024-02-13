@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@mui/material';
 import styled from 'styled-components';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
 import LoadingComponent from './LoadingComponent';
 import PostDeleteButtonComponent from './PostDeleteButtonComponent';
 import { GetPostType } from './CommunityType';
@@ -12,6 +11,7 @@ import { CurrentMemberAtom } from '@/recoil/Auth';
 import CommentListComponent from './CommentListComponent';
 import CommentInputComponent from './CommentInputComponent';
 import { Quill } from 'react-quill';
+import { axiosClient } from '@/api/axios';
 
 const PostStyleDiv = styled.div`
 	.post-component {
@@ -138,7 +138,6 @@ const PostStyleDiv = styled.div`
 	}
 `;
 
-const base_server_url = 'http://localhost:8080';
 Quill.register('formats/align', Quill.import('attributors/style/align'));
 
 const PostComponent: React.FC = () => {
@@ -149,7 +148,7 @@ const PostComponent: React.FC = () => {
 	const { id } = useParams();
 
 	const getPost = async (): Promise<GetPostType> => {
-		const response = await axios.get(base_server_url + `/api/boards/${id}`);
+		const response = await axiosClient.get(`/api/boards/${id}`);
 		return response.data;
 	};
 
@@ -200,11 +199,6 @@ const PostComponent: React.FC = () => {
 		});
 
 		return formattedTime;
-	};
-
-	const handleSubmitComment = (comment: string) => {
-		// 댓글 작성 처리 로직 (아직 미작성)
-		console.log(comment);
 	};
 
 	console.log(getPostData?.content);

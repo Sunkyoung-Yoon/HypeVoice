@@ -144,7 +144,7 @@ const modules = {
 Quill.register('formats/my-link', MyLink);
 Quill.register('formats/align', Quill.import('attributors/style/align'));
 
-const base_server_url = 'http://localhost:8080';
+const base_server_url = 'http://localhost:8081';
 let id: number;
 const PostCreateComponent = () => {
 	const navigation = useNavigate();

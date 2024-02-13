@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
 import { Box, Button, IconButton, Modal, Typography } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useState } from 'react';
 import styled from 'styled-components';
+import { axiosClient } from '@/api/axios';
 
 const DeleteBtnStyleDiv = styled.div`
 	.modal-btns {
@@ -31,7 +31,6 @@ type CommentIdType = {
 	id: number;
 };
 
-const base_server_url = 'http://localhost:8080';
 export default function CommentDeleteButtonComponent({
 	id,
 }: CommentIdType): React.ReactElement {
@@ -57,7 +56,7 @@ export default function CommentDeleteButtonComponent({
 		};
 
 		try {
-			await axios.delete(base_server_url + `/api/comments/${id}`, {
+			await axiosClient.delete(`/api/comments/${id}`, {
 				headers,
 			});
 		} catch (error) {

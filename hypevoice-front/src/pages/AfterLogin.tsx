@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { jwtDecode } from "jwt-decode";
 import { LoginState } from "@/recoil/Auth";
 import { CurrentMemberAtom } from "@/recoil/Auth";
@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { getCookie, setCookie, removeCookie } from "../api/cookie";
 import { DecodedTokenPayload, MemberInfo } from "@/components/type";
 import { axiosClient } from "@/api/axios";
+import { MyInfoVoiceId } from "@/recoil/CurrentVoiceId/MyInfoVoiceId";
 
 const fetchMemberInfo = async (accessToken: string) => {
   const response = await axiosClient.get("/api/members", {
@@ -18,9 +19,10 @@ const fetchMemberInfo = async (accessToken: string) => {
 
 export default function AfterLogin() {
   const navigate = useNavigate();
-  const [loginState, setLoginState] = useRecoilState(LoginState);
+  const setLoginState = useSetRecoilState(LoginState);
   const currentMember = useRecoilValue(CurrentMemberAtom);
   const setCurrentMemberInfo = useSetRecoilState(CurrentMemberAtom);
+  const setMyInfoVoiceId = useSetRecoilState(MyInfoVoiceId);
 
   useEffect(() => {
     const accessToken = getCookie("access_token");
@@ -52,6 +54,7 @@ export default function AfterLogin() {
                 ...memberInfo,
                 // accessToken: accessToken, // 엑세스 토큰은 제외하고!
               });
+              setMyInfoVoiceId(currentMember.memberId);
             })
             .catch((e) => {
               console.log(e);

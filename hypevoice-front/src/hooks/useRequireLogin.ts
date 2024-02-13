@@ -7,14 +7,16 @@ import { MyInfoVoiceId } from "@/recoil/CurrentVoiceId/MyInfoVoiceId";
 export default function useRequireLogin() {
   const navigate = useNavigate();
   const isLoggedIn: boolean = useRecoilValue(LoginState); // 로그인 상태
-  const { nickname, memberId } = useRecoilValue(CurrentMemberAtom); // CurrentMemberAtom에서 nickname과 voiceId 추출
+  const currentMember = useRecoilValue(CurrentMemberAtom); // 현재 멤버 정보
   const setMyInfoVoiceId = useSetRecoilState(MyInfoVoiceId);
 
-  // 이 함수는 클릭 이벤트 핸들러에서 사용됩니다.
+  // 이 함수는 클릭 이벤트 핸들러에서 사용
   return function (togo: string) {
     if (!isLoggedIn) {
       // 로그인이 되어있지 않다면
-      if (window.confirm("로그인이 필요한 서비스입니다. 로그인 하시겠습니까?")) {
+      if (
+        window.confirm("로그인이 필요한 서비스입니다. 로그인 하시겠습니까?")
+      ) {
         // 알림 메시지 표시 후
         // 확인 시
         navigate("/login"); // 로그인 페이지로 리다이렉트
@@ -25,13 +27,14 @@ export default function useRequireLogin() {
     }
     // 로그인이 되어 있을 경우
     else {
+      console.log(togo);
       if (togo) {
         if (togo === "/MyPage") {
           // alert(`${nickname}님의 마이페이지로 이동합니다.`); // 알림 메시지 표시
           // navigate("/myPage");
           // } else {
         } else if (togo === "/voice") {
-          setMyInfoVoiceId(memberId);
+          setMyInfoVoiceId(currentMember.memberId);
           // alert(`${memberId}님의 voice로 이동합니다.`);
         }
 
