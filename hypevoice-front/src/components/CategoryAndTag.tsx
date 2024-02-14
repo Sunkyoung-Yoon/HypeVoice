@@ -5,7 +5,10 @@ import styled from "styled-components";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Button } from "@mui/material";
 import CategoryFilter, { SmallIcon, IconKey } from "./CategoryFilter";
-import { MainCurrentFilterAtom } from "../recoil/CurrentFilter/MainCurrentFilter";
+import {
+  MainCurrentFilterAtom,
+  defaultState,
+} from "../recoil/CurrentFilter/MainCurrentFilter";
 
 // 카테고리 선택창
 const CategoryContainer = styled.div`
@@ -82,6 +85,7 @@ export default function CategoryAndTag({
     fetchFilteredData(); // 확인 버튼 클릭 시 상위 컴포넌트(homeGrid)의 fetchFilteredVoicesData 호출
   };
 
+  // 사용자가 체크한 카테고리 값들 핸들러 =>자동 반영!
   const handleCheckChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const [category, value] = event.target.name.split("_");
 
@@ -92,6 +96,12 @@ export default function CategoryAndTag({
         [value]: event.target.checked,
       },
     }));
+  };
+
+  // 초기화 버튼 기능
+  const handleReset = () => {
+    setVoiceFilterCheck(defaultState);
+    // fetchFilteredData(); // 필터 초기화 후 다시!
   };
 
   const toggleDropdown = () => {
@@ -133,7 +143,10 @@ export default function CategoryAndTag({
           );
         })}
       </TagContainer>
-      <Button onClick={handleConfirm}>확인</Button>
+      <div className="CategoryButton" style={{ paddingBottom: "10px" }}>
+        <Button onClick={handleReset}>초기화</Button>
+        <Button onClick={handleConfirm}>확인</Button>
+      </div>
     </>
   );
 }

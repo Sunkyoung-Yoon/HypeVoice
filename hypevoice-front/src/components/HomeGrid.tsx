@@ -54,6 +54,7 @@ const transformFilterState = (filterState: OptionState) => {
 export default function HomeGrid() {
   const [voices, setVoices] = useState<VoiceInfo[]>([]); // 보여질 보이스들의 모음
   const filterState = useRecoilValue(MainCurrentFilterAtom); // 선택한 카테고리 상태를 가져옴
+  const searchText = useRecoilValue(MainCurrentKeyword); // 검색어 상태 관리 as 전역
 
   // 전체 보이스 조회
   const GetVoicesData = async () => {
@@ -82,23 +83,45 @@ export default function HomeGrid() {
     }
   };
 
-  useEffect(() => {
-    if (Object.keys(filterState).length > 0) {
-      // 필터가 적용되었다면
-      fetchFilteredVoicesData(); // 필터링된 음성 데이터를 가져옵니다.
-    } else {
-      const fetchVoicesData = async () => {
-        try {
-          const data = await GetVoicesData();
-          setVoices(data);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-      // 필터가 적용되지 않았다면 그냥 모든 음성 데이터
-      fetchVoicesData();
+  // 검색어 기반 보이스 조회 (useParam으로!)
+  const fetchSearchedVoicesData = async () => {
+    try {
+      const data = await axiosClient.get(
+        `/api/voices/search?keyword=${searchText}`
+      );
+      if (data) {
+        console.log(data);
+        console.log(data.data);
+        setVoices(data.data);
+        voices.map((voice: VoiceInfo) => {
+          console.log(voice);
+        });
+      }
+    } catch (error) {
+      console.error(error);
     }
-  }, [filterState]); // filterState가 변경될 때마다 이 useEffect가 실행됩니다
+  };
+
+  useEffect(() => {
+    const fetchVoicesData = async () => {
+      try {
+        if (searchText) {
+          // 검색 텍스트가 있을 경우 (우선 순위 1순위)
+          fetchSearchedVoicesData();
+        } else if (Object.keys(filterState).length > 0) {
+          // 필터가 설정된 경우 (우선 순위 2순위)
+          fetchFilteredVoicesData();
+        } else {
+          const data = await GetVoicesData(); // 전체 보이스 조회
+          setVoices(data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchVoicesData();
+  }, [searchText, filterState]); // 업데이트 기준 : 검색 텍스트 & 필터 상태
 
   return (
     <HomeGridDiv>

@@ -21,6 +21,7 @@ import { WorkModalProps } from "./type";
 import { categories } from "./Category";
 import { getCookie } from "@/api/cookie";
 import { axiosClient } from "@/api/axios";
+import { setTimeout } from "timers";
 
 export const categoryNames: Record<string, string> = {
   미디어: "mediaClassification",
@@ -66,7 +67,14 @@ export default function WorkModal({
   const imageFileInput = useRef<HTMLInputElement | null>(null); // 추가한 사진 파일 상태 관리
   const [scriptFileUrl, setScriptFileUrl] = useState<string | null>(""); // 대본 파일 다운로드 링크
   const [recordFileUrl, setRecordFileUrl] = useState<string | null>(""); // 음성 파일 다운로드 링크
-  const [selectedCategory, setSelectedCategory] = useState({
+  const [selectedCategory, setSelectedCategory] = useState<{
+    mediaClassification: string;
+    voiceTone: string;
+    voiceStyle: string;
+    gender: string;
+    age: string;
+    [key: string]: string; // 객체에 대한 인덱스 서명(Index Signature)
+  }>({
     mediaClassification: "",
     voiceTone: "",
     voiceStyle: "",
@@ -216,6 +224,7 @@ export default function WorkModal({
         }
       );
       console.log(response);
+      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -279,7 +288,7 @@ export default function WorkModal({
     console.log(workId);
 
     try {
-      const response = await axiosClient.patch(
+      const response = await axiosClient.delete(
         `/api/voices/${voiceId}/works/${workId}`,
         {
           headers: {
@@ -305,35 +314,30 @@ export default function WorkModal({
   useEffect(() => {
     const fetchData = async () => {
       if (role === "change" || role === "read") {
-        const accessToken = getCookie("access_token");
         const response = await axiosClient.get(
-          `/api/voices/${voiceId}/works/${workId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
+          `/api/voices/${voiceId}/works/${workId}`
         );
 
         if (response) {
+          console.log("response.data 는 아래와 같습니다!");
           console.log(response.data);
           setTitle(response.data.title); // 모달 창 타이틀 설정
           setIntro(response.data.info); // 모달 창 소개 설정
           setYoutubeUrl(response.data.videoLink); // 모달창 유튜브 링크 설정
-
-          // 모달창 카테고리 설정
-          const newSelectedCategory = {
-            mediaClassification:
-              response.data.categoryInfoValue.mediaClassificationValue,
-            voiceTone: response.data.categoryInfoValue.voiceToneValue,
-            voiceStyle: response.data.categoryInfoValue.voiceStyleValue,
-            gender: response.data.categoryInfoValue.genderValue,
-            age: response.data.categoryInfoValue.ageValue,
-          };
-          console.log(newSelectedCategory);
-
-          // 모달창 카테고리 설정
-          setSelectedCategory(newSelectedCategory);
+          // 모달창 카테고리 설정 => 하나하나 일일히 해줘야 함!
+          // 미디어
+          selectedCategory.mediaClassification =
+            response.data.categoryInfoValue.mediaClassificationValue;
+          // 목소리 톤
+          selectedCategory.voiceTone =
+            response.data.categoryInfoValue.voiceToneValue;
+          // 목소리 스타일
+          selectedCategory.voiceStyle =
+            response.data.categoryInfoValue.voiceStyleValue;
+          // 성별
+          selectedCategory.gender = response.data.categoryInfoValue.genderValue;
+          // 연령
+          selectedCategory.age = response.data.categoryInfoValue.ageValue;
           console.log(selectedCategory);
         }
         // workId를 이용하여 작업물 정보를 가져와 상태값 설정
@@ -396,7 +400,7 @@ export default function WorkModal({
                 marginBottom: "8px",
               }}
               onMouseOver={(e) => {
-                // 마우스가 올라갔을 때, 투명한 레이어와 테두리를 보여줍니다.
+                // 마우스가 올라갔을 때
                 const button = e.currentTarget;
                 button.style.border = "3px solid #000";
                 button.style.background = preview
@@ -405,7 +409,7 @@ export default function WorkModal({
                 button.style.opacity = "0.5";
               }}
               onMouseOut={(e) => {
-                // 마우스가 내려갔을 때, 투명한 레이어와 테두리를 숨깁니다.
+                // 마우스가 내려갔을 때
                 const button = e.currentTarget;
                 button.style.border = "none";
                 button.style.background = preview
@@ -489,7 +493,7 @@ export default function WorkModal({
             >
               {Object.keys(categories).map(
                 (
-                  category // 각 카테고리별로 `Select` 컴포넌트를 생성
+                  category: string // 각 카테고리별로 `Select` 컴포넌트를 생성
                 ) => (
                   <FormControl
                     variant="outlined"
@@ -505,8 +509,10 @@ export default function WorkModal({
                       id={category}
                       value={
                         selectedCategory[
-                          category as keyof typeof selectedCategory
-                        ] || ""
+                          categoryNames[
+                            category as keyof typeof selectedCategory
+                          ]
+                        ]
                       }
                       onChange={handleCategoryChange}
                       label={category}

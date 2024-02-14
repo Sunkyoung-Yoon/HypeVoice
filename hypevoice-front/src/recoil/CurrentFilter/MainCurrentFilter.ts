@@ -58,7 +58,7 @@ for (let category in categories)
 }
 */
 
-const defaultState = Object.keys(categories).reduce<OptionState>(
+export const defaultState = Object.keys(categories).reduce<OptionState>(
   (newCategories, category) => {
     newCategories[category] = categories[category].reduce<{
       [key: string]: boolean;

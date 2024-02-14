@@ -35,7 +35,7 @@ const Star = styled.span<StarProps>`
 `;
 
 // 대표작업물 여부 바꾸기 요청
-const changeIsRep = async (targetWorkInfo: ChangeIsRep) => {
+const changeIsRep = async (targetWorkInfo: WorkInfo) => {
   const accessToken = getCookie("access_token");
   try {
     const response = await axiosClient.put(
@@ -103,8 +103,10 @@ export default function RepWork({ work }: { work: WorkInfo }) {
   };
   return (
     <WorkWrapper>
-      <div onClick={handleStarClick}>
-        <Star isrep={work.isRep}>{work.isRep ? "★" : "☆"}</Star>
+      <div>
+        <Star isrep={work.isRep} onClick={handleStarClick}>
+          {work.isRep ? "★" : "☆"}
+        </Star>
       </div>
       <div>
         <div style={{ display: "flex", marginBottom: "15px" }}>
