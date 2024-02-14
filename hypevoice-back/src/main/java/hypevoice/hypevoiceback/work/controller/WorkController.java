@@ -27,7 +27,9 @@ public class WorkController {
                                            @RequestPart(value = "request") WorkRequest request,
                                            @RequestPart(value = "files", required = false) MultipartFile[] multipartFiles) {
         Long workId = workService.registerWork(memberId, voiceId, request.title(), request.videoLink(), request.info(), request.isRep(), multipartFiles);
-        categoryInfoService.createCategoryInfo(memberId, workId, request.categoryInfoRequest().mediaClassification(), request.categoryInfoRequest().voiceStyle(), request.categoryInfoRequest().voiceTone(), request.categoryInfoRequest().gender(), request.categoryInfoRequest().age());
+        if(!categoryInfoService.createCategoryInfo(memberId, workId, request.categoryInfoRequest().mediaClassification(), request.categoryInfoRequest().voiceStyle(), request.categoryInfoRequest().voiceTone(), request.categoryInfoRequest().gender(), request.categoryInfoRequest().age())){
+            workService.deleteWork(memberId,voiceId,workId);
+        }
         return ResponseEntity.ok().build();
     }
 
