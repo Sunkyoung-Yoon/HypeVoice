@@ -11,19 +11,21 @@ import styled from "styled-components";
 
 const StyledDiv = styled.div`
   position: relative;
-  display: inline-block;
-  &:hover {
+  display: flex;  // 추가
+  align-items: center;  // 추가
+  justify-content: center;  // 추가
+  /* &:hover {
     img {
       opacity: 0.5;
     }
     button {
       display: block;
     }
-  }
+  } */
 `;
 
 const StyledImg = styled.img`
-  transition: opacity 0.3s ease;
+  /* transition: opacity 0.3s ease; */
   width: 175px;
   height: 225px;
   border-radius: 20%;
@@ -69,19 +71,6 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   width: 100%;
-`;
-
-const StyledButton = styled.button`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: none;
-  border-width: 1px;
-  text-align: center;
-  text-decoration: none;
-  font-size: 16px;
-  cursor: pointer;
 `;
 
 const StyledButton2 = styled.button`
@@ -237,11 +226,11 @@ function MyPage() {
       <InlineHeader title={"마이 페이지"} worksCnt={0} storageSpace={0} />
       <StyledContainer>
         <RowContainer>
-          <StyledDiv>
-            <StyledImg src={profileUrl} alt="profile" />
-            <input type="file" onChange={handleChangeImg} />
-          </StyledDiv>
           <InfoContainer>
+            <StyledDiv>
+              <StyledImg src={profileUrl} alt="profile" />
+              <input style={{ marginLeft: "10px"}} type="file" onChange={handleChangeImg} />
+            </StyledDiv>
             <div style={{ fontSize: "25px" }}>
               <label>이메일 : </label>
               <span>{email}</span>

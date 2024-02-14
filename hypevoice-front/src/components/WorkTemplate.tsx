@@ -20,7 +20,7 @@ const WorkWrapper = styled.div<WorkWrapperProps>`
   width: 330px;
   cursor: pointer;
 
-  border: 5px solid ${(props) => (props.isHovered ? "#5b5ff4" : "black")};
+  border: 5px solid ${(props) => (props.$isHovered ? "#5b5ff4" : "black")};
   transition: border-color 0.3s, border-width 0.3s;
 `;
 
@@ -66,7 +66,7 @@ export default function WorkTemplate({ work, onWorkClick }: WorkTemplateProps) {
   return (
     <WorkWrapper
       ref={templateRef}
-      isHovered={isHovered}
+      $isHovered={isHovered}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}

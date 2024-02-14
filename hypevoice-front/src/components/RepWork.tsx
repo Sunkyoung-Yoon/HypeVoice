@@ -24,7 +24,7 @@ const Star = styled.span<StarProps>`
   top: 8px;
   left: 8px;
   cursor: pointer;
-  color: ${(props) => (props.isrep === 1 ? "yellow" : "grey")};
+  color: ${(props) => (props.$isrep === 1 ? "yellow" : "grey")};
   border-radius: 50%;
   width: 20px;
   height: 20px;
@@ -108,7 +108,7 @@ export default function RepWork({ work }: { work: WorkInfo }) {
   return (
     <WorkWrapper>
       <div>
-        <Star isrep={work.isRep} onClick={handleStarClick}>
+        <Star $isrep={work.isRep} onClick={handleStarClick}>
           {work.isRep ? "★" : "☆"}
         </Star>
       </div>
