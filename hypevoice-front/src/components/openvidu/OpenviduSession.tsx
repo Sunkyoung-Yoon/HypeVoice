@@ -10,6 +10,8 @@ interface SessionProps {
 
 function OpenviduSession({ subscriber, publisher }: SessionProps) {
 	const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
+	const [audioEnabled, setAudioEnabled] = useState(true);
+	const [videoEnabled, setVideoEnabled] = useState(true);
 
 	useEffect(() => {
 		if (subscriber) {
@@ -24,6 +26,16 @@ function OpenviduSession({ subscriber, publisher }: SessionProps) {
 		return 'normal';
 	};
 
+	const audioMuteHandler = () => {
+		setAudioEnabled(!audioEnabled);
+		if (publisher) publisher.publishAudio(audioEnabled);
+	};
+
+	const videoMuteHandler = () => {
+		setVideoEnabled(!videoEnabled);
+		if (publisher) publisher.publishVideo(videoEnabled);
+	};
+
 	const renderSubscribers = () => {
 		const gridPlacement = adjustGridPlacement(subscribers.length);
 
@@ -36,11 +48,19 @@ function OpenviduSession({ subscriber, publisher }: SessionProps) {
 				}}
 			>
 				<div>
-					<OpenviduVideo streamManager={publisher} />
+					<OpenviduVideo
+						streamManager={publisher}
+						audioMuteHandler={audioMuteHandler}
+						videoMuteHandler={videoMuteHandler}
+					/>
 				</div>
 				{subscribers.map((subscriberItem) => (
 					<div key={subscriberItem.id}>
-						<OpenviduVideo streamManager={subscriberItem} />
+						<OpenviduVideo
+							streamManager={subscriberItem}
+							audioMuteHandler={audioMuteHandler}
+							videoMuteHandler={videoMuteHandler}
+						/>
 					</div>
 				))}
 			</div>

@@ -20,7 +20,9 @@ function OpenviduMain() {
 	const [OV, setOV] = useState<OpenVidu | null>(null);
 	const [isCreate, setIsCreate] = useState<boolean>(true);
 	const OPENVIDU_SERVER_URL = `http://localhost:8081`;
+
 	// const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
+
 	const accessToken = getCookie('access_token');
 
 	const leaveSession = useCallback(() => {
