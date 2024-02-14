@@ -6,7 +6,7 @@ const RightSideDiv = styled.div`
   height: 90vh;
   width: 100%;
   background-color: #f5f5f5;
-  float: right;
+  float: center;
 `;
 
 const MyLikeVoiceseDiv = styled.div`
@@ -20,7 +20,6 @@ function RightSide() {
 
   return (
     <RightSideDiv>
-      Right Side
       {/* {location.pathname === "/voice" && <MyLikeVoiceseDiv><MyLikeVoices /></MyLikeVoiceseDiv>} */}
       <MyLikeVoiceseDiv><MyLikeVoices /></MyLikeVoiceseDiv>
     </RightSideDiv>
