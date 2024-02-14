@@ -84,12 +84,14 @@ public class SecurityConfig {
                                         AntPathRequestMatcher.antMatcher( "/api/token/reissue"),
                                         AntPathRequestMatcher.antMatcher( "/api/boards"),
                                         AntPathRequestMatcher.antMatcher( "/api/boards/{boardId}"),
-                                        AntPathRequestMatcher.antMatcher( "/api/works"),
-                                        AntPathRequestMatcher.antMatcher( "/api/voices/{voiceId}/works/{workId}"),
                                         AntPathRequestMatcher.antMatcher( "/api/voices/{voiceId}/works"),
+                                        AntPathRequestMatcher.antMatcher( "/api/voices/{voiceId}/works/filter"),
+                                        AntPathRequestMatcher.antMatcher( "/api/voices/{voiceId}/works/{workId}"),
+                                        AntPathRequestMatcher.antMatcher( "/api/voices/{voiceId}"),
                                         AntPathRequestMatcher.antMatcher( "/api/voices/list/date"),
                                         AntPathRequestMatcher.antMatcher( "/api/voices/list/likes"),
-                                        AntPathRequestMatcher.antMatcher( "/api/voices/{voiceId}"),
+                                        AntPathRequestMatcher.antMatcher( "/api/voices/search"),
+                                        AntPathRequestMatcher.antMatcher( "/api/voices/filter"),
                                         AntPathRequestMatcher.antMatcher( "/api/comments/{boardId}"),
                                         AntPathRequestMatcher.antMatcher( "/api/studios")
                                 ).permitAll()

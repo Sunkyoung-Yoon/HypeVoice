@@ -8,10 +8,8 @@ import hypevoice.hypevoiceback.categoryInfo.service.CategoryInfoService;
 import hypevoice.hypevoiceback.file.service.FileService;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.voice.domain.Voice;
-import hypevoice.hypevoiceback.voice.domain.VoiceRepository;
 import hypevoice.hypevoiceback.voice.exception.VoiceErrorCode;
 import hypevoice.hypevoiceback.voice.service.VoiceFindService;
-import hypevoice.hypevoiceback.voice.service.VoiceService;
 import hypevoice.hypevoiceback.work.domain.Work;
 import hypevoice.hypevoiceback.work.domain.WorkRepository;
 import hypevoice.hypevoiceback.work.dto.WorkList;
@@ -150,14 +148,13 @@ public class WorkService {
     // 카테고리를 이용한 조회
     @Transactional
     public List<WorkResponse> readCategoryWork(Long voiceId, List<String> mediaValueList, List<String> voiceStyleValueList, List<String> voiceToneValueList, List<String> genderValueList, List<String> ageValueList) {
-         validateExistVoice(voiceId);
+        Voice voice = voiceFindService.findById(voiceId);
 
         List<Long> workIdList = categoryInfoService.getWorkIdListByCategories(mediaValueList, voiceStyleValueList, voiceToneValueList, genderValueList, ageValueList);
         List<WorkResponse> findWorkResponse = new ArrayList<>();
 
         for (Long workId : workIdList) {
             Work work = workFindService.findById(workId);
-            if(work != null && work.getVoice().getId().equals(voiceId))
             findWorkResponse.add(
                     new WorkResponse(
                             voiceId, workId, work.getTitle(), work.getVideoLink(), work.getPhotoUrl(), work.getScriptUrl(), work.getRecordUrl(), work.getInfo(), work.getIsRep(),
