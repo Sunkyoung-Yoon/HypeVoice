@@ -1,10 +1,7 @@
 package hypevoice.hypevoiceback.studio.controller;
 
 import hypevoice.hypevoiceback.global.annotation.ExtractPayload;
-import hypevoice.hypevoiceback.studio.dto.StudioJoinRequest;
-import hypevoice.hypevoiceback.studio.dto.StudioJoinResponse;
-import hypevoice.hypevoiceback.studio.dto.StudioRequest;
-import hypevoice.hypevoiceback.studio.dto.StudioResponse;
+import hypevoice.hypevoiceback.studio.dto.*;
 import hypevoice.hypevoiceback.studio.service.StudioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -95,6 +92,10 @@ public class StudioController {
     @GetMapping("/{studioId}/recording/{recordingId}")
     public ResponseEntity<List<String>> getRecording(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId, @PathVariable("recordingId") String recordingId) {
         List<String> response = studioService.getRecordingUrl(recordingId, loginId, studioId);
+        for(String s : response){
+            System.out.println(s);
+        }
+        System.out.println("녹음 받아오기 서비스 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -104,7 +105,9 @@ public class StudioController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-
-
+    @GetMapping("/{studioId}/connect/share")
+    public ResponseEntity<String> getScreenShareToken(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId) {
+        return ResponseEntity.status(HttpStatus.OK).body(studioService.screenShare(loginId,studioId));
+    }
 
 }

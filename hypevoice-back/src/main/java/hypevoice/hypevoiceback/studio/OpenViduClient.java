@@ -4,11 +4,13 @@ package hypevoice.hypevoiceback.studio;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonArray;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.studio.exception.StudioErrorCode;
 import io.openvidu.java.client.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -79,14 +81,14 @@ public class OpenViduClient {
         }
     }
 
-    public Map<String, String> getJoinStudioToken(String sessionId, Long memberId) {
+    public Map<String, String> getJoinStudioToken(String sessionId, String nickName) {
         HashMap<String, String> map = new HashMap<>();
         try {
             String url = OPENVIDU_URL + "/openvidu/api/sessions/" + sessionId + "/connection";
 
             String requestBody = "{" +
                     "\"type\": \"WEBRTC\", " +
-                    "\"data\": \"" + memberId + "\", " +
+                    "\"data\": \"" + nickName + "\", " +
                     "\"role\": \"PUBLISHER\", " +
                     "\"kurentoOptions\": {" +
                     "\"videoMaxRecvBandwidth\": 1000," +
@@ -121,6 +123,49 @@ public class OpenViduClient {
         }
         return map;
     }
+
+    public String getScreenShareToken(String sessionId, String nickName) {
+
+        try {
+            String url = OPENVIDU_URL + "/openvidu/api/sessions/" + sessionId + "/connection";
+
+            String requestBody = "{" +
+                    "\"type\": \"WEBRTC\", " +
+                    "\"data\": \"" + nickName + "\", " +
+                    "\"role\": \"PUBLISHER\", " +
+                    "\"kurentoOptions\": {" +
+                    "\"videoMaxRecvBandwidth\": 1000," +
+                    "\"videoMinRecvBandwidth\": 300," +
+                    "\"videoMaxSendBandwidth\": 1000," +
+                    "\"videoMinSendBandwidth\": 300," +
+                    "\"allowedFilters\": [ \"GStreamerFilter\", \"ZBarFilter\" ]" +
+                    "}," +
+                    "\"customIceServers\": [" +
+                    "{" +
+                    "\"url\": \"turn:turn-domain.com:443\"," +
+                    "\"username\": \"usertest\"," +
+                    "\"credential\": \"userpass\"" +
+                    "}" +
+                    "]" +
+                    "}";
+
+            String responseBody = WebClient.create().post()
+                    .uri(url)
+                    .headers(httpHeaders -> httpHeaders.addAll(headers))
+                    .body(BodyInserters.fromValue(requestBody))
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            System.out.println("ResponseBody : " + responseBody);
+            return parseToken(responseBody);
+        } catch (Exception e) {
+
+            throw BaseException.type(StudioErrorCode.STUDIO_NOT_FOUND);
+        }
+
+    }
+
 
     public void disConnect(String connectionId) {
         try {
@@ -200,7 +245,7 @@ public class OpenViduClient {
     }
 
     public Recording startRecording(String sessionId, Boolean isIndividual) {
-        if(isIndividual){
+        if (isIndividual) {
             System.out.println("let's individual");
             recordingProperties = new RecordingProperties.Builder()
                     .outputMode(Recording.OutputMode.INDIVIDUAL)
@@ -231,7 +276,8 @@ public class OpenViduClient {
     public Recording getRecording(String recordingId) {
         Recording recording = null;
         try {
-            recording = openVidu.getRecording(recordingId);;
+            recording = openVidu.getRecording(recordingId);
+            ;
             return recording;
         } catch (Exception e) {
             throw new BaseException(StudioErrorCode.RECORDING_NOT_FOUND);
@@ -246,4 +292,37 @@ public class OpenViduClient {
         }
 
     }
+
+    public void message(String sessionId, String sender, String message) {
+        try {
+            String url = OPENVIDU_URL + "/openvidu/api/signal";
+            System.out.println(sender);
+            System.out.println(message);
+            JSONObject data = new JSONObject();
+            data.put("sender", sender);
+            data.put("message", message);
+            data.put("timestamp", "2024");
+
+            System.out.println(data);
+            JSONObject body = new JSONObject();
+            body.put("session",sessionId);
+            body.put("to",new JsonArray());
+            body.put("type","message");
+            body.put("data","\"" +  data + "\"");
+
+            System.out.println("RequestBody : " + body.toString());
+
+            WebClient.create().post()
+                    .uri(url)
+                    .headers(httpHeaders -> httpHeaders.addAll(headers))
+                    .body(BodyInserters.fromValue(body.toString()))
+                    .retrieve()
+                    .bodyToMono(Void.class)
+                    .block();
+
+        } catch (Exception e) {
+            throw BaseException.type(StudioErrorCode.CANT_SEND_MESSAGE);
+        }
+    }
+
 }
