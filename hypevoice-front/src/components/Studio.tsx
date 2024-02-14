@@ -1,7 +1,12 @@
-import React from "react";
+import React from 'react';
+import OpenviduMain from './openvidu/OpenviduMain';
 
 function Studio() {
-  return <div>스튜디오 컴포넌트</div>;
+	return (
+		<div>
+			<OpenviduMain />
+		</div>
+	);
 }
 
 export default Studio;
