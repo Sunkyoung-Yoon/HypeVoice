@@ -10,6 +10,7 @@ public record VoiceReadResponse (
         String email,
         String phone,
         String addInfo,
-        int likes
+        int likes,
+        long totalSizeMega
 ){
 }

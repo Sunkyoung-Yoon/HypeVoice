@@ -248,7 +248,7 @@ public class VoiceControllerTest extends ControllerTest {
     }
 
     private VoiceReadResponse readResponse() {
-        return new VoiceReadResponse(updateVoice.NAME, null, "intro", "email", "phone", "addInfo", 109);
+        return new VoiceReadResponse(updateVoice.NAME, null, "intro", "email", "phone", "addInfo", 109, 0);
     }
 
     private List<VoiceCardListResponse> voiceCardListResponses() {

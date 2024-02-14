@@ -8,8 +8,10 @@ import hypevoice.hypevoiceback.categoryInfo.service.CategoryInfoService;
 import hypevoice.hypevoiceback.file.service.FileService;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.voice.domain.Voice;
+import hypevoice.hypevoiceback.voice.domain.VoiceRepository;
 import hypevoice.hypevoiceback.voice.exception.VoiceErrorCode;
 import hypevoice.hypevoiceback.voice.service.VoiceFindService;
+import hypevoice.hypevoiceback.voice.service.VoiceService;
 import hypevoice.hypevoiceback.work.domain.Work;
 import hypevoice.hypevoiceback.work.domain.WorkRepository;
 import hypevoice.hypevoiceback.work.dto.WorkList;
@@ -44,8 +46,10 @@ public class WorkService {
             for (int i = 0; i < multipartFiles.length; i++) {
                 MultipartFile file = multipartFiles[i];
                 String fileUrl = null;
-                if (file != null)
+                if (file != null) {
                     fileUrl = fileService.uploadWorkFiles(file);
+                    voice.increaseTotalSize(file.getSize());
+                }
 
                 fileUrlList[i] = fileUrl;
             }
@@ -119,7 +123,7 @@ public class WorkService {
 
     @Transactional
     public List<WorkResponse> readAllWork(Long voiceId) {
-        validateExistVoice(voiceId);
+        Voice voice = voiceFindService.findById(voiceId);
 
         List<WorkList> workLists = workFindService.findAllByVoiceId(voiceId);
         List<WorkResponse> workResponseList = new ArrayList<>();
@@ -191,12 +195,6 @@ public class WorkService {
         Work work = workFindService.findById(workId);
         if (!work.getVoice().getId().equals(voiceId)) {
             throw BaseException.type(WorkErrorCode.WORK_NOT_IN_VOICE);
-        }
-    }
-
-    private void validateExistVoice(Long voiceId){
-        if(voiceFindService.findById(voiceId).equals(null)){
-            throw BaseException.type(VoiceErrorCode.VOICE_NOT_FOUND);
         }
     }
 

@@ -34,7 +34,8 @@ public class VoiceTest {
                 () -> assertThat(voice.getEmail()).isEqualTo(null),
                 () -> assertThat(voice.getPhone()).isEqualTo(null),
                 () -> assertThat(voice.getAddInfo()).isEqualTo(null),
-                () -> assertThat(voice.getLikes()).isEqualTo(0)
+                () -> assertThat(voice.getLikes()).isEqualTo(0),
+                () -> assertThat(voice.getTotalSize()).isEqualTo(0)
         );
     }
 
@@ -52,7 +53,8 @@ public class VoiceTest {
                 () -> assertThat(voice.getEmail()).isEqualTo("test1@ssafy.com"),
                 () -> assertThat(voice.getPhone()).isEqualTo("01011112222"),
                 () -> assertThat(voice.getAddInfo()).isEqualTo("추가정보1"),
-                () -> assertThat(voice.getLikes()).isEqualTo(0)
+                () -> assertThat(voice.getLikes()).isEqualTo(0),
+                () -> assertThat(voice.getTotalSize()).isEqualTo(0)
         );
     }
 

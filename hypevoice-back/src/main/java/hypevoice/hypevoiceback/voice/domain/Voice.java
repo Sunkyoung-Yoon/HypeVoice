@@ -37,6 +37,7 @@ public class Voice extends BaseTimeEntity {
     private String phone;
     private String addInfo;
     private int likes;
+    private long totalSize;
 
     @OneToMany(mappedBy = "voice", cascade = PERSIST, orphanRemoval = true)
     private List<Work> workList = new ArrayList<>();
@@ -54,6 +55,7 @@ public class Voice extends BaseTimeEntity {
         this.phone = phone;
         this.addInfo = addInfo;
         this.likes = 0;
+        this.totalSize = 0;
     }
 
     public static Voice createVoice(Member member, String name) {
@@ -76,6 +78,8 @@ public class Voice extends BaseTimeEntity {
     public void decreaseLikes() {
         this.likes = this.likes - 1;
     }
+
+    public void increaseTotalSize(long size) { this.totalSize = this.totalSize + size; }
 
 }
 

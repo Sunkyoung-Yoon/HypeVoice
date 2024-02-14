@@ -29,9 +29,6 @@ public class VoiceServiceTest extends ServiceTest {
     @Autowired
     private VoiceService voiceService;
 
-    @Autowired
-    private VoiceFindService voiceFindService;
-
     private Voice voice;
     private Member member;
     private Work work;
@@ -79,7 +76,8 @@ public class VoiceServiceTest extends ServiceTest {
                 () -> assertThat(voiceReadResponse.email()).isEqualTo(voice.getEmail()),
                 () -> assertThat(voiceReadResponse.phone()).isEqualTo(voice.getPhone()),
                 () -> assertThat(voiceReadResponse.addInfo()).isEqualTo(voice.getAddInfo()),
-                () -> assertThat(voiceReadResponse.likes()).isEqualTo(voice.getLikes())
+                () -> assertThat(voiceReadResponse.likes()).isEqualTo(voice.getLikes()),
+                () -> assertThat(voiceReadResponse.totalSizeMega()).isEqualTo(voice.getTotalSize())
         );
     }
 

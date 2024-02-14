@@ -59,6 +59,7 @@ public class VoiceService {
     @Transactional
     public VoiceReadResponse readDetailVoice(Long voiceId) {
         Voice voiceDetail = voiceFindService.findById(voiceId);
+        long totalSize = Math.round((((float) voiceDetail.getTotalSize()/1024)*100.0) / 100.0);
 
         return VoiceReadResponse.builder()
                 .name(voiceDetail.getName())
@@ -68,6 +69,7 @@ public class VoiceService {
                 .email(voiceDetail.getEmail())
                 .phone(voiceDetail.getPhone())
                 .likes(voiceDetail.getLikes())
+                .totalSizeMega(totalSize)
                 .build();
     }
 
