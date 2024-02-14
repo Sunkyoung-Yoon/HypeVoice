@@ -110,10 +110,10 @@ export default function VoiceInfoModal({
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        alert(`${voiceId}번 보이스 수정 성공!`);
+        // alert(`${voiceId}번 보이스 수정 성공!`);
         resetState();
       } catch (error) {
-        alert(`${voiceId}번 보이스 수정 실패!`);
+        // alert(`${voiceId}번 보이스 수정 실패!`);
         console.error(error);
         onClose();
       }
@@ -132,19 +132,21 @@ export default function VoiceInfoModal({
         const response = await axiosClient.get(`/api/voices/${voiceId}`);
 
         if (response) {
-          console.log("response.data 는 아래와 같습니다!");
-          console.log(response.data);
+          // console.log("response.data 는 아래와 같습니다!");
+          // console.log(response.data);
           setName(response.data.name); // 모달 창 이름 설정
           setEmail(response.data.email); // 모달 창 이메일 설정
           setPhone(response.data.phone); // 모달 창 전화번호 설정
           setIntro(response.data.intro); // 모달 창 간단 소개 설정
           setAddinfo(response.data.addInfo); // 모달 창 추가 정보 설정
         }
+        // 사진 미리보기 설정
+        setPreview(response.data.imageUrl);
       }
     };
 
     fetchData();
-  }, []);
+  }, [role, voiceId]);
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth={true}>
