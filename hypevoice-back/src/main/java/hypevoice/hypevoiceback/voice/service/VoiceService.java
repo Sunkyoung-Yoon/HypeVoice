@@ -156,7 +156,7 @@ public class VoiceService {
                                     .categoryInfo(w.getCategoryInfo())
                                     .title(w.getTitle())
                                     .recordUrl(w.getRecordUrl())
-                                    .imageUrl(w.getImageUrl())
+                                    .imageUrl(v.imageUrl())
                                     .name(v.name())
                                     .likes(v.likes())
                                     .build()
