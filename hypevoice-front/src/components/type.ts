@@ -98,6 +98,17 @@ export type VoiceInfo = {
   voiceToneValue: string;
 };
 
+export type VoiceDataType = {
+  name: string;
+  imageUrl: string;
+  intro: string;
+  email: string;
+  phone: string;
+  addInfo: string;
+  likes: number;
+  totalSizeMega: number;
+};
+
 // // 카테고리 선택한 값
 // // url : /api/members
 export type CategoryInfoValue = {

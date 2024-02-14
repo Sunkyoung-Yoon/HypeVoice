@@ -126,7 +126,7 @@ export default function HomeGrid() {
   return (
     <HomeGridDiv>
       <SearchComponent
-        placeholder="닉네임으로 검색하세요. (최대 20자)"
+        placeholder="이름 또는 대표 작업물 제목으로 검색하세요. (최대 20자)"
         searchBarStateAtom={MainCurrentKeyword}
         filterAtom={MainCurrentFilterAtom}
         fetchFilteredData={fetchFilteredVoicesData}
