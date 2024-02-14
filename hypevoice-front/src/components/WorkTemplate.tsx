@@ -11,9 +11,7 @@ interface WorkWrapperProps {
   isHovered: boolean;
 }
 
-const WorkWrapper = styled.div.attrs<WorkWrapperProps>(
-  () => ({})
-)<WorkWrapperProps>`
+const WorkWrapper = styled.div<WorkWrapperProps>`
   display: flex;
   flex-direction: column;
   border-radius: 25px;

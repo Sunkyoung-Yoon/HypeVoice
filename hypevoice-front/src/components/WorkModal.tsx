@@ -21,7 +21,6 @@ import { WorkModalProps } from "./type";
 import { categories } from "./Category";
 import { getCookie } from "@/api/cookie";
 import { axiosClient } from "@/api/axios";
-import { setTimeout } from "timers";
 
 export const categoryNames: Record<string, string> = {
   미디어: "mediaClassification",
@@ -58,6 +57,7 @@ export default function WorkModal({
   const [title, setTitle] = useState(""); // 제목 입력 값 상태 관리
   const [youtubeUrl, setYoutubeUrl] = useState(""); // 유튜브 링크 입력 값 상태 관리
   const [intro, setIntro] = useState(""); // 작업물 소개 입력 값 상태 관리
+  const [rep, setRep] = useState(0); // 대표작업물 여부
   const [scriptFile, setScriptFile] = useState<File | null>(null); // 대본 파일 상태 관리
   const [recordFile, setRecordFile] = useState<File | null>(null); // 음성 파일 상태 관리
   const [imageFile, setImageFile] = useState<File | null>(null); // 이미지 파일 상태 관리
@@ -67,20 +67,24 @@ export default function WorkModal({
   const imageFileInput = useRef<HTMLInputElement | null>(null); // 추가한 사진 파일 상태 관리
   const [scriptFileUrl, setScriptFileUrl] = useState<string | null>(""); // 대본 파일 다운로드 링크
   const [recordFileUrl, setRecordFileUrl] = useState<string | null>(""); // 음성 파일 다운로드 링크
-  const [selectedCategory, setSelectedCategory] = useState<{
-    mediaClassification: string;
-    voiceTone: string;
-    voiceStyle: string;
-    gender: string;
-    age: string;
-    [key: string]: string; // 객체에 대한 인덱스 서명(Index Signature)
-  }>({
+  const [selectedCategory, setSelectedCategory] = useState({
     mediaClassification: "",
-    voiceTone: "",
     voiceStyle: "",
+    voiceTone: "",
     gender: "",
     age: "",
   });
+
+  function resetState() {
+    setTitle("");
+    setYoutubeUrl("");
+    setIntro("");
+    setRep(0);
+    setScriptFile(null);
+    setRecordFile(null);
+    setImageFile(null);
+    setPreview(null);
+  }
 
   // 사전 유효성 검사
   const validateWork = (
@@ -186,11 +190,17 @@ export default function WorkModal({
 
     const formData = new FormData();
     const request = {
-      title,
+      title: title,
       videoLink: youtubeUrl,
       info: intro,
-      isRep: 0,
-      CategoryInfoRequest: selectedCategory,
+      isRep: rep,
+      categoryInfoRequest: {
+        mediaClassification: selectedCategory.mediaClassification,
+        voiceStyle: selectedCategory.voiceStyle,
+        voiceTone: selectedCategory.voiceTone,
+        gender: selectedCategory.gender,
+        age: selectedCategory.age,
+      },
     };
     formData.append(
       "request",
@@ -201,114 +211,115 @@ export default function WorkModal({
     files[0] = imageFile;
     files[1] = scriptFile;
     files[2] = recordFile;
-    files.forEach((file, index) => {
+    files.forEach((file) => {
       if (file) {
-        formData.append(`files[${index}]`, file);
+        formData.append("files", file);
       }
     });
 
-    // imageFile && formData.append(files, imageFile);
-    // scriptFile && formData.append(files, scriptFile);
-    // recordFile && formData.append(files, recordFile);
-    // console.log(...formData);
-
     try {
-      const response = await axiosClient.post(
-        `/api/voices/${voiceId}/works`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      console.log(response);
-      console.log(response.data);
+      await axiosClient.post(`/api/voices/${voiceId}/works`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log("작업물 등록 성공");
+      resetState();
     } catch (error) {
+      console.log("작업물 등록 실패");
       console.log(error);
     }
+    onClose();
+    window.location.reload();
   };
 
   const updateWork = async () => {
-    const accessToken = getCookie("access_token");
-    console.log("보이스 아이디는");
-    console.log(voiceId);
-    console.log("작업물 아이디는");
-    console.log(workId);
-    const formData = new FormData();
-
-    // 사용자가 입력한 값들
-    formData.append("title", title);
-    formData.append("videoLink", youtubeUrl);
-    formData.append("info", intro);
-    formData.append("isRep", "0"); // 대표작업물 여부
-
-    console.log(selectedCategory);
-
-    // 고른 카테고리 문자열화
-    formData.append("CategoryInfoRequest", JSON.stringify(selectedCategory));
-
-    // 추가한 파일들
-    if (imageFile) {
-      formData.append("multipartFile[photo]", imageFile);
-    }
-    if (scriptFile) {
-      formData.append("multipartFile[script]", scriptFile);
-    }
-    if (recordFile) {
-      formData.append("multipartFile[record]", recordFile);
-    }
-
-    try {
-      const response = await axiosClient.patch(
-        `/api/voices/${voiceId}/works/${workId}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
+    if (window.confirm("정말 수정하시겠습니까?")) {
+      // 사전 유효성 검사
+      const errorMessage = validateWork(title, selectedCategory, recordFile);
+      if (errorMessage) {
+        alert(errorMessage);
+        return;
+      }
+      const accessToken = getCookie("access_token");
+      const formData = new FormData();
+      const request = {
+        title: title,
+        videoLink: youtubeUrl,
+        info: intro,
+        isRep: rep,
+        categoryInfoRequest: {
+          mediaClassification: selectedCategory.mediaClassification,
+          voiceStyle: selectedCategory.voiceStyle,
+          voiceTone: selectedCategory.voiceTone,
+          gender: selectedCategory.gender,
+          age: selectedCategory.age,
+        },
+      };
+      formData.append(
+        "request",
+        new Blob([JSON.stringify(request)], { type: "application/json" })
       );
-      alert("작업물 수정 성공!");
-      return response.data;
-    } catch (error) {
-      alert("작업물 수정 실패!");
-      console.error(error);
-      return null;
+
+      const files = [];
+      files[0] = imageFile;
+      files[1] = scriptFile;
+      files[2] = recordFile;
+      files.forEach((file) => {
+        if (file) {
+          formData.append("files", file);
+        }
+      });
+
+      try {
+        await axiosClient.patch(
+          `/api/voices/${voiceId}/works/${workId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        alert(`${workId}번째 작업물 수정 성공!`);
+        resetState();
+      } catch (error) {
+        alert(`${workId}번째 작업물 수정 실패!`);
+        console.error(error);
+        onClose();
+      }
     }
+    onClose();
+    window.location.reload();
   };
 
   const deleteWork = async () => {
     const accessToken = getCookie("access_token");
-    console.log("보이스 아이디는");
-    console.log(voiceId);
-    console.log("작업물 아이디는");
-    console.log(workId);
-
-    try {
-      const response = await axiosClient.delete(
-        `/api/voices/${voiceId}/works/${workId}`,
-        {
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      try {
+        await axiosClient.delete(`/api/voices/${voiceId}/works/${workId}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        }
-      );
-      alert("작업물 삭제 성공!");
-      return response.data;
-    } catch (error) {
-      alert("작업물 삭제 실패!");
-      console.error(error);
-      return null;
+        });
+        alert("작업물 삭제 성공!");
+        resetState();
+
+        onClose();
+      } catch (error) {
+        alert("작업물 삭제 실패!");
+        console.error(error);
+        onClose();
+      }
     }
+    onClose();
+    window.location.reload();
   };
 
   const confirmAndExecute = async (action: () => Promise<void>) => {
-    if (window.confirm("정말 실행하시겠습니까?")) {
-      await action();
-    }
+    await action();
   };
 
   useEffect(() => {
@@ -324,6 +335,7 @@ export default function WorkModal({
           setTitle(response.data.title); // 모달 창 타이틀 설정
           setIntro(response.data.info); // 모달 창 소개 설정
           setYoutubeUrl(response.data.videoLink); // 모달창 유튜브 링크 설정
+          setRep(response.data.isRep);
           // 모달창 카테고리 설정 => 하나하나 일일히 해줘야 함!
           // 미디어
           selectedCategory.mediaClassification =
@@ -400,7 +412,7 @@ export default function WorkModal({
                 marginBottom: "8px",
               }}
               onMouseOver={(e) => {
-                // 마우스가 올라갔을 때
+                // 마우스가 올라갔을 때, 투명한 레이어와 테두리를 보여줍니다.
                 const button = e.currentTarget;
                 button.style.border = "3px solid #000";
                 button.style.background = preview
@@ -409,7 +421,7 @@ export default function WorkModal({
                 button.style.opacity = "0.5";
               }}
               onMouseOut={(e) => {
-                // 마우스가 내려갔을 때
+                // 마우스가 내려갔을 때, 투명한 레이어와 테두리를 숨깁니다.
                 const button = e.currentTarget;
                 button.style.border = "none";
                 button.style.background = preview
@@ -507,13 +519,7 @@ export default function WorkModal({
                     <Select
                       labelId={`${category}-label`}
                       id={category}
-                      value={
-                        selectedCategory[
-                          categoryNames[
-                            category as keyof typeof selectedCategory
-                          ]
-                        ]
-                      }
+                      value={selectedCategory[categoryNames[category]]}
                       onChange={handleCategoryChange}
                       label={category}
                       name={category}

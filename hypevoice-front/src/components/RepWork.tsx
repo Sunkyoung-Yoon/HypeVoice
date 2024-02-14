@@ -38,20 +38,21 @@ const Star = styled.span<StarProps>`
 const changeIsRep = async (targetWorkInfo: WorkInfo) => {
   const accessToken = getCookie("access_token");
   try {
-    const response = await axiosClient.put(
+    await axiosClient.put(
       `/api/voices/${targetWorkInfo.voiceId}/works/${targetWorkInfo.workId}`,
+      {},
       {
         headers: { Authorization: `Bearer ${accessToken}` },
       }
     );
-    alert(response.data);
-    alert("대표 작업물 등록 성공!");
-    return response.data;
+    if (!targetWorkInfo.isRep) {
+      alert("대표 작업물 등록 성공!");
+    } else alert("대표 작업물 해제 성공!");
   } catch (error) {
-    alert("대표 작업물 등록 실패!");
+    alert("실패!");
     console.error(error);
-    return null;
   }
+  window.location.reload();
 };
 
 const ImageContainer = styled.div`
@@ -92,7 +93,10 @@ const Tag = styled.span`
 
 export default function RepWork({ work }: { work: WorkInfo }) {
   const currentMember = useRecoilValue(CurrentMemberAtom);
-  const handleStarClick = async () => {
+  const handleStarClick = async (event) => {
+    // 상위 컴포넌트에서의 클릭 이벤트 차단 후에
+    event.stopPropagation();
+    // 권한 체크해서 요청 보냄!
     if (currentMember && work.voiceId === currentMember.memberId) {
       try {
         await changeIsRep(work);

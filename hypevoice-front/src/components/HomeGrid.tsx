@@ -135,7 +135,7 @@ export default function HomeGrid() {
 
       <VoicesContainer>
         {voices.map((voice) => (
-          <MainVoicesTemplate voice={voice} />
+          <MainVoicesTemplate key={voice.voiceId} voice={voice} />
         ))}
       </VoicesContainer>
     </HomeGridDiv>

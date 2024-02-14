@@ -69,8 +69,6 @@ export default function WorkGrid({ setWorkCount }: WorkGridProps) {
 
   // 작업물 하나 클릭
   const handleWorkClick = (work: WorkInfo) => {
-    alert(voiceId);
-    alert(currentMember.memberId);
     setSelectedWork(work);
   };
 

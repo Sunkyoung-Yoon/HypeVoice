@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { VoiceInfo } from "./type";
 import styled from "styled-components";
 import RepWork from "./RepWork";
@@ -11,25 +11,17 @@ interface WorkWrapperProps {
   isHovered: boolean;
 }
 
-const WorkWrapper = styled.div.attrs<WorkWrapperProps>(
-  () => ({})
-)<WorkWrapperProps>`
+const WorkWrapper = styled.div<WorkWrapperProps>`
   display: flex;
   flex-direction: column;
-  border: 5px solid black;
   border-radius: 25px;
   padding: 15px;
   margin: 15px;
   width: 330px;
-  /* height: 390px; */
   cursor: pointer;
 
-  opacity: ${(props) => (props.isHovered ? 0.4 : 1)};
-  transition: opacity 0.3s;
-`;
-
-const NonTransparentDiv = styled.div`
-  opacity: 1 !important;
+  border: 5px solid ${(props) => (props.isHovered ? "#5b5ff4" : "black")};
+  transition: border-color 0.3s, border-width 0.3s;
 `;
 
 const StyledImg = styled.img`
@@ -57,7 +49,7 @@ const LikesSpan = styled.span`
 function MainVoicesTemplate({ voice }: { voice: VoiceInfo }) {
   const navigate = useNavigate();
   const templateRef = useRef(null);
-  const [ishovered, setIshovered] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const setMyInfoVoiceId = useSetRecoilState(MyInfoVoiceId);
 
   const work = {
@@ -88,29 +80,27 @@ function MainVoicesTemplate({ voice }: { voice: VoiceInfo }) {
   return (
     <WorkWrapper
       ref={templateRef}
-      isHovered={ishovered}
-      onMouseEnter={() => setIshovered(true)}
-      onMouseLeave={() => setIshovered(false)}
+      isHovered={isHovered}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
     >
       <RepWork work={work} />
-      <NonTransparentDiv>
-        <InfoContainer>
-          <div style={{ display: "flex", alignItems: "flex-end" }}>
-            <StyledImg alt="profileImg" src={voice.imageUrl} />
-            <NameSpan>{voice.name}</NameSpan>
-          </div>
-          <div style={{ display: "flex", alignItems: "flex-end" }}>
-            <FavoriteIcon
-              color="error"
-              fontSize="large"
-              style={{ fontSize: 40 }}
-            />{" "}
-            {/* Adjust this value to your preference */}
-            <LikesSpan>{voice.likes}</LikesSpan>
-          </div>
-        </InfoContainer>
-      </NonTransparentDiv>
+      <InfoContainer>
+        <div style={{ display: "flex", alignItems: "flex-end" }}>
+          <StyledImg alt="profileImg" src={voice.imageUrl} />
+          <NameSpan>{voice.name}</NameSpan>
+        </div>
+        <div style={{ display: "flex", alignItems: "flex-end" }}>
+          <FavoriteIcon
+            color="error"
+            fontSize="large"
+            style={{ fontSize: 40 }}
+          />{" "}
+          {/* Adjust this value to your preference */}
+          <LikesSpan>{voice.likes}</LikesSpan>
+        </div>
+      </InfoContainer>
     </WorkWrapper>
   );
 }
