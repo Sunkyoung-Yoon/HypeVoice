@@ -23,14 +23,15 @@ public class Board extends BaseTimeEntity {
     @Column(name = "board_id")
     private Long id;
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "title", nullable = false, length = 50)
     private String title;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, length = 5000)
     private String content;
 
     private int view;
 
+    @Column(length = 500)
     private String recordUrl;
 
     @Convert(converter = Category.CategoryConverter.class)

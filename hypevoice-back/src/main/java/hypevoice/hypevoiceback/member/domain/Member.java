@@ -30,6 +30,8 @@ public class Member extends BaseTimeEntity {
 
     @Column(unique = true)
     private String nickname;
+
+    @Column(length = 500)
     private String profileUrl;
 
     @Convert(converter = Role.RoleConverter.class)

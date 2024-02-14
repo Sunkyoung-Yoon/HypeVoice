@@ -30,12 +30,16 @@ public class Work extends BaseTimeEntity {
     @Column(length = 500)
     private String videoLink;
 
+    @Column(length = 500)
     private String photoUrl;
 
+    @Column(length = 500)
     private String scriptUrl;
 
+    @Column(length = 500)
     private String recordUrl;
 
+    @Column(length = 2000)
     private String info;
 
     @Column(nullable = false)

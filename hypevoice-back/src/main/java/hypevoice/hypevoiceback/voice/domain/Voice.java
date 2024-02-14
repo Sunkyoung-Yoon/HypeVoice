@@ -31,10 +31,16 @@ public class Voice extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String name;
+    @Column(length = 500)
     private String imageUrl;
+
+    @Column(length = 500)
     private String intro;
+
     private String email;
     private String phone;
+
+    @Column(length = 2000)
     private String addInfo;
     private int likes;
     private long totalSize;
