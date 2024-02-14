@@ -13,10 +13,6 @@ function Voice() {
         <MyInfo />
       </section>
       <section id="work">
-        {/* <SearchComponent
-          searchBarStateAtom={VoiceCurrentKeyword}
-          filterAtom={VoiceCurrentFilterAtom}
-        /> */}
         <InlineHeader
           title={"💾 작업물"}
           worksCnt={workCount}

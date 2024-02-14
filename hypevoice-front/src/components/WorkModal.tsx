@@ -21,6 +21,7 @@ import { WorkModalProps } from "./type";
 import { categories } from "./Category";
 import { getCookie } from "@/api/cookie";
 import { axiosClient } from "@/api/axios";
+import CustomAudioPlayer from "./CustomAudioPlayer";
 
 export const categoryNames: Record<string, string> = {
   미디어: "mediaClassification",
@@ -81,7 +82,9 @@ export default function WorkModal({
     setIntro("");
     setRep(0);
     setScriptFile(null);
+    setScriptFileUrl(null);
     setRecordFile(null);
+    setRecordFileUrl(null);
     setImageFile(null);
     setPreview(null);
   }
@@ -234,6 +237,7 @@ export default function WorkModal({
     window.location.reload();
   };
 
+  // 작업물 수정 API 요청
   const updateWork = async () => {
     if (window.confirm("정말 수정하시겠습니까?")) {
       // 사전 유효성 검사
@@ -295,6 +299,7 @@ export default function WorkModal({
     window.location.reload();
   };
 
+  // 작업물 삭제 API 요청
   const deleteWork = async () => {
     const accessToken = getCookie("access_token");
     if (window.confirm("정말 삭제하시겠습니까?")) {
@@ -321,6 +326,44 @@ export default function WorkModal({
   const confirmAndExecute = async (action: () => Promise<void>) => {
     await action();
   };
+
+  // 텍스트 다운로드 링크 버튼
+  function DownloadTextFileButton({ text }) {
+    // props로 받는 text를 Blob 파일화 한 후에 다시 다운로드 링크를 만들어서
+    // Button 클릭시에 이동하게끔 하는 임시 anchor 태그를 만들어 다운로드
+    const downloadTextFileClick = () => {
+      const textBlob = new Blob([text], { type: "text/plain" });
+      const textDownloadUrl = URL.createObjectURL(textBlob);
+      const link = document.createElement("a");
+      link.href = textDownloadUrl;
+      link.download = `${scriptFile?.name}`;
+      link.click();
+      URL.revokeObjectURL(textDownloadUrl);
+    };
+    return <button onClick={downloadTextFileClick}>{scriptFile?.name}</button>;
+  }
+
+  // 음성 파일 다운로드 링크 버튼
+  function DownloadRecordFileButton({ record }) {
+    // props로 받는 record를 Blob 파일화 한 후에 다시 다운로드 링크를 만들어서
+    // Button 클릭 시에 이동하게끔 하는 임시 anchor 태그를 만들어 다운로드
+    const downloadRecordFileClick = () => {
+      const recordBlob = new Blob([record], { type: "text/plain" });
+      const recordDownloadUrl = URL.createObjectURL(recordBlob);
+      const link = document.createElement("a");
+      link.href = recordDownloadUrl;
+      link.download = `${recordFile?.name}`;
+      link.click();
+      URL.revokeObjectURL(recordDownloadUrl);
+    };
+    return (
+      <button onClick={downloadRecordFileClick}>{recordFile?.name}</button>
+    );
+  }
+
+  ///////////////////
+  // 렌더링 때 함수 //
+  ///////////////////
 
   useEffect(() => {
     const fetchData = async () => {
@@ -352,15 +395,84 @@ export default function WorkModal({
           selectedCategory.age = response.data.categoryInfoValue.ageValue;
           console.log(selectedCategory);
         }
-        // workId를 이용하여 작업물 정보를 가져와 상태값 설정
-        // 파일 다운로드 링크도 설정
-        // setScriptFileUrl(받아온 대본 파일 URL);
-        // setRecordFileUrl(받아온 음성 파일 URL);
+        // 사진 미리보기 설정
+        setPreview(response.data.photoUrl);
+
+        setScriptFileUrl(response.data.scriptUrl);
+        setRecordFileUrl(response.data.recordUrl);
+
+        // 대본 파일 설정
+
+        // [방법 1] 실패
+
+        // fetch(response.data.scriptUrl)
+        //   .then((res) => res.blob())
+        //   .then((blob) => {
+        //     const scriptBlobUrl = URL.createObjectURL(blob);
+        //     setScriptFileUrl(scriptBlobUrl);
+        //   });
+
+        // [방법 2] 실패
+
+        // // 서버로 부터 받아온 url
+        // console.log(response.data.scriptUrl);
+        // // 그걸로 Blob 파일화
+        // const tmpScriptBlobFile = new Blob(response.data.scriptUrl, {
+        //   type: "text/plain",
+        // });
+        // // 그거 출력 해보기
+        // console.log(`tmpScriptBlobFile = ${tmpScriptBlobFile}`);
+        // // 그걸로 다운로드 가능한 링크 만들기
+        // const tmpScriptFileUrl = URL.createObjectURL(tmpScriptBlobFile);
+        // // 그 링크 출력해보기
+        // console.log(`tmpScriptFileUrl = ${tmpScriptFileUrl}`);
+        // // 그 다운로드 가능한 링크를 스크립트 파일 url로 설정하기
+        // setScriptFileUrl(tmpScriptFileUrl);
+        // // 그 Blob파일로 진짜 파일화 하기
+        // const tmpScriptFile = new File(
+        //   [tmpScriptBlobFile],
+        //   `${response.data.title} 텍스트 파일`,
+        //   { type: "text/plain" }
+        // );
+        // // 해당 진짜 파일을 script 파일로 설정하기
+        // setScriptFile(tmpScriptFile);
+
+        // // 서버로 부터 받아온 url
+        // console.log(response.data.recordUrl);
+        // // 그걸로 Blob 파일화
+        // const tmpRecordBlobFile = new Blob(response.data.recordUrl, {
+        //   type: "text/plain",
+        // });
+        // // 그거 출력 해보기
+        // console.log(`tmpRecordBlobFile = ${tmpRecordBlobFile}`);
+        // // 그걸로 다운로드 가능한 링크 만들기
+        // const tmpRecordFileUrl = URL.createObjectURL(tmpRecordBlobFile);
+        // // 그 링크 출력해보기
+        // console.log(`tmpRecordFileUrl = ${tmpRecordFileUrl}`);
+        // // 그 다운로드 가능한 링크를 스크립트 파일 url로 설정하기
+        // setRecordFileUrl(tmpRecordFileUrl);
+        // // 그 Blob파일로 진짜 파일화 하기
+        // const tmpRecordFile = new File(
+        //   [tmpRecordBlobFile],
+        //   `${response.data.title} 음성 파일`,
+        //   { type: "text/plain" }
+        // );
+        // // 해당 진짜 파일을 script 파일로 설정하기
+        // setRecordFile(tmpRecordFile);
       }
     };
 
     fetchData();
-  }, [role, workId]);
+  }, [
+    role,
+    workId,
+    scriptFileUrl,
+    recordFileUrl,
+    scriptFile,
+    recordFile,
+    scriptFileInput,
+    recordFileInput,
+  ]);
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xl" fullWidth={true}>
@@ -577,13 +689,7 @@ export default function WorkModal({
             }}
           >
             <TextSnippetIcon style={{ fontSize: 30 }} />
-            <a
-              href={scriptFileUrl}
-              download
-              style={{ flexGrow: 1, marginLeft: "10px" }}
-            >
-              {scriptFile ? scriptFile.name : ""}
-            </a>
+            <DownloadTextFileButton text={scriptFile} />
             {role !== "read" && (
               <>
                 <Button
@@ -603,7 +709,13 @@ export default function WorkModal({
                 </Button>
                 <Button
                   variant="contained"
-                  onClick={() => setScriptFile(null)}
+                  onClick={() => {
+                    setScriptFile(null);
+                    setScriptFileUrl(null);
+                    if (scriptFileInput.current) {
+                      scriptFileInput.current.value = "";
+                    }
+                  }}
                   sx={{
                     backgroundColor: "#ee2727",
                     color: "#ffffff",
@@ -627,64 +739,68 @@ export default function WorkModal({
             />
           </div>
           {/* 음성 파일 첨부 */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              margin: "10px",
-            }}
-          >
-            <MicIcon style={{ fontSize: 30 }} />
-            {/* CustomAudioPlayer를 사용하신다면 이 부분에 추가하시면 됩니다. */}
-            <a
-              href={recordFileUrl}
-              download
-              style={{ flexGrow: 1, marginLeft: "10px" }}
+          {recordFileUrl ? (
+            <CustomAudioPlayer src={recordFileUrl} />
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                margin: "10px",
+              }}
             >
-              {recordFile ? recordFile.name : ""}
-            </a>
-            {role !== "read" && (
-              <>
-                <Button
-                  variant="contained"
-                  onClick={() => recordFileInput.current?.click()}
-                  sx={{
-                    backgroundColor: "#5b5ff4",
-                    color: "#ffffff",
-                    borderRadius: "25px",
-                    marginLeft: "10px",
-                    "&:hover": {
+              <MicIcon style={{ fontSize: 30 }} />
+              <DownloadRecordFileButton record={recordFile} />
+              {role !== "read" && (
+                <>
+                  <Button
+                    variant="contained"
+                    onClick={() => recordFileInput.current?.click()}
+                    sx={{
                       backgroundColor: "#5b5ff4",
-                    },
-                  }}
-                >
-                  {recordFile ? "변경" : "추가"}
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={() => setRecordFile(null)}
-                  sx={{
-                    backgroundColor: "#ee2727",
-                    color: "#ffffff",
-                    borderRadius: "25px",
-                    marginLeft: "10px",
-                    "&:hover": {
+                      color: "#ffffff",
+                      borderRadius: "25px",
+                      marginLeft: "10px",
+                      "&:hover": {
+                        backgroundColor: "#5b5ff4",
+                      },
+                    }}
+                  >
+                    {recordFile ? "변경" : "추가"}
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      setRecordFile(null);
+                      setRecordFileUrl(null);
+                      if (recordFileInput.current) {
+                        recordFileInput.current.value = "";
+                      }
+                    }}
+                    sx={{
                       backgroundColor: "#ee2727",
-                    },
-                  }}
-                >
-                  삭제
-                </Button>
-              </>
-            )}
-            <input
-              type="file"
-              hidden
-              ref={recordFileInput}
-              onChange={handleRecordFileChange}
-              accept="audio/*"
-            />
-          </div>
+                      color: "#ffffff",
+                      borderRadius: "25px",
+                      marginLeft: "10px",
+                      "&:hover": {
+                        backgroundColor: "#ee2727",
+                      },
+                    }}
+                  >
+                    삭제
+                  </Button>
+                </>
+              )}
+              <input
+                type="file"
+                hidden
+                ref={recordFileInput}
+                onChange={handleRecordFileChange}
+                accept="audio/*"
+              />
+            </div>
+          )}
+
           {/* 유튜브 링크 입력 */}
           <div
             style={{
