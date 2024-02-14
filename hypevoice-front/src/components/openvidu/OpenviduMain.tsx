@@ -10,12 +10,25 @@ import axios from 'axios';
 import OpenviduForm from './OpenviduForm';
 import OpenviduSession from './OpenviduSession';
 import { getCookie } from '../../api/cookie';
-
+import { Box, Button, Modal, Typography } from '@mui/material';
+const modalStyle = {
+	position: 'absolute' as 'absolute',
+	top: '50%',
+	left: '50%',
+	transform: 'translate(-50%, -50%)',
+	width: 400,
+	height: 400,
+	bgcolor: 'background.paper',
+	border: '2px solid #000',
+	boxShadow: 24,
+	p: 4,
+};
 type ChatType = {
 	sender: string;
 	message: string;
 };
 function OpenviduMain() {
+	const OPENVIDU_SERVER_URL = `http://localhost:8081`;
 	const [session, setSession] = useState<OVSession | ''>('');
 	const [sessionScreen, setSessionScreen] = useState<OVSession | ''>('');
 	const [studioId, setStudioId] = useState<string>('');
@@ -28,7 +41,30 @@ function OpenviduMain() {
 	const [newMessage, setNewMessage] = useState<string>('');
 	const [recordingId, setRecordingId] = useState<string>('');
 	const [messages, setMessages] = useState<ChatType[]>([]);
-	const OPENVIDU_SERVER_URL = `http://localhost:8081`;
+	const [isHost, setIsHost] = useState<boolean>(true);
+	const [modalOpen, setModalOpen] = React.useState(false);
+	const [recFiles, setRecFiles] = useState<string[]>([]);
+	const handleRecModalOpen = async () => {
+		setRecFiles(await getRecording());
+		setModalOpen(true);
+	};
+
+	const handleRecModalClose = async () => {
+		console.log(recFiles);
+		await axios
+			.delete(
+				`${OPENVIDU_SERVER_URL}/api/studios/${studioId}/recording/${recordingId}`,
+				{
+					params: { recFiles },
+					headers: { Authorization: `Bearer ${accessToken}` },
+				},
+			)
+			.catch((e) => console.log(e))
+			.then(() => {
+				setRecFiles([]);
+				setModalOpen(false);
+			});
+	};
 
 	// const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
 	const handleDelete = async (): Promise<void> => {
@@ -55,7 +91,7 @@ function OpenviduMain() {
 		setSubscriber(null);
 		setPublisher(null);
 		setMessages([]);
-		handleDelete();
+		if (isHost) handleDelete();
 	}, [session]);
 
 	const CreateSession = () => {
@@ -102,39 +138,101 @@ function OpenviduMain() {
 		return response.data;
 	};
 
-	// const recordingStop = () => {
-	// 	const response = await axios.post(
-	// 		`${OPENVIDU_SERVER_URL}/api/studios/${studioId}/recording/stop/${recordingId}`,
-	// 		{},
-	// 		{
-	// 			headers: {
-	// 				'Content-Type': 'application/json',
-	// 				'Authorization': 'Bearer ' + this.accessToken,
-	// 			},
-	// 		},
-	// 	);
-	// 	console.log('녹음완료 => 녹음결과 : ', response);
-	// 	return response.data;
+	const recordingStop = async () => {
+		const response = await axios.post(
+			`${OPENVIDU_SERVER_URL}/api/studios/${studioId}/recording/stop/${recordingId}`,
+			{},
+			{
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + accessToken,
+				},
+			},
+		);
+		console.log('녹음완료 => 녹음결과 : ', response);
+		return response;
+	};
+
+	const handleRecordDownload = () => {};
+
+	const getRecording = async (): Promise<string[]> => {
+		const response = await axios.get(
+			`${OPENVIDU_SERVER_URL}/api/studios/${studioId}/recording/${recordingId}`,
+			{
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + accessToken,
+				},
+			},
+		);
+		console.log('받아온 결과 : ', response);
+		return response.data;
+	};
+
+	const downloadFiles = async (fileUrl: string) => {
+		try {
+			// 각 파일 URL에 대해 Promise를 생성하여 배열에 저장합니다.
+
+			const response = await axios({
+				url: fileUrl,
+				method: 'GET',
+				responseType: 'blob', // Blob 형태로 응답 받습니다.
+			});
+			const blob = new Blob([response.data]);
+			const url = window.URL.createObjectURL(blob);
+			const filename = getFileNameFromUrl(fileUrl);
+
+			// 다운로드 링크를 생성하고 클릭합니다.
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = filename; // 다운로드될 파일명 설정
+			document.body.appendChild(a);
+			a.click();
+
+			// 사용이 끝난 URL 객체를 해제합니다.
+			window.URL.revokeObjectURL(url);
+		} catch (error) {
+			console.error('Error downloading files:', error);
+		}
+	};
+
+	// const downloadFiles = async (fileUrls: string) => {
+	// 	try {
+	// 		// 각 파일 URL에 대해 Promise를 생성하여 배열에 저장합니다.
+	// 		const downloadPromises = fileUrls.map(async (fileUrl) => {
+	// 			const response = await axios({
+	// 				url: fileUrl,
+	// 				method: 'GET',
+	// 				responseType: 'blob', // Blob 형태로 응답 받습니다.
+	// 			});
+	// 			const blob = new Blob([response.data]);
+	// 			const url = window.URL.createObjectURL(blob);
+	// 			const filename = getFileNameFromUrl(fileUrl);
+
+	// 			// 다운로드 링크를 생성하고 클릭합니다.
+	// 			const a = document.createElement('a');
+	// 			a.href = url;
+	// 			a.download = filename; // 다운로드될 파일명 설정
+	// 			document.body.appendChild(a);
+	// 			a.click();
+
+	// 			// 사용이 끝난 URL 객체를 해제합니다.
+	// 			window.URL.revokeObjectURL(url);
+	// 		});
+
+	// 		// 모든 Promise가 완료될 때까지 대기합니다.
+	// 		await Promise.all(downloadPromises);
+	// 	} catch (error) {
+	// 		console.error('Error downloading files:', error);
+	// 	}
 	// };
 
-	// const getRecording = () => {
-	// 	const response = await axios.get(
-	// 		APPLICATION_SERVER_URL +
-	// 			'api/studios/' +
-	// 			this.mystudioId +
-	// 			'/recording/' +
-	// 			this.myRecordingId,
-	// 		{
-	// 			headers: {
-	// 				'Content-Type': 'application/json',
-	// 				'Authorization': 'Bearer ' + this.accessToken,
-	// 			},
-	// 		},
-	// 	);
-	// 	console.log('받아온 결과 : ', response);
-	// 	this.downloadFiles(response.data);
-	// 	return response.data;
-	// };
+	const getFileNameFromUrl = (fileUrl: string) => {
+		// 파일 URL에서 파일명을 추출합니다.
+		const startIndex = fileUrl.lastIndexOf('/') + 1;
+		const filename = fileUrl.substring(startIndex);
+		return filename;
+	};
 
 	useEffect(() => {
 		window.addEventListener('beforeunload', leaveSession);
@@ -449,6 +547,29 @@ function OpenviduMain() {
 						<button onClick={() => leaveSession()}>Leave</button>
 						<button onClick={() => shareScreen()}>Share</button>
 						<button onClick={() => recordingStart()}>RecordingStart</button>
+						<button onClick={() => recordingStop()}>RecordingStop</button>
+						<button onClick={() => getRecording()}>getRecording</button>
+						<Button onClick={handleRecModalOpen}>getRecording</Button>
+						<Modal
+							open={modalOpen}
+							onClose={handleRecModalClose}
+							aria-labelledby="modal-modal-title"
+							aria-describedby="modal-modal-description"
+						>
+							<Box sx={modalStyle}>
+								<Typography id="modal-modal-title" variant="h6" component="h2">
+									녹음파일 다운로드
+								</Typography>
+								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
+									창을 닫으면 녹음파일이 지워집니다.
+									{recFiles.map((link, index) => (
+										<Button onClick={() => downloadFiles(link)}>
+											녹음파일{index + 1}
+										</Button>
+									))}
+								</Typography>
+							</Box>
+						</Modal>
 					</>
 				)}
 				<div>
