@@ -26,6 +26,7 @@ function OpenviduMain() {
 	const [screenOV, setScreenOV] = useState<OpenVidu | null>(null);
 	const [order, setOrder] = useState<number>(0);
 	const [newMessage, setNewMessage] = useState<string>('');
+	const [recordingId, setRecordingId] = useState<string>('');
 	const [messages, setMessages] = useState<ChatType[]>([]);
 	const OPENVIDU_SERVER_URL = `http://localhost:8081`;
 
@@ -80,6 +81,60 @@ function OpenviduMain() {
 		setSessionScreen(OVs.initSession());
 		console.log('share');
 	};
+
+	const recordingStart = async () => {
+		console.log(studioId);
+		const response = await axios
+			.post(
+				`${OPENVIDU_SERVER_URL}/api/studios/${studioId}/recording/start`,
+				{},
+				{
+					params: { isIndividual: false },
+					headers: {
+						'Authorization': 'Bearer ' + accessToken,
+					},
+				},
+			)
+			.catch((e) => console.log(e));
+		console.log(response.data);
+		console.log('녹음시작');
+		setRecordingId(response.data);
+		return response.data;
+	};
+
+	// const recordingStop = () => {
+	// 	const response = await axios.post(
+	// 		`${OPENVIDU_SERVER_URL}/api/studios/${studioId}/recording/stop/${recordingId}`,
+	// 		{},
+	// 		{
+	// 			headers: {
+	// 				'Content-Type': 'application/json',
+	// 				'Authorization': 'Bearer ' + this.accessToken,
+	// 			},
+	// 		},
+	// 	);
+	// 	console.log('녹음완료 => 녹음결과 : ', response);
+	// 	return response.data;
+	// };
+
+	// const getRecording = () => {
+	// 	const response = await axios.get(
+	// 		APPLICATION_SERVER_URL +
+	// 			'api/studios/' +
+	// 			this.mystudioId +
+	// 			'/recording/' +
+	// 			this.myRecordingId,
+	// 		{
+	// 			headers: {
+	// 				'Content-Type': 'application/json',
+	// 				'Authorization': 'Bearer ' + this.accessToken,
+	// 			},
+	// 		},
+	// 	);
+	// 	console.log('받아온 결과 : ', response);
+	// 	this.downloadFiles(response.data);
+	// 	return response.data;
+	// };
 
 	useEffect(() => {
 		window.addEventListener('beforeunload', leaveSession);
@@ -393,6 +448,7 @@ function OpenviduMain() {
 						/>
 						<button onClick={() => leaveSession()}>Leave</button>
 						<button onClick={() => shareScreen()}>Share</button>
+						<button onClick={() => recordingStart()}>RecordingStart</button>
 					</>
 				)}
 				<div>
