@@ -25,8 +25,11 @@ public class WorkController {
     @PostMapping
     public ResponseEntity<Void> createWork(@ExtractPayload Long memberId, @PathVariable("voiceId") Long voiceId,
                                            @RequestPart(value = "request") WorkRequest request,
-                                           @RequestPart(value = "files", required = false) MultipartFile[] multipartFiles) {
-        Long workId = workService.registerWork(memberId, voiceId, request.title(), request.videoLink(), request.info(), request.isRep(), multipartFiles);
+                                           @RequestPart(value = "image", required = false) MultipartFile image,
+                                           @RequestPart(value = "script", required = false) MultipartFile script,
+                                           @RequestPart(value = "record", required = false) MultipartFile record) {
+        Long workId = workService.registerWork(memberId, voiceId, request.title(), request.videoLink(), request.info(),
+                request.isRep(), image, script, record);
         if(!categoryInfoService.createCategoryInfo(memberId, workId, request.categoryInfoRequest().mediaClassification(), request.categoryInfoRequest().voiceStyle(), request.categoryInfoRequest().voiceTone(), request.categoryInfoRequest().gender(), request.categoryInfoRequest().age())){
             workService.deleteWork(memberId,voiceId,workId);
         }
@@ -36,8 +39,10 @@ public class WorkController {
     @PatchMapping("/{workId}")
     public ResponseEntity<Void> updateWork(@ExtractPayload Long memberId, @PathVariable("voiceId") Long voiceId,
                                            @PathVariable("workId") Long workId, @RequestPart(value = "request") WorkRequest request,
-                                           @RequestPart(value = "files", required = false) MultipartFile[] multipartFiles) {
-        workService.updateWork(memberId, voiceId, workId, request.title(), request.videoLink(), request.info(), request.isRep(), multipartFiles);
+                                           @RequestPart(value = "image", required = false) MultipartFile image,
+                                           @RequestPart(value = "script", required = false) MultipartFile script,
+                                           @RequestPart(value = "record", required = false) MultipartFile record) {
+        workService.updateWork(memberId, voiceId, workId, request.title(), request.videoLink(), request.info(), request.isRep(), image, script, record);
         categoryInfoService.updateCategoryInfo(memberId, workId, request.categoryInfoRequest().mediaClassification(), request.categoryInfoRequest().voiceStyle(), request.categoryInfoRequest().voiceTone(), request.categoryInfoRequest().gender(), request.categoryInfoRequest().age());
         return ResponseEntity.ok().build();
     }
