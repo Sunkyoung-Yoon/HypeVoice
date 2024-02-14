@@ -35,45 +35,59 @@ public class WorkService {
     private final CategoryInfoFindService categoryInfoFindService;
 
     @Transactional
-    public Long registerWork(Long memberId, Long voiceId, String title, String videoLink, String info, int isRep, MultipartFile[] multipartFiles) {
+    public Long registerWork(Long memberId, Long voiceId, String title, String videoLink, String info, int isRep,
+                             MultipartFile image, MultipartFile script, MultipartFile record) {
         validateMember(voiceId, memberId);
 
         Voice voice = voiceFindService.findById(voiceId);
-        String[] fileUrlList = new String[3];
-        if (multipartFiles != null) {
-            for (int i = 0; i < multipartFiles.length; i++) {
-                MultipartFile file = multipartFiles[i];
-                String fileUrl = null;
-                if (file != null) {
-                    fileUrl = fileService.uploadWorkFiles(file);
-                    voice.increaseTotalSize(file.getSize());
-                }
 
-                fileUrlList[i] = fileUrl;
-            }
+        String imageUrl = null;
+        if (image != null) {
+            imageUrl = fileService.uploadWorkFiles(image);
+            voice.increaseTotalSize(image.getSize());
         }
 
-        Work work = Work.createWork(voice, title, videoLink, fileUrlList[0], fileUrlList[1], fileUrlList[2], info, isRep);
+        String recordUrl = null;
+        if (record != null) {
+            recordUrl = fileService.uploadWorkFiles(record);
+            voice.increaseTotalSize(record.getSize());
+        }
+
+        String scriptUrl = null;
+        if (script != null) {
+            scriptUrl = fileService.uploadWorkFiles(script);
+            voice.increaseTotalSize(script.getSize());
+        }
+
+        Work work = Work.createWork(voice, title, videoLink, imageUrl, recordUrl, scriptUrl, info, isRep);
         return workRepository.save(work).getId();
     }
 
     @Transactional
-    public void updateWork(Long memberId, Long voiceId, Long workId, String title, String videoLink, String info, int isRep, MultipartFile[] multipartFiles) {
+    public void updateWork(Long memberId, Long voiceId, Long workId, String title, String videoLink, String info, int isRep,
+                           MultipartFile image, MultipartFile script, MultipartFile record) {
         validateMember(voiceId, memberId);
         validateVoice(voiceId, workId);
 
+        Voice voice = voiceFindService.findById(voiceId);
         Work work = workFindService.findById(workId);
 
-        String[] fileUrlList = new String[3];
-        if (multipartFiles != null) {
-            for (int i = 0; i < multipartFiles.length; i++) {
-                MultipartFile file = multipartFiles[i];
-                String fileUrl = null;
-                if (file != null)
-                    fileUrl = fileService.uploadWorkFiles(file);
+        String imageUrl = null;
+        if (image != null) {
+            imageUrl = fileService.uploadWorkFiles(image);
+            voice.increaseTotalSize(image.getSize());
+        }
 
-                fileUrlList[i] = fileUrl;
-            }
+        String recordUrl = null;
+        if (record != null) {
+            recordUrl = fileService.uploadWorkFiles(record);
+            voice.increaseTotalSize(record.getSize());
+        }
+
+        String scriptUrl = null;
+        if (script != null) {
+            scriptUrl = fileService.uploadWorkFiles(script);
+            voice.increaseTotalSize(script.getSize());
         }
 
         if (work.getPhotoUrl() != null)
@@ -83,7 +97,7 @@ public class WorkService {
         if (work.getRecordUrl() != null)
             fileService.deleteFiles(work.getRecordUrl());
 
-        work.updateWork(title, videoLink, fileUrlList[0], fileUrlList[1], fileUrlList[2], info, isRep);
+        work.updateWork(title, videoLink, imageUrl, recordUrl, scriptUrl, info, isRep);
     }
 
     @Transactional
