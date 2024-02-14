@@ -248,7 +248,7 @@ const PostComponent: React.FC = () => {
 							dangerouslySetInnerHTML={{ __html: getPostData.content }}
 						></div>
 						<div>
-							{userInfo.memberId === getPostData.writerId ? (
+							{userInfo && userInfo.memberId === getPostData.writerId ? (
 								<div className="post-footer">
 									{/* <Button
 										variant="contained"
