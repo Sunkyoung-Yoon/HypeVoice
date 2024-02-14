@@ -9,7 +9,7 @@ const FooterDiv = styled.div`
   height: 10vh;
   width: 100%;
   /* background-color: #f5f5f5; */
-  margin: 5px;
+  margin: 70px 0px 30px 0px;
   color: #5B5FF4;
   text-align: center;
 `;

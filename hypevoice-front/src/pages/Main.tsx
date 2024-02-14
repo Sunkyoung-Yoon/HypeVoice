@@ -24,6 +24,7 @@ const MainGrid = styled.div`
   grid-gap: 0;
   padding-top: ${HeaderHeight};
   border: none;
+  background-color: #f5f5f5;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -40,7 +41,7 @@ const HeaderGrid = styled.div`
 const LeftSideGrid = styled.div`
   grid-row: 2 / 3;
   grid-column: 1 / 2;
-  background-color: #f5f5f5;
+  /* background-color: #f5f5f5; */
   @media (max-width: 768px) {
     display: none;
   }
@@ -49,7 +50,7 @@ const LeftSideGrid = styled.div`
 const CenterGrid = styled.div`
   grid-row: 2 / 3;
   grid-column: 2 / 3;
-  background-color: #ffffff;
+  /* background-color: #ffffff; */
   @media (max-width: 768px) {
     grid-column: 1 / -1;
   }
@@ -58,7 +59,7 @@ const CenterGrid = styled.div`
 const RightSideGrid = styled.div`
   grid-row: 2 / 3;
   grid-column: 3 / 4;
-  background-color: #f5f5f5;
+  /* background-color: #f5f5f5; */
   @media (max-width: 768px) {
     display: none;
   }
@@ -67,7 +68,7 @@ const RightSideGrid = styled.div`
 const FooterGrid = styled.div`
   grid-row: 3 / 4;
   grid-column: 1 / 4;
-  background-color: #f5f5f5;
+  /* background-color: #f5f5f5; */
 `;
 
 function Main() {

@@ -93,6 +93,16 @@ export default function MyLikeVoices() {
     };
   };
 
+  const formatLikes = (likes: number) => {
+    if (likes >= 1000000) {
+      return `${(Math.floor((likes / 1000000) * 10) / 10).toFixed(1)}M`;
+    } else if (likes >= 1000) {
+      return `${(Math.floor((likes / 1000) * 10) / 10).toFixed(1)}K`;
+    } else {
+      return likes.toString();
+    }
+  };
+
   useEffect(() => {
     fetchVoicesData();
   }, [like]);
@@ -107,8 +117,10 @@ export default function MyLikeVoices() {
             .filter((voice: VoiceInfo) => likedVoices.includes(voice.voiceId))
             .map((voice: VoiceInfo) => (
               <VoiceItem key={voice.voiceId}>
-                <VoiceName onClick={handleClick(voice)}>{voice.name}</VoiceName>
-                <p>💗{voice.likes}</p>
+                <VoiceName onClick={handleClick(voice)}>
+                  {voice.name.length > 4 ? `${voice.name.slice(0, 4)}...` : voice.name}
+                </VoiceName>
+                <p>💗{formatLikes(voice.likes)}</p>
               </VoiceItem>
             ))}
         </VoiceList>

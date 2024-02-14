@@ -10,6 +10,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { MyInfoVoiceId } from "@/recoil/CurrentVoiceId/MyInfoVoiceId";
 import { getCookie } from "@/api/cookie";
 import { likeState } from "@/recoil/likeState";
+import { VoiceDataType } from "./type";
 
 const Img = styled("img")({
   margin: "auto",
@@ -17,16 +18,6 @@ const Img = styled("img")({
   maxWidth: "100%",
   maxHeight: "100%",
 });
-
-type VoiceDataType = {
-  name: string;
-  imageUrl: string;
-  intro: string;
-  email: string;
-  phone: string;
-  addInfo: string;
-  likes: number;
-};
 
 const getVoiceData = async (voiceId: number): Promise<VoiceDataType> => {
   const response = await axiosClient.get(`/api/voices/${voiceId}`);
@@ -89,8 +80,6 @@ const checkLike = async (
   }
 };
 
-
-
 function MyInfo() {
   const currentVoiceId = useRecoilValue(MyInfoVoiceId);
   const [favoriteCnt, setFavoriteCnt] = useState(0);
@@ -127,6 +116,16 @@ function MyInfo() {
     setLike(!like);
   }
 
+  const formatLikes = (likes: number) => {
+    if (likes >= 1000000) {
+      return `${(Math.floor((likes / 1000000) * 10) / 10).toFixed(1)}M`;
+    } else if (likes >= 1000) {
+      return `${(Math.floor((likes / 1000) * 10) / 10).toFixed(1)}K`;
+    } else {
+      return likes.toString();
+    }
+  };
+
   return (
     <>
       <Paper
@@ -141,9 +140,9 @@ function MyInfo() {
       >
         <Grid container spacing={2}>
           <Grid item>
-            <ButtonBase sx={{ width: 128, height: 128 }}>
+            <div style={{ width: 128, height: 128 }}>
               <Img alt="profileImg" src={currentVoice?.imageUrl} />
-            </ButtonBase>
+            </div>
           </Grid>
           <Grid item xs={12} sm container>
             <Grid item xs container direction="column" spacing={2}>
@@ -157,9 +156,6 @@ function MyInfo() {
                 <Typography variant="body1" color="text.secondary">
                   Call : {currentVoice?.phone}
                 </Typography>
-                <Typography variant="body1" color="text.secondary">
-                  {currentVoice?.addInfo}
-                </Typography>
               </Grid>
               <></>
             </Grid>
@@ -170,7 +166,7 @@ function MyInfo() {
                 onClick={updateLike}
                 sx={{ cursor: 'pointer' }}
               />
-              <span>{favoriteCnt}</span>
+              <span style={{fontSize: "22px"}}>{formatLikes(favoriteCnt)}</span>
             </Grid>
           </Grid>
         </Grid>
