@@ -17,18 +17,16 @@ const HomeGridDiv = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: #f5f5f5;
+  background-color: white;
 `;
 const VoicesContainer = styled.div`
   flex-grow: 1;
   overflow-y: auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-gap: 20px;
-  padding: 15px;
-  margin: 15px;
+  margin-left: 40px;
 
-  @media (max-width: 1000px) {
+  @media (max-width: 1200px) {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -131,8 +129,9 @@ export default function HomeGrid() {
         filterAtom={MainCurrentFilterAtom}
         fetchFilteredData={fetchFilteredVoicesData}
       />
+      <div style={{marginTop : "15px"}}>
       <InlineHeader title={"🎶 보이스"} worksCnt={0} storageSpace={0} />
-
+      </div>
       <VoicesContainer>
         {voices.map((voice) => (
           <MainVoicesTemplate key={voice.voiceId} voice={voice} />

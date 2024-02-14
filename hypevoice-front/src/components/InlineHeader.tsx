@@ -8,10 +8,10 @@ type OwnProps = {
 
 const Hr = styled.hr`
   height: 5px;
-  width: 100%;
+  width: 90%;
   border: none;
   background-color: black;
-  margin: 3px 5px 3px 5px;
+  margin: 5px 10px 3px 50px;
 `;
 // worksCnt로 1 이상의 number가 전달되면 작업물 개수가 표시되고, storageSpace로 1 이상의 number가 전달되면 용량이 MB 단위로 표시됨
 // 필요한 곳에서 <InlineHeader title={"인라인헤더 제목"} worksCnt={0} storageSpace={0} /> 형태로 사용
@@ -26,7 +26,7 @@ function InlineHeader(props: OwnProps) {
           justifyContent: "space-between",
         }}
       >
-        <div style={{ justifyContent: "left", fontSize: "30px" }}>
+        <div style={{ justifyContent: "left", fontSize: "30px", marginLeft: "40px" }}>
           {props.title}
         </div>
         <div

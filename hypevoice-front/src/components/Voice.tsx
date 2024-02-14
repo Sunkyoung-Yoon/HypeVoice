@@ -24,7 +24,7 @@ const UpdateVoiceButton = styled.button`
   border-radius: 25px;
   padding: 10px 15px;
   background-color: #5b5ff4;
-  color: #fff;
+  color: white;
   cursor: pointer;
   margin-right: 380px;
 `;
