@@ -100,8 +100,8 @@ public class StudioController {
     }
 
     @DeleteMapping("/{studioId}/recording/{recordingId}")
-    public ResponseEntity<Void> deleteRecording(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId, @PathVariable("recordingId") String recordingId) {
-        studioService.deleteRecording(recordingId, loginId, studioId);
+    public ResponseEntity<Void> deleteRecording(@ExtractPayload Long loginId, @PathVariable("studioId") Long studioId, @PathVariable("recordingId") String recordingId, @RequestBody StuidoRecordingRequest stuidoRecordingRequest) {
+        studioService.deleteRecording(recordingId, loginId, studioId, stuidoRecordingRequest.urls());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

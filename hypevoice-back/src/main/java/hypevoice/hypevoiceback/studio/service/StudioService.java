@@ -3,6 +3,7 @@ package hypevoice.hypevoiceback.studio.service;
 import hypevoice.hypevoiceback.file.service.FileService;
 import hypevoice.hypevoiceback.global.exception.BaseException;
 import hypevoice.hypevoiceback.member.domain.Member;
+import hypevoice.hypevoiceback.member.dto.MemberResponse;
 import hypevoice.hypevoiceback.member.service.MemberFindService;
 import hypevoice.hypevoiceback.studio.OpenViduClient;
 import hypevoice.hypevoiceback.studio.domain.Studio;
@@ -119,15 +120,18 @@ public class StudioService {
         Studio studio = studioFindService.findById(studioId);
         Member member = memberFindService.findById(loginId);
         sessionId = studio.getSessionId();
-        // 방장이 아니면 예외발생
+
         if (studioMemberFindService.findByMemberIdAndStudioId(member.getId(), studio.getId()).getIsHost() == 0) {
             leaveStudio(loginId, studioId);
             return;
         }
-        openViduClient.deleteSession(sessionId);
-        System.out.println("deleteSession.ok");
-        studioMemberService.delete(studioId);
-        System.out.println("studioMem ok");
+
+        List<MemberResponse> joinMembers = studioMemberService.findAllByStudioId(studioId);
+        for(MemberResponse memberResponse : joinMembers){
+            System.out.println(memberResponse.memberId());
+            leaveStudio(memberResponse.memberId(),studioId);
+        }
+        openViduClient.deleteSession(studio.getSessionId());
         studioRepository.deleteById(studio.getId());
         System.out.println("repo delete ok");
     }
@@ -201,7 +205,6 @@ public class StudioService {
         Studio studio = studioFindService.findById(studioId);
 
         StudioMember studioMember = studioMemberFindService.findByMemberIdAndStudioId(loginId, studioId);
-        openViduClient.disConnect(studioMember.getConnectionId());
         studioMemberService.delete(loginId, studioId);
 
 
@@ -267,10 +270,12 @@ public class StudioService {
 
     }
 
-    public void deleteRecording(String recordingId, Long loginId, Long studioId) {
+    public void deleteRecording(String recordingId, Long loginId, Long studioId, List<String> urls) {
         Studio studio = studioFindService.findById(studioId);
         if (studioMemberFindService.findByMemberIdAndStudioId(loginId, studioId).getIsHost() == 1) {
             openViduClient.deleteRecording(recordingId);
+            for(String url : urls)
+            fileService.deleteFiles(url);
 
         } else {
             throw new BaseException(StudioErrorCode.UNABLE_RECORDING);
