@@ -238,7 +238,7 @@ const CommentListComponent = () => {
 										{commentTime(comment.createdDate)}
 									</div>
 									<div className="comment-delete-button">
-										{loginUser.memberId === comment.writerId ? (
+										{loginUser && loginUser.memberId === comment.writerId ? (
 											<CommentDeleteButtonComponent id={comment.commentId} />
 										) : (
 											<div></div>
