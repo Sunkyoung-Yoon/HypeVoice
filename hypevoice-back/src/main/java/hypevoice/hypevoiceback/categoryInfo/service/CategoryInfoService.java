@@ -23,9 +23,14 @@ public class CategoryInfoService {
     private final WorkFindService workFindService;
 
     @Transactional
-    public void createCategoryInfo(Long memberId, Long workId, String mediaClassification, String voiceStyle, String voiceTone, String gender, String age) {
+    public boolean createCategoryInfo(Long memberId, Long workId, String mediaClassification, String voiceStyle, String voiceTone, String gender, String age) {
         validateMember(workId, memberId);
-        validateCategoryInfo(mediaClassification, voiceStyle, voiceTone, gender, age);
+
+        try {
+            validateCategoryInfo(mediaClassification, voiceStyle, voiceTone, gender, age);
+        } catch (BaseException e) {
+            return false;
+        }
 
         Work work = workFindService.findById(workId);
         MediaClassification findMediaClassification = MediaClassification.from(mediaClassification);
@@ -37,6 +42,7 @@ public class CategoryInfoService {
         CategoryInfo categoryInfo = CategoryInfo.createCategoryInfo(work, findMediaClassification, findVoiceStyle, findVoiceTone, findGender, findAge);
 
         categoryInfoRepository.save(categoryInfo);
+        return true;
     }
 
     @Transactional
@@ -97,7 +103,7 @@ public class CategoryInfoService {
     }
 
     private void validateCategoryInfo(String mediaClassification, String voiceStyle, String voiceTone, String gender, String age) {
-        if (mediaClassification.equals(null) || voiceStyle.equals(null) || voiceTone.equals(null) || gender.equals(null) || age.equals(null)) {
+        if (mediaClassification.isEmpty() || voiceStyle.isEmpty() || voiceTone.isEmpty() || gender.isEmpty() || age.isEmpty()) {
             throw BaseException.type(CategoryInfoErrorCode.CATEGORY_NOT_FOUND);
         }
     }
