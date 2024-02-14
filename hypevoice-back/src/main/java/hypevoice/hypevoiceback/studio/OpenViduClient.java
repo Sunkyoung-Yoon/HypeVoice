@@ -53,6 +53,7 @@ public class OpenViduClient {
                 .recordingMode(RecordingMode.MANUAL)
                 .defaultRecordingProperties(recordingProperties)
                 .customSessionId(sessionId)
+
                 .build();
         try {
             Session session = openVidu.createSession(properties);
@@ -116,7 +117,7 @@ public class OpenViduClient {
 
             System.out.println("ResponseBody : " + responseBody);
             map.put("token", parseToken(responseBody));
-            map.put("id", parseConnectionId(responseBody));
+            map.put("serverData", parseConnectionClientData(responseBody));
         } catch (Exception e) {
 
             throw BaseException.type(StudioErrorCode.STUDIO_NOT_FOUND);
@@ -198,7 +199,7 @@ public class OpenViduClient {
         return token;
     }
 
-    private String parseConnectionId(String body) {
+    private String parseConnectionClientData(String body) {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = null;
         try {
@@ -207,9 +208,9 @@ public class OpenViduClient {
             throw new RuntimeException(e);
         }
 
-        String id = jsonNode.get("id").asText();
+        String name = jsonNode.get("serverData").asText();
 
-        return id;
+        return name;
     }
 
     private String getString(String url) {

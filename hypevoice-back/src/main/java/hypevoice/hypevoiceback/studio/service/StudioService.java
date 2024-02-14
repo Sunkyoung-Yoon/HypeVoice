@@ -81,11 +81,11 @@ public class StudioService {
 
         Map<String, String> map = openViduClient.getJoinStudioToken(sessionId, member.getNickname());
         String token = map.get("token");
-        String connectionId = map.get("id");
+        String connectionName = map.get("serverData");
 
-        System.out.println(token + " / " + connectionId);
+        System.out.println(token + " / " + connectionName);
         studioRepository.save(studio);
-        studioMemberService.create(member.getId(), studio.getId(), 1, connectionId);
+        studioMemberService.create(member.getId(), studio.getId(), 1, connectionName);
         // 스튜디오를 생성하면 스튜디오멤버 리스트에도 방장의 권한으로 정보를 추가한다.
 
         return new StudioJoinResponse(studio.getId(), token);
@@ -156,7 +156,7 @@ public class StudioService {
         System.out.println("스튜디오 : " + studio.getIntro() + " / 이름 : " + sessionId);
         System.out.println("멤버 : " + member.getId() + " / 아이디 : " + memberId);
         String token;
-        String connectionId;
+        String connectionName;
         if (studioMemberRepository.existsById(loginId)) {
             throw new BaseException(StudioErrorCode.STUDIO_ALREADY_JOINED);
         }
@@ -180,8 +180,8 @@ public class StudioService {
         }
         Map<String, String> map = openViduClient.getJoinStudioToken(sessionId, member.getNickname());
         token = map.get("token");
-        connectionId = map.get("id");
-        studioMemberService.create(member.getId(), studio.getId(), 0, connectionId);
+        connectionName = map.get("serverData");
+        studioMemberService.create(member.getId(), studio.getId(), 0, connectionName);
 
         return new StudioJoinResponse(studio.getId(), token);
 
