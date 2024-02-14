@@ -14,13 +14,14 @@ const Container = styled.div`
   border-width: 2px;
   width: 220px;
   padding: 5px;
+  margin: 10px;
 `;
 
 const Title = styled.div`
   text-align: center;
   font-weight: bold;
   margin-bottom: 2px;
-  font-size: 18px;
+  font-size: 20px;
 `;
 
 const VoiceList = styled.div`
@@ -32,9 +33,13 @@ const VoiceList = styled.div`
 const VoiceItem = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 130px;
+  width: 170px;
   margin: 2px;
   font-size: 18px;
+`;
+
+const VoiceName = styled.p`
+  cursor: pointer;
 `;
 
 export default function MyLikeVoices() {
@@ -95,15 +100,15 @@ export default function MyLikeVoices() {
   return (
     <>
       <Container>
-        <Title>내가 구독하는 보이스들</Title>
+        <Title>좋아요 누른 보이스들</Title>
         <hr />
         <VoiceList>
           {voices
             .filter((voice: VoiceInfo) => likedVoices.includes(voice.voiceId))
             .map((voice: VoiceInfo) => (
               <VoiceItem key={voice.voiceId}>
-                <p onClick={handleClick(voice)}>{voice.name}</p>
-                <p>💗 {voice.likes}</p>
+                <VoiceName onClick={handleClick(voice)}>{voice.name}</VoiceName>
+                <p>💗{voice.likes}</p>
               </VoiceItem>
             ))}
         </VoiceList>

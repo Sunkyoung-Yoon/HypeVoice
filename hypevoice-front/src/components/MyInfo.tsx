@@ -168,6 +168,7 @@ function MyInfo() {
                 color="error"
                 fontSize="large"
                 onClick={updateLike}
+                sx={{ cursor: 'pointer' }}
               />
               <span>{favoriteCnt}</span>
             </Grid>

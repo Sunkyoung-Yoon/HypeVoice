@@ -6,7 +6,7 @@ const LeftSideDiv = styled.div`
   height: 90vh;
   width: 100%;
   background-color: #f5f5f5;
-  float: left;
+  float: center;
 `;
 
 function LeftSide() {
@@ -14,7 +14,6 @@ function LeftSide() {
 
   return (
     <LeftSideDiv>
-      Left Side
       {location.pathname === "/voice" && <ScrollNavigation />}
     </LeftSideDiv>
   );
