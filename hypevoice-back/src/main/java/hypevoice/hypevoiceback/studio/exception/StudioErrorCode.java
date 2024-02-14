@@ -24,6 +24,7 @@ public enum StudioErrorCode implements ErrorCode {
     UNABLE_RECORDING(HttpStatus.BAD_REQUEST, "STUDIO_013", "녹음을 관리 할 권한이 없습니다.."),
     RECORDING_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDIO_014", "녹음을 찾을 수 올 수 없습니다.."),
     STUDIO_ONAIR(HttpStatus.BAD_REQUEST, "STUDIO_015", "녹음 중인 방에 입장 할 수 없습니다.."),
+    CANT_SEND_MESSAGE(HttpStatus.BAD_REQUEST, "STUDIO_016", "메세지를 보낼 수 없습니다.."),
     STUDIO_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDIO_MEMBER_001", "스튜디오에 참여한 인원을 찾을 수 없습니다."),
     ;
 
