@@ -139,7 +139,7 @@ function MyInfo() {
         <Grid container spacing={2}>
           <Grid item>
             <div style={{ width: 128, height: 128 }}>
-              <Img alt="profileImg" src={currentVoice?.imageUrl} />
+              <Img alt="profileImg" src={currentVoice?.imageUrl ? currentVoice?.imageUrl : "src/assets/basicImg.png"} />
             </div>
           </Grid>
           <Grid item xs={12} sm container>
@@ -148,10 +148,10 @@ function MyInfo() {
                 <Typography gutterBottom variant="h4" component="div">
                   {currentVoice?.name}
                 </Typography>
-                <Typography variant="body1" color="text.secondary">
+                <Typography variant="body1" color="text.secondary" sx={{wordBreak:"break-all"}}>
                   Email : {currentVoice?.email}
                 </Typography>
-                <Typography variant="body1" color="text.secondary">
+                <Typography variant="body1" color="text.secondary" sx={{wordBreak:"break-all"}}>
                   Call : {currentVoice?.phone}
                 </Typography>
               </Grid>
@@ -170,7 +170,7 @@ function MyInfo() {
         </Grid>
         <Typography
           variant="body2"
-          sx={{ textAlign: "center", marginTop: "1rem" }}
+          sx={{ textAlign: "center", marginTop: "1rem", wordBreak:"break-all" }}
         >
           {currentVoice?.intro}
         </Typography>

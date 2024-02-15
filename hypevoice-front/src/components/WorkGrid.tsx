@@ -12,7 +12,7 @@ import { MyInfoVoiceId } from "@/recoil/CurrentVoiceId/MyInfoVoiceId";
 
 // 작업물 추가 버튼
 const CreateWorkButton = styled.button`
-  margin-left: 40px;
+  margin-left: 50px;
   width: 110px;
   border: none;
   border-radius: 25px;

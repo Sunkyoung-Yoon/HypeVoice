@@ -1,6 +1,6 @@
 function AddInfo({ info } : { info: string }) {
   return (
-    <div style={{marginLeft: "50px"}}>
+    <div style={{margin: "0px 50px", wordBreak:"break-all"}}>
       {info}
     </div>
   );
