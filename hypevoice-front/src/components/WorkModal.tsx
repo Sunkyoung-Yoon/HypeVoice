@@ -22,6 +22,8 @@ import { categories } from "./Category";
 import { getCookie } from "@/api/cookie";
 import { axiosClient } from "@/api/axios";
 import CustomAudioPlayer from "./CustomAudioPlayer";
+import { curStorageSizeAtom } from "@/recoil/curStorageSize";
+import { useRecoilState } from "recoil";
 
 export const categoryNames: Record<string, string> = {
   미디어: "mediaClassification",
@@ -55,6 +57,7 @@ export default function WorkModal({
     return allowedExtensions.includes(extension);
   }
 
+  const [curStorageSize, setCurStorageSize] = useRecoilState(curStorageSizeAtom);
   const [title, setTitle] = useState(""); // 제목 입력 값 상태 관리
   const [youtubeUrl, setYoutubeUrl] = useState(""); // 유튜브 링크 입력 값 상태 관리
   const [intro, setIntro] = useState(""); // 작업물 소개 입력 값 상태 관리
@@ -187,7 +190,8 @@ export default function WorkModal({
     // 사전 유효성 검사
     const errorMessage = validateWork(title, selectedCategory, recordFile);
     if (errorMessage) {
-      alert(errorMessage);
+      // alert(errorMessage);
+      console.log(errorMessage);
       return;
     }
 
@@ -220,6 +224,28 @@ export default function WorkModal({
       }
     });
 
+    let totalSize = 0;
+    if (files[0]) {
+      totalSize += files[0].size / 1000000;
+    }
+    if (files[1]) {
+      totalSize += files[1].size / 1000000;
+    }
+    if (files[2]) {
+      totalSize += files[2].size / 1000000;
+    }
+    
+    if (totalSize > 20) {
+      alert("파일들이 너무 큽니다. 한 번에 등록할 수 있는 파일은 총 20MB입니다.");
+      return;
+    }
+    
+    // alert("curStorageSize" + curStorageSize);
+    if (totalSize + curStorageSize > 1024) {
+      alert("파일들이 너무 큽니다. 총 저장 공간은 1024MB를 넘을 수 없습니다.");
+      return;
+    }
+
     try {
       await axiosClient.post(`/api/voices/${voiceId}/works`, formData, {
         headers: {
@@ -227,10 +253,10 @@ export default function WorkModal({
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log("작업물 등록 성공");
+      // console.log("작업물 등록 성공");
       resetState();
     } catch (error) {
-      console.log("작업물 등록 실패");
+      // console.log("작업물 등록 실패");
       console.log(error);
     }
     onClose();
@@ -275,6 +301,28 @@ export default function WorkModal({
           formData.append("files", file);
         }
       });
+
+      let totalSize = 0;
+    if (files[0]) {
+      totalSize += files[0].size / 1000000;
+    }
+    if (files[1]) {
+      totalSize += files[1].size / 1000000;
+    }
+    if (files[2]) {
+      totalSize += files[2].size / 1000000;
+    }
+    
+    if (totalSize > 20) {
+      alert("파일들이 너무 큽니다. 한 번에 등록할 수 있는 파일은 총 20MB입니다.");
+      return;
+    }
+    
+    // alert("curStorageSize" + curStorageSize);
+    if (totalSize + curStorageSize > 1024) {
+      alert("파일들이 너무 큽니다. 총 저장 공간은 1024MB를 넘을 수 없습니다.");
+      return;
+    }
 
       try {
         await axiosClient.patch(
@@ -373,8 +421,8 @@ export default function WorkModal({
         );
 
         if (response) {
-          console.log("response.data 는 아래와 같습니다!");
-          console.log(response.data);
+          // console.log("response.data 는 아래와 같습니다!");
+          // console.log(response.data);
           setTitle(response.data.title); // 모달 창 타이틀 설정
           setIntro(response.data.info); // 모달 창 소개 설정
           setYoutubeUrl(response.data.videoLink); // 모달창 유튜브 링크 설정
@@ -393,7 +441,7 @@ export default function WorkModal({
           selectedCategory.gender = response.data.categoryInfoValue.genderValue;
           // 연령
           selectedCategory.age = response.data.categoryInfoValue.ageValue;
-          console.log(selectedCategory);
+          // console.log(selectedCategory);
         }
         // 사진 미리보기 설정
         setPreview(response.data.photoUrl);

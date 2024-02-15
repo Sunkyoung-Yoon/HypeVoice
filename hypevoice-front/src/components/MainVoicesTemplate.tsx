@@ -20,7 +20,7 @@ const WorkWrapper = styled.div<WorkWrapperProps>`
   width: 330px;
   cursor: pointer;
 
-  border: 5px solid ${(props) => (props.isHovered ? "#5b5ff4" : "black")};
+  border: 5px solid ${(props) => (props.$isHovered ? "#5b5ff4" : "black")};
   transition: border-color 0.3s, border-width 0.3s;
 `;
 
@@ -77,19 +77,29 @@ function MainVoicesTemplate({ voice }: { voice: VoiceInfo }) {
     navigate("/voice");
   };
 
+  const formatLikes = (likes: number) => {
+    if (likes >= 1000000) {
+      return `${(Math.floor((likes / 1000000) * 10) / 10).toFixed(1)}M`;
+    } else if (likes >= 1000) {
+      return `${(Math.floor((likes / 1000) * 10) / 10).toFixed(1)}K`;
+    } else {
+      return likes.toString();
+    }
+  };
+
   return (
-    <WorkWrapper
-      ref={templateRef}
-      isHovered={isHovered}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={handleClick}
-    >
+<WorkWrapper
+  ref={templateRef}
+  $isHovered={isHovered}
+  onMouseEnter={() => setIsHovered(true)}
+  onMouseLeave={() => setIsHovered(false)}
+  onClick={handleClick}
+>
       <RepWork work={work} />
       <InfoContainer>
         <div style={{ display: "flex", alignItems: "flex-end" }}>
           <StyledImg alt="profileImg" src={voice.imageUrl} />
-          <NameSpan>{voice.name}</NameSpan>
+          <NameSpan>{voice.name.length > 4 ? `${voice.name.slice(0, 4)}...` : voice.name}</NameSpan>
         </div>
         <div style={{ display: "flex", alignItems: "flex-end" }}>
           <FavoriteIcon
@@ -98,7 +108,7 @@ function MainVoicesTemplate({ voice }: { voice: VoiceInfo }) {
             style={{ fontSize: 40 }}
           />{" "}
           {/* Adjust this value to your preference */}
-          <LikesSpan>{voice.likes}</LikesSpan>
+          <LikesSpan>{formatLikes(voice.likes)}</LikesSpan>
         </div>
       </InfoContainer>
     </WorkWrapper>

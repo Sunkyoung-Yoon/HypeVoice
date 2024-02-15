@@ -146,21 +146,21 @@ const CommentListComponent = () => {
 	});
 
 	if (isLoading) {
-		console.log('Comments : isLoading');
+		// console.log('Comments : isLoading');
 		return <LoadingComponent />;
 	}
 
 	if (isFetched) {
-		console.log('Comments : isFetched');
+		// console.log('Comments : isFetched');
 	}
 
 	if (isError) {
-		console.log('Comments : isError');
+		// console.log('Comments : isError');
 		return <div>Error</div>;
 	}
 
 	commentData = commentList ? commentList : [];
-	console.log(commentData);
+	// console.log(commentData);
 	// ▲ GetComments ▲
 
 	const pageCount: number = Math.ceil(commentsCount / commentsPerPage);

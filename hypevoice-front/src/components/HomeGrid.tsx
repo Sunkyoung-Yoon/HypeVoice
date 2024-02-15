@@ -63,18 +63,18 @@ export default function HomeGrid() {
   // 선택한 카테고리를 기반 보이스 조회
   const fetchFilteredVoicesData = async () => {
     try {
-      console.log(filterState);
+      // console.log(filterState);
       const transformedFilterState = transformFilterState(filterState);
-      console.log(transformedFilterState);
+      // console.log(transformedFilterState);
       // 선택한 카테고리 상태를 바탕으로 필터링된 음성 데이터를 요청
       const data = await axiosClient.post(
         "/api/voices/filter",
         transformedFilterState
       );
-      console.log(data.data);
+      // console.log(data.data);
       setVoices(data.data);
       voices.map((voice: VoiceInfo) => {
-        console.log(voice);
+        // console.log(voice);
       });
     } catch (error) {
       console.error(error);
@@ -88,11 +88,11 @@ export default function HomeGrid() {
         `/api/voices/search?keyword=${searchText}`
       );
       if (data) {
-        console.log(data);
-        console.log(data.data);
+        // console.log(data);
+        // console.log(data.data);
         setVoices(data.data);
         voices.map((voice: VoiceInfo) => {
-          console.log(voice);
+          // console.log(voice);
         });
       }
     } catch (error) {

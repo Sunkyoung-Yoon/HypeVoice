@@ -237,28 +237,28 @@ const CommunityComponent: React.FC = () => {
 	});
 
 	if (isLoading) {
-		console.log('Community : isLoading');
+		// console.log('Community : isLoading');
 		return <LoadingComponent />;
 	}
 
 	if (isFetched) {
-		console.log('Community : isFetched');
+		// console.log('Community : isFetched');
 	}
 
 	if (isFetching) {
-		console.log('Community : isFetching');
+		// console.log('Community : isFetching');
 		return <LoadingComponent />;
 	}
 
 	if (isError) {
-		console.log('Community : isError');
+		// console.log('Community : isError');
 		return <div>Error</div>;
 	}
 
 	const boardList: GetPostType[] = data.boardList;
 	const pageInfo: GetPageInfo = data.pageInfo;
-	console.log(pageInfo);
-	console.log(data);
+	// console.log(pageInfo);
+	// console.log(data);
 
 	const postTime = (time: string) => {
 		const commentDate = new Date(time);

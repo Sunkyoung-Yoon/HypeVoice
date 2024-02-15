@@ -159,22 +159,22 @@ const PostComponent: React.FC = () => {
 			staleTime: 10000 * 60 * 10,
 		});
 
-	console.log(data);
+	// console.log(data);
 	if (isSuccess) {
-		console.log('Post : isSuccess');
+		// console.log('Post : isSuccess');
 	}
 
 	if (isLoading) {
-		console.log('Post : isLoading');
+		// console.log('Post : isLoading');
 		return <LoadingComponent />;
 	}
 
 	if (isFetched) {
-		console.log('Post : isFetched');
+		// console.log('Post : isFetched');
 	}
 
 	if (isError) {
-		console.log('Post : isError');
+		// console.log('Post : isError');
 		return (
 			<div className="post-error">
 				<p>게시물을 불러올 수 없습니다</p>
@@ -201,7 +201,7 @@ const PostComponent: React.FC = () => {
 		return formattedTime;
 	};
 
-	console.log(getPostData?.content);
+	// console.log(getPostData?.content);
 	return (
 		<PostStyleDiv>
 			<div className="post-component">

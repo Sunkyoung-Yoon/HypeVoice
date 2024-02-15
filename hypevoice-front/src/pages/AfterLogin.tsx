@@ -13,7 +13,7 @@ const fetchMemberInfo = async (accessToken: string) => {
   const response = await axiosClient.get("/api/members", {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
-  console.log(response.data); // response.data가 멤버info
+  // console.log(response.data); // response.data가 멤버info
   return response.data;
 };
 
@@ -28,68 +28,72 @@ export default function AfterLogin() {
     const accessToken = getCookie("access_token");
     const refreshToken = getCookie("refresh_token");
 
-    console.log(accessToken);
-    console.log(refreshToken);
+    // console.log(accessToken);
+    // console.log(refreshToken);
 
-    if (accessToken) {
-      // 토큰이 유효한지 검사하는 로직
-      try {
-        // 토큰의 페이로드
-        const decoded: DecodedTokenPayload = jwtDecode(accessToken);
-        const currentTime = Date.now() / 1000;
-        const memberRole = decoded.role;
-        alert(memberRole + "님 환영합니다!");
+    const fetchAndSetMemberInfo = async () => {
+      if (accessToken) {
+        // 토큰이 유효한지 검사하는 로직
+        try {
+          // 토큰의 페이로드
+          const decoded: DecodedTokenPayload = jwtDecode(accessToken);
+          const currentTime = Date.now() / 1000;
+          // const memberRole = decoded.role;
+          // alert(memberRole + "님 환영합니다!");
 
-        if (decoded.exp > currentTime) {
-          // 토큰이 유효하다면
-          // 로그인 상태를 true로 변경
-          setLoginState(true);
-          // accessToken 새로 설정
-          setCookie("access_token", accessToken);
-          // 현재 유저 (CurrentMemberAtom) 값 설정
-          fetchMemberInfo(accessToken)
-            .then((memberInfo: MemberInfo) => {
-              setCurrentMemberInfo({
-                ...currentMember,
-                ...memberInfo,
-                // accessToken: accessToken, // 엑세스 토큰은 제외하고!
+          if (decoded.exp > currentTime) {
+            // 토큰이 유효하다면
+            // 로그인 상태를 true로 변경
+            setLoginState(true);
+            // accessToken 새로 설정
+            setCookie("access_token", accessToken);
+            // 현재 유저 (CurrentMemberAtom) 값 설정
+            await fetchMemberInfo(accessToken)
+              .then((memberInfo: MemberInfo) => {
+                setCurrentMemberInfo({
+                  ...currentMember,
+                  ...memberInfo,
+                  // accessToken: accessToken, // 엑세스 토큰은 제외하고!
+                });
+                setMyInfoVoiceId(memberInfo.memberId);
+                alert(memberInfo.nickname + "님, 환영합니다!");
+              })
+              .catch((e) => {
+                console.log(e);
               });
-              setMyInfoVoiceId(memberInfo.memberId);
-            })
-            .catch((e) => {
-              console.log(e);
-            });
-          navigate("/");
-        } else {
-          // 토큰이 만료되었다면 로그인 상태를 false로 변경
-          setLoginState(false);
-          alert("유효하지 않은 토큰입니다! 다시 로그인 해주세요!");
-          // 쿠키에서 토큰을 제거
-          removeCookie("access_token");
+            navigate("/");
+          } else {
+            // 토큰이 만료되었다면 로그인 상태를 false로 변경
+            setLoginState(false);
+            alert("유효하지 않은 토큰입니다! 다시 로그인 해주세요!");
+            // 쿠키에서 토큰을 제거
+            removeCookie("access_token");
+            navigate("/");
+          }
+        } catch (error) {
+          console.error("Error occurred while fetching member info:", error);
+        }
+      } else {
+        // 토큰이 없다면
+        alert("토큰이 없습니다!");
+        // 로그인 상태를 false로 변경
+        setLoginState(false);
+        // 사용자가 다시 로그인 시도를 원할 경우 login 페이지로
+        if (window.confirm("다시 로그인하시겠습니까?")) {
+          navigate("/login");
+        }
+        // 아니면 홈으로!
+        else {
           navigate("/");
         }
-      } catch (error) {
-        console.error("Error occurred while fetching member info:", error);
-      }
-    } else {
-      // 토큰이 없다면
-      alert("토큰이 없습니다!");
-      // 로그인 상태를 false로 변경
-      setLoginState(false);
-      // 사용자가 다시 로그인 시도를 원할 경우 login 페이지로
-      if (window.confirm("다시 로그인하시겠습니까?")) {
-        navigate("/login");
-      }
-      // 아니면 홈으로!
-      else {
-        navigate("/");
       }
     }
+    fetchAndSetMemberInfo();
   }, [setLoginState]);
 
   return (
     <div>
-      <h1>로그인 후처리 과정 진행 중입니다.</h1>
+      {/* <h1>로그인 후처리 과정 진행 중입니다.</h1> */}
     </div>
   );
 }
