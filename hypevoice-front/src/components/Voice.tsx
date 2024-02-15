@@ -26,7 +26,7 @@ const UpdateVoiceButton = styled.button`
   background-color: #5b5ff4;
   color: #fff;
   cursor: pointer;
-  margin-right: 380px;
+  margin-right: 70px;
 `;
 
 const getVoiceData = async (voiceId: number): Promise<VoiceDataType> => {
@@ -79,14 +79,14 @@ function Voice() {
           workId={0}
         />
       )}
-      <section id="top" style={{ marginBottom: "10px" }}>
-        <MyInfo />
-      </section>
       <ButtonSection>
         {currentVoiceId === currentMember.memberId && (
           <UpdateVoiceButton onClick={handleAddWorkClick}>정보 수정</UpdateVoiceButton>
         )}
       </ButtonSection>
+      <section id="top" style={{ marginBottom: "10px" }}>
+        <MyInfo />
+      </section>
       <section id="work">
         <InlineHeader
           title={"💾 작업물"}
@@ -96,7 +96,7 @@ function Voice() {
         <WorkGrid setWorkCount={setWorkCount} />
       </section>
       <section id="addInfo">
-        <InlineHeader title={"📋 추가 정보"} />
+        <InlineHeader title={"📝 추가 정보"} />
         <AddInfo info={currentVoice?.addInfo || ""} />
         <section id="bottom"></section>
       </section>

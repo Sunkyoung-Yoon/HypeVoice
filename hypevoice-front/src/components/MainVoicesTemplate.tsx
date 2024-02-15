@@ -88,8 +88,8 @@ function MainVoicesTemplate({ voice }: { voice: VoiceInfo }) {
       <RepWork work={work} />
       <InfoContainer>
         <div style={{ display: "flex", alignItems: "flex-end" }}>
-          <StyledImg alt="profileImg" src={voice.imageUrl} />
-          <NameSpan>{voice.name}</NameSpan>
+          <StyledImg alt="profileImg" src={voice.imageUrl ? voice.imageUrl : "src/assets/basicImg.png"} />
+          <NameSpan>{voice.name.length > 4 ? `${voice.name.slice(0, 4)}...` : voice.name}</NameSpan>
         </div>
         <div style={{ display: "flex", alignItems: "flex-end" }}>
           <FavoriteIcon
