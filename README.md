@@ -1,6 +1,6 @@
 # :microphone: HYPE VOICE - 성우 지망생들을 위한 플랫폼
 
-<img src="https://github.com/Sunkyoung-Yoon/studybuddy/assets/97610532/1bb037f6-6a8b-4f1d-a79e-10d9d47a190f" width="500px" height="300px">
+<img src="/uploads/b6b4ceafdd99ffd4ef35b80f46990371/image.png" width="500px" height="300px">
 
 ## 서비스 소개
 > Hype 한 Voice로 성우가 되고 싶은 사람은 누구나! <br> 내가 올린 작업물들이 곧 내 포트폴리오! <br> 같은 꿈을 키워나가는 사람들과 함께 연습과 피드백도 가능합니다! 😎
@@ -143,12 +143,12 @@ HypeVoice를 통해 내 목소리를 소개를 좀 더 쉽고 편하게 할 수 
 
 
 ## 아키텍처
-<img src="https://github.com/Sunkyoung-Yoon/studybuddy/assets/97610532/6e4604f9-2910-4dd4-b964-5f09144b7d9d" width="800px" height="550px">
+<img src="/uploads/c06f11332422434ffd0bfdfb35c48b3c/image.png" width="800px" height="550px">
 <br>
 
 
 ## ERD
-<img src="https://github.com/Sunkyoung-Yoon/studybuddy/assets/97610532/9d4d1628-da97-4d06-911a-e9dc92bb8d49" width="800px" height="550px">
+<img src="/uploads/17a36e2f5a33d531b3a9dec1a6b73b70/image.png" width="800px" height="550px">
 <br>
 
 
