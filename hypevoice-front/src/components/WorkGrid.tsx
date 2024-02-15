@@ -83,12 +83,12 @@ export default function WorkGrid({ setWorkCount }: WorkGridProps) {
       const response = await axiosClient.get(`/api/voices/${voiceId}/works`);
       // 작업물이 하나도 없다면
       if (!response.data || response.data.length === 0) {
-        // alert("아직 작업물이 없습니다.");
+        alert("아직 작업물이 없습니다.");
       }
       // else {
       //   alert(`${response.data.length} 개의 목소리를 찾았습니다.`);
       // }
-      // console.log(response.data);
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -106,7 +106,7 @@ export default function WorkGrid({ setWorkCount }: WorkGridProps) {
     if (works) {
       setWorkCount(works.length);
     }
-    // console.log(works);
+    console.log(works);
   }, [works]);
 
   const currentWorks = works

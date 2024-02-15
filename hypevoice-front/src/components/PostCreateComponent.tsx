@@ -154,7 +154,7 @@ const PostCreateComponent = () => {
 	const [category, setCategory] = useState<string>('피드백');
 	const isLogin = useRecoilValue(LoginState);
 	const getAccessToken = () => {
-		// console.log(document.cookie);
+		console.log(document.cookie);
 		const cookies = document.cookie.split('; ');
 		const accessTokenCookie = cookies.find((cookie) =>
 			cookie.startsWith('access_token='),
@@ -183,7 +183,7 @@ const PostCreateComponent = () => {
 
 	const createPost = async (newPost: CreatePostType): Promise<number> => {
 		const token = getAccessToken();
-		// console.log(token);
+		console.log(token);
 		const data = new FormData();
 		data.append(
 			'request',
@@ -216,22 +216,22 @@ const PostCreateComponent = () => {
 		mutationFn: createPost,
 
 		onError: () => {
-			// console.log('createPost : On Error');
+			console.log('createPost : On Error');
 		},
 		onSuccess: () => {
-			// console.log('createPost : Success');
+			console.log('createPost : Success');
 			queryClient.invalidateQueries();
-			// console.log(data);
+			console.log(data);
 			navigation(`/community/${id}`);
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries();
-			// console.log('createPost : On Settled');
+			console.log('createPost : On Settled');
 		},
 	});
 
 	const createPostHandler = (newPost: CreatePostType) => {
-		// console.log(newPost);
+		console.log(newPost);
 		mutate(newPost);
 	};
 
@@ -270,17 +270,17 @@ const PostCreateComponent = () => {
 	const handlePublish = () => {
 		if (title.length < 5) {
 			alert('제목의 내용이 너무 짧습니다');
-			// console.log(content.replace(reg, ''));
-			// console.log(content);
-			// console.log(content.replace(reg, '').length);
+			console.log(content.replace(reg, ''));
+			console.log(content);
+			console.log(content.replace(reg, '').length);
 			return;
 		}
 
 		if (content.replace(reg, '').length < 10) {
 			alert('글의 내용이 너무 짧습니다');
-			// console.log(content.replace(reg, ''));
-			// console.log(content);
-			// console.log(content.replace(reg, '').length);
+			console.log(content.replace(reg, ''));
+			console.log(content);
+			console.log(content.replace(reg, '').length);
 			return;
 		}
 

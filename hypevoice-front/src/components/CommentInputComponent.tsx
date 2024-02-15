@@ -72,7 +72,7 @@ const CommentInputComponent = () => {
 	const isLogin = useRecoilValue(LoginState);
 	const { id } = useParams();
 	const getAccessToken = () => {
-		// console.log(document.cookie);
+		console.log(document.cookie);
 		const cookies = document.cookie.split('; ');
 		const accessTokenCookie = cookies.find((cookie) =>
 			cookie.startsWith('access_token='),
@@ -87,7 +87,7 @@ const CommentInputComponent = () => {
 		newComment: CreateCommentType,
 	): Promise<number> => {
 		const token = getAccessToken();
-		// console.log(token);
+		console.log(token);
 		const data = new FormData();
 
 		data.append(
@@ -120,20 +120,20 @@ const CommentInputComponent = () => {
 		mutationFn: createComment,
 
 		onError: () => {
-			// console.log('createPost : On Error');
+			console.log('createPost : On Error');
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries();
-			// console.log('createPost : Success');
+			console.log('createPost : Success');
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries();
-			// console.log('createPost : On Settled');
+			console.log('createPost : On Settled');
 		},
 	});
 
 	const createPostHandler = (newComment: CreateCommentType) => {
-		// console.log(newComment);
+		console.log(newComment);
 		mutate(newComment);
 	};
 

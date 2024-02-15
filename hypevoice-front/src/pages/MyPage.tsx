@@ -102,9 +102,9 @@ const StyledButton3 = styled.button`
 `;
 
 const updateMember = async (accessToken: string, newNickname: string, newProfileUrl: File | null) => {
-  // console.log("updateMember 함수 내의 acceessToken : \n" + accessToken);
-  // console.log("updateMember 함수 내의 newNickname : \n" + newNickname);
-  // console.log("updateMember 함수 내의 newProfileUrl : \n" + newProfileUrl);
+  console.log("updateMember 함수 내의 acceessToken : \n" + accessToken);
+  console.log("updateMember 함수 내의 newNickname : \n" + newNickname);
+  console.log("updateMember 함수 내의 newProfileUrl : \n" + newProfileUrl);
 
   const formData = new FormData();
 
@@ -127,7 +127,7 @@ const updateMember = async (accessToken: string, newNickname: string, newProfile
       }
     });
   
-    // console.log(response.data);
+    console.log(response.data);
     return response.data;
   } catch (e) {
     if (axios.isAxiosError(e)) {
@@ -144,7 +144,7 @@ const deleteMember = async (accessToken: string) => {
       Authorization: `Bearer ${accessToken}`,
     }
   });
-  // console.log(response.data);
+  console.log(response.data);
   return response.data;
 };
 
@@ -152,7 +152,7 @@ const fetchMemberInfo = async (accessToken: string) => {
   const response = await axiosClient.get("/api/members", {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
-  // console.log(response.data); // response.data가 멤버info
+  console.log(response.data); // response.data가 멤버info
   return response.data;
 };
 
@@ -195,7 +195,7 @@ function MyPage() {
   
   const handleSaveChanges = async () => {
     const currentAcceessToken = getCookie("access_token");
-    // alert("바뀔 nickname : " + nickname);
+    alert("바뀔 nickname : " + nickname);
     // alert("바뀔 profileUrl : " + newProfileFile);
     // alert("currentAcceessToken : \n" + currentAcceessToken);
     await updateMember(currentAcceessToken, nickname, newProfileFile);
@@ -208,8 +208,6 @@ function MyPage() {
         ...memberInfo,
         // accessToken: accessToken, // 엑세스 토큰은 제외하고!
       });
-
-      window.location.reload();
     })
     .catch((e) => {
       console.log(e);

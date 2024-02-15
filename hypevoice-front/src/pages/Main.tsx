@@ -14,20 +14,20 @@ import MyPage from "./MyPage";
 import PostCreateComponent from "@/components/PostCreateComponent";
 import PostModifyComponent from "@/components/PostModifyComponent";
 
-const HeaderHeight = "90px";
+const HeaderHeight = "40px";
 
 const MainGrid = styled.div`
   display: grid;
   grid-template-rows: auto 1fr auto;
-  grid-template-columns: 1fr 4fr; /* 수정된 부분 */
+  grid-template-columns: 10% 1fr 15%;
   overflow: auto;
   grid-gap: 0;
   padding-top: ${HeaderHeight};
   border: none;
-  background-color: white;
+  background-color: #f5f5f5;
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr; /* 반응형 스타일링 */
+    grid-template-columns: 1fr;
   }
 `;
 
@@ -35,20 +35,22 @@ const HeaderGrid = styled.div`
   grid-row: 1 / 2;
   grid-column: 1 / 4;
   height: ${HeaderHeight};
-  background-color: white;
+  background-color: #f5f5f5;
 `;
 
-// const LeftSideGrid = styled.div`
-//   grid-row: 2 / 3;
-//   grid-column: 1 / 2;
-//   @media (max-width: 768px) {
-//     display: none;
-//   }
-// `;
+const LeftSideGrid = styled.div`
+  grid-row: 2 / 3;
+  grid-column: 1 / 2;
+  /* background-color: #f5f5f5; */
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
 
 const CenterGrid = styled.div`
-  grid-row: 1 / 3;
-  grid-column: 1 / 3;
+  grid-row: 2 / 3;
+  grid-column: 2 / 3;
+  /* background-color: #ffffff; */
   @media (max-width: 768px) {
     grid-column: 1 / -1;
   }
@@ -65,7 +67,8 @@ const RightSideGrid = styled.div`
 
 const FooterGrid = styled.div`
   grid-row: 3 / 4;
-  grid-column: 1 / 3; /* 수정된 부분 */
+  grid-column: 1 / 4;
+  /* background-color: #f5f5f5; */
 `;
 
 function Main() {
@@ -75,9 +78,9 @@ function Main() {
       <HeaderGrid>
         <HeaderComponent />
       </HeaderGrid>
-      {/* <LeftSideGrid>
+      <LeftSideGrid>
         <LeftSide />
-      </LeftSideGrid> */}
+      </LeftSideGrid>
       <CenterGrid>
         <Routes>
           <Route

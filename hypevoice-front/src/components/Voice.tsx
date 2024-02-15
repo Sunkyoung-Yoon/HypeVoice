@@ -3,14 +3,13 @@ import AddInfo from "./AddInfo";
 import InlineHeader from "./InlineHeader";
 import MyInfo from "./MyInfo";
 import WorkGrid from "./WorkGrid";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import { MyInfoVoiceId } from "@/recoil/CurrentVoiceId/MyInfoVoiceId";
 import { VoiceDataType } from "./type";
 import { axiosClient } from "@/api/axios";
 import { CurrentMemberAtom } from "@/recoil/Auth";
 import styled from "styled-components";
 import VoiceInfoModal from "./VoiceInfoModal";
-import { curStorageSizeAtom } from "@/recoil/curStorageSize";
 
 // 정보 수정 버튼을 포함하는 섹션
 const ButtonSection = styled.section`
@@ -25,14 +24,14 @@ const UpdateVoiceButton = styled.button`
   border-radius: 25px;
   padding: 10px 15px;
   background-color: #5b5ff4;
-  color: white;
+  color: #fff;
   cursor: pointer;
   margin-right: 380px;
 `;
 
 const getVoiceData = async (voiceId: number): Promise<VoiceDataType> => {
   const response = await axiosClient.get(`/api/voices/${voiceId}`);
-  // console.log(response.data);
+  console.log(response.data);
   return response.data;
 };
 
@@ -44,7 +43,6 @@ function Voice() {
   // const [like, setLike] = useRecoilState(likeState);
   const currentMember = useRecoilValue(CurrentMemberAtom);
   const [isAddWorkModalOpen, setIsAddWorkModalOpen] = useState(false);
-  const [curStorageSize, setCurStorageSize] = useRecoilState(curStorageSizeAtom);
 
   // 작업물 추가 버튼 클릭 => 모달 창 열리기
   const handleAddWorkClick = () => {
@@ -61,7 +59,6 @@ function Voice() {
       try {
         const voiceData = await getVoiceData(currentVoiceId);
         setCurrentVoice(voiceData);
-        setCurStorageSize(voiceData.totalSizeMega);
         // setFavoriteCnt(voiceData.likes);
       } catch (error) {
         console.error(error);
@@ -94,7 +91,7 @@ function Voice() {
         <InlineHeader
           title={"💾 작업물"}
           worksCnt={workCount}
-          storageSpace={curStorageSize}
+          storageSpace={currentVoice?.totalSizeMega}
         />
         <WorkGrid setWorkCount={setWorkCount} />
       </section>

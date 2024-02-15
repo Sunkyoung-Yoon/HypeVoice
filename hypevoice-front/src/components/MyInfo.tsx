@@ -3,6 +3,7 @@ import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
+import ButtonBase from "@mui/material/ButtonBase";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { axiosClient } from "@/api/axios";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -10,7 +11,6 @@ import { MyInfoVoiceId } from "@/recoil/CurrentVoiceId/MyInfoVoiceId";
 import { getCookie } from "@/api/cookie";
 import { likeState } from "@/recoil/likeState";
 import { VoiceDataType } from "./type";
-import { curStorageSizeAtom } from "@/recoil/curStorageSize";
 
 const Img = styled("img")({
   margin: "auto",
@@ -21,7 +21,7 @@ const Img = styled("img")({
 
 const getVoiceData = async (voiceId: number): Promise<VoiceDataType> => {
   const response = await axiosClient.get(`/api/voices/${voiceId}`);
-  // console.log(response.data);
+  console.log(response.data);
   return response.data;
 };
 
@@ -39,7 +39,7 @@ const registerLike = async (
         },
       }
     );
-    // console.log(response.data);
+    console.log(response.data);
   } catch (error) {
     alert("내 보이스의 좋아요는 누를 수 없습니다.");
     console.error(error);
@@ -56,7 +56,7 @@ const deleteLike = async (
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    // console.log(response.data);
+    console.log(response.data);
   } catch (error) {
     console.error(error);
   }
@@ -72,7 +72,7 @@ const checkLike = async (
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    // console.log(response.data);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -134,6 +134,8 @@ function MyInfo() {
           margin: "auto",
           maxWidth: 500,
           flexGrow: 1,
+          backgroundColor: (theme) =>
+            theme.palette.mode === "dark" ? "#1A2027" : "#fff",
         }}
       >
         <Grid container spacing={2}>

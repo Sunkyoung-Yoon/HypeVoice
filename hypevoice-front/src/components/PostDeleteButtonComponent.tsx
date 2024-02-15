@@ -39,7 +39,7 @@ export default function PostDeleteButtonComponent({
 	const navigation = useNavigate();
 	const [open, setOpen] = useState(false);
 	const getAccessToken = () => {
-		// console.log(document.cookie);
+		console.log(document.cookie);
 		const cookies = document.cookie.split('; ');
 		const accessTokenCookie = cookies.find((cookie) =>
 			cookie.startsWith('access_token='),
@@ -72,16 +72,16 @@ export default function PostDeleteButtonComponent({
 	const { mutate } = useMutation({
 		mutationFn: deletePost,
 		onError: () => {
-			// console.log('deletePost : On Error');
+			console.log('deletePost : On Error');
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['community-posts'] });
 			navigation('/community');
 			alert('삭제 성공');
-			// console.log('deletePost : Success, id : ' + id);
+			console.log('deletePost : Success, id : ' + id);
 		},
 		onSettled: () => {
-			// console.log('deletePost : On Settled');
+			console.log('deletePost : On Settled');
 		},
 	});
 

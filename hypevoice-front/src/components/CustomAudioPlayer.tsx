@@ -1,9 +1,15 @@
-export default function CustomAudioPlayer({ src }: { src: string }) {
+export default function CustomAudioPlayer({
+  src,
+  width,
+}: {
+  src: string;
+  width: number;
+}) {
   return (
     <audio
       controls
       style={{
-        width: "100%",
+        width: `${width}%`,
         border: "3px solid black",
         borderRadius: "25px",
       }}

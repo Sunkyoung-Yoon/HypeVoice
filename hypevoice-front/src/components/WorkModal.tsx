@@ -22,8 +22,6 @@ import { categories } from "./Category";
 import { getCookie } from "@/api/cookie";
 import { axiosClient } from "@/api/axios";
 import CustomAudioPlayer from "./CustomAudioPlayer";
-import { curStorageSizeAtom } from "@/recoil/curStorageSize";
-import { useRecoilState } from "recoil";
 
 export const categoryNames: Record<string, string> = {
   미디어: "mediaClassification",
@@ -40,11 +38,11 @@ export default function WorkModal({
   voiceId, // 보이스 아이디
   workId, // 작업물 아이디
 }: WorkModalProps) {
-  // 허용하는 텍스트 파일 확장자
-  const TEXT_EXTENSIONS = [".txt", ".doc", ".docx", ".pdf", ".csv", ".xlsx"];
+  // 허용하는 텍스트 파일 확장자 // txt는 보안 이슈로 제외!
+  const TEXT_EXTENSIONS = [".doc", ".docx", ".pdf", ".csv", ".xlsx"];
 
   // 허용하는 음성 파일 확장자
-  const AUDIO_EXTENSIONS = [".mp3", ".wav", ".ogg", ".m4a"];
+  const AUDIO_EXTENSIONS = [".mp3", ".wav", ".ogg", ".m4a", ".webm"];
 
   // 허용하는 이미지 파일 확장자
   const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png"];
@@ -57,7 +55,6 @@ export default function WorkModal({
     return allowedExtensions.includes(extension);
   }
 
-  const [curStorageSize, setCurStorageSize] = useRecoilState(curStorageSizeAtom);
   const [title, setTitle] = useState(""); // 제목 입력 값 상태 관리
   const [youtubeUrl, setYoutubeUrl] = useState(""); // 유튜브 링크 입력 값 상태 관리
   const [intro, setIntro] = useState(""); // 작업물 소개 입력 값 상태 관리
@@ -79,6 +76,7 @@ export default function WorkModal({
     age: "",
   });
 
+  // 상태 리셋
   function resetState() {
     setTitle("");
     setYoutubeUrl("");
@@ -190,8 +188,7 @@ export default function WorkModal({
     // 사전 유효성 검사
     const errorMessage = validateWork(title, selectedCategory, recordFile);
     if (errorMessage) {
-      // alert(errorMessage);
-      console.log(errorMessage);
+      alert(errorMessage);
       return;
     }
 
@@ -214,37 +211,12 @@ export default function WorkModal({
       new Blob([JSON.stringify(request)], { type: "application/json" })
     );
 
-    const files = [];
-    files[0] = imageFile;
-    files[1] = scriptFile;
-    files[2] = recordFile;
-    files.forEach((file) => {
-      if (file) {
-        formData.append("files", file);
-      }
-    });
-
-    let totalSize = 0;
-    if (files[0]) {
-      totalSize += files[0].size / 1000000;
-    }
-    if (files[1]) {
-      totalSize += files[1].size / 1000000;
-    }
-    if (files[2]) {
-      totalSize += files[2].size / 1000000;
-    }
-    
-    if (totalSize > 20) {
-      alert("파일들이 너무 큽니다. 한 번에 등록할 수 있는 파일은 총 20MB입니다.");
-      return;
-    }
-    
-    // alert("curStorageSize" + curStorageSize);
-    if (totalSize + curStorageSize > 1024) {
-      alert("파일들이 너무 큽니다. 총 저장 공간은 1024MB를 넘을 수 없습니다.");
-      return;
-    }
+    const image = imageFile;
+    const script = scriptFile;
+    const record = recordFile;
+    formData.append("image", image);
+    formData.append("script", script);
+    formData.append("record", record);
 
     try {
       await axiosClient.post(`/api/voices/${voiceId}/works`, formData, {
@@ -253,10 +225,10 @@ export default function WorkModal({
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      // console.log("작업물 등록 성공");
+      console.log("작업물 등록 성공");
       resetState();
     } catch (error) {
-      // console.log("작업물 등록 실패");
+      console.log("작업물 등록 실패");
       console.log(error);
     }
     onClose();
@@ -292,37 +264,12 @@ export default function WorkModal({
         new Blob([JSON.stringify(request)], { type: "application/json" })
       );
 
-      const files = [];
-      files[0] = imageFile;
-      files[1] = scriptFile;
-      files[2] = recordFile;
-      files.forEach((file) => {
-        if (file) {
-          formData.append("files", file);
-        }
-      });
-
-      let totalSize = 0;
-    if (files[0]) {
-      totalSize += files[0].size / 1000000;
-    }
-    if (files[1]) {
-      totalSize += files[1].size / 1000000;
-    }
-    if (files[2]) {
-      totalSize += files[2].size / 1000000;
-    }
-    
-    if (totalSize > 20) {
-      alert("파일들이 너무 큽니다. 한 번에 등록할 수 있는 파일은 총 20MB입니다.");
-      return;
-    }
-    
-    // alert("curStorageSize" + curStorageSize);
-    if (totalSize + curStorageSize > 1024) {
-      alert("파일들이 너무 큽니다. 총 저장 공간은 1024MB를 넘을 수 없습니다.");
-      return;
-    }
+      const image = imageFile;
+      const script = scriptFile;
+      const record = recordFile;
+      formData.append("image", image);
+      formData.append("script", script);
+      formData.append("record", record);
 
       try {
         await axiosClient.patch(
@@ -335,10 +282,9 @@ export default function WorkModal({
             },
           }
         );
-        alert(`${workId}번째 작업물 수정 성공!`);
         resetState();
       } catch (error) {
-        alert(`${workId}번째 작업물 수정 실패!`);
+        alert("작업물 수정 실패!");
         console.error(error);
         onClose();
       }
@@ -388,7 +334,49 @@ export default function WorkModal({
       link.click();
       URL.revokeObjectURL(textDownloadUrl);
     };
-    return <button onClick={downloadTextFileClick}>{scriptFile?.name}</button>;
+    return (
+      <button
+        style={{ width: "500px", minHeight: "30px" }}
+        onClick={downloadTextFileClick}
+      >
+        {scriptFile?.name}
+      </button>
+    );
+  }
+
+  // S3 링크로부터 파일 다운 받는 함수
+  const downloadFileFromS3 = (scriptUrl) => {
+    fetch(scriptUrl)
+      .then((response) => {
+        response.text("UTF-8");
+      })
+      .then((text) => {
+        const blob = new Blob([text], { type: "text/plain; charset=UTF-8" });
+        const downloadUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = scriptFileUrl;
+        link.setAttribute("charset", "UTF-8");
+        link.setAttribute("target", "_blank");
+        link.download = "다운받은 대본";
+        link.click();
+        URL.revokeObjectURL(downloadUrl);
+        URLEncoder.encode(fileName, Charsets.UTF_8);
+      })
+      .catch((error) => {
+        console.error("파일 다운로드에 실패했습니다.", error);
+      });
+  };
+
+  // 텍스트 파일 다운 받는 버트
+  function DownloadTextFile({ text }) {
+    const textBlob = new Blob([text.scriptUrl], { type: "text/plain" });
+    console.log("textblob", textBlob);
+    const textDownloadUrl = URL.createObjectURL(textBlob);
+    const link = document.createElement("a");
+    link.href = textDownloadUrl;
+    link.download = `${scriptFile?.name}`;
+    link.click();
+    URL.revokeObjectURL(textDownloadUrl);
   }
 
   // 음성 파일 다운로드 링크 버튼
@@ -421,8 +409,6 @@ export default function WorkModal({
         );
 
         if (response) {
-          // console.log("response.data 는 아래와 같습니다!");
-          // console.log(response.data);
           setTitle(response.data.title); // 모달 창 타이틀 설정
           setIntro(response.data.info); // 모달 창 소개 설정
           setYoutubeUrl(response.data.videoLink); // 모달창 유튜브 링크 설정
@@ -441,72 +427,13 @@ export default function WorkModal({
           selectedCategory.gender = response.data.categoryInfoValue.genderValue;
           // 연령
           selectedCategory.age = response.data.categoryInfoValue.ageValue;
-          // console.log(selectedCategory);
+          // 사진 미리보기 설정
+          setPreview(response.data.photoUrl);
+          setScriptFileUrl(response.data.scriptUrl);
+
+          setRecordFileUrl(response.data.recordUrl);
+          DownloadTextFile(response.data);
         }
-        // 사진 미리보기 설정
-        setPreview(response.data.photoUrl);
-
-        setScriptFileUrl(response.data.scriptUrl);
-        setRecordFileUrl(response.data.recordUrl);
-
-        // 대본 파일 설정
-
-        // [방법 1] 실패
-
-        // fetch(response.data.scriptUrl)
-        //   .then((res) => res.blob())
-        //   .then((blob) => {
-        //     const scriptBlobUrl = URL.createObjectURL(blob);
-        //     setScriptFileUrl(scriptBlobUrl);
-        //   });
-
-        // [방법 2] 실패
-
-        // // 서버로 부터 받아온 url
-        // console.log(response.data.scriptUrl);
-        // // 그걸로 Blob 파일화
-        // const tmpScriptBlobFile = new Blob(response.data.scriptUrl, {
-        //   type: "text/plain",
-        // });
-        // // 그거 출력 해보기
-        // console.log(`tmpScriptBlobFile = ${tmpScriptBlobFile}`);
-        // // 그걸로 다운로드 가능한 링크 만들기
-        // const tmpScriptFileUrl = URL.createObjectURL(tmpScriptBlobFile);
-        // // 그 링크 출력해보기
-        // console.log(`tmpScriptFileUrl = ${tmpScriptFileUrl}`);
-        // // 그 다운로드 가능한 링크를 스크립트 파일 url로 설정하기
-        // setScriptFileUrl(tmpScriptFileUrl);
-        // // 그 Blob파일로 진짜 파일화 하기
-        // const tmpScriptFile = new File(
-        //   [tmpScriptBlobFile],
-        //   `${response.data.title} 텍스트 파일`,
-        //   { type: "text/plain" }
-        // );
-        // // 해당 진짜 파일을 script 파일로 설정하기
-        // setScriptFile(tmpScriptFile);
-
-        // // 서버로 부터 받아온 url
-        // console.log(response.data.recordUrl);
-        // // 그걸로 Blob 파일화
-        // const tmpRecordBlobFile = new Blob(response.data.recordUrl, {
-        //   type: "text/plain",
-        // });
-        // // 그거 출력 해보기
-        // console.log(`tmpRecordBlobFile = ${tmpRecordBlobFile}`);
-        // // 그걸로 다운로드 가능한 링크 만들기
-        // const tmpRecordFileUrl = URL.createObjectURL(tmpRecordBlobFile);
-        // // 그 링크 출력해보기
-        // console.log(`tmpRecordFileUrl = ${tmpRecordFileUrl}`);
-        // // 그 다운로드 가능한 링크를 스크립트 파일 url로 설정하기
-        // setRecordFileUrl(tmpRecordFileUrl);
-        // // 그 Blob파일로 진짜 파일화 하기
-        // const tmpRecordFile = new File(
-        //   [tmpRecordBlobFile],
-        //   `${response.data.title} 음성 파일`,
-        //   { type: "text/plain" }
-        // );
-        // // 해당 진짜 파일을 script 파일로 설정하기
-        // setRecordFile(tmpRecordFile);
       }
     };
 
@@ -730,16 +657,24 @@ export default function WorkModal({
         >
           {/* 대본 파일 첨부 */}
           <div
+            className="aboutText"
             style={{
               display: "flex",
+              justifyContent: "space-between",
               alignItems: "center",
-              margin: "10px",
+              margin: "20px",
+              padding: "15px",
             }}
           >
-            <TextSnippetIcon style={{ fontSize: 30 }} />
-            <DownloadTextFileButton text={scriptFile} />
+            <TextSnippetIcon style={{ fontSize: 40 }} />
+            {role === "create" && <DownloadTextFileButton text={scriptFile} />}
+            {(role === "read" || role === "change") && scriptFileUrl && (
+              <button onClick={downloadFileFromS3} style={{ width: "80%" }}>
+                대본 다운로드
+              </button>
+            )}
             {role !== "read" && (
-              <>
+              <div>
                 <Button
                   variant="contained"
                   onClick={() => scriptFileInput.current?.click()}
@@ -776,28 +711,65 @@ export default function WorkModal({
                 >
                   삭제
                 </Button>
-              </>
+              </div>
             )}
-            <input
-              type="file"
-              hidden
-              ref={scriptFileInput}
-              onChange={handleScriptFileChange}
-              accept="text/*"
-            />
           </div>
+          <input
+            type="file"
+            hidden
+            ref={scriptFileInput}
+            onChange={handleScriptFileChange}
+          />
           {/* 음성 파일 첨부 */}
           {recordFileUrl ? (
-            <CustomAudioPlayer src={recordFileUrl} />
+            <div
+              className="aboutRecord"
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                margin: "20px",
+                padding: "15px",
+              }}
+            >
+              <MicIcon style={{ fontSize: 40 }} />
+              <CustomAudioPlayer src={recordFileUrl} width={80} />
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setRecordFile(null);
+                  setRecordFileUrl(null);
+                  if (recordFileInput.current) {
+                    recordFileInput.current.value = "";
+                  }
+                }}
+                sx={{
+                  backgroundColor: "#ee2727",
+                  color: "#ffffff",
+                  borderRadius: "25px",
+                  height: "41px",
+                  width: "60px",
+                  marginLeft: "25px",
+                  alignSelf: "center",
+                  "&:hover": {
+                    backgroundColor: "#ee2727",
+                  },
+                }}
+              >
+                삭제
+              </Button>
+            </div>
           ) : (
             <div
               style={{
                 display: "flex",
+                justifyContent: "space-between",
                 alignItems: "center",
-                margin: "10px",
+                margin: "20px",
+                padding: "15px",
               }}
             >
-              <MicIcon style={{ fontSize: 30 }} />
+              <MicIcon style={{ fontSize: 40 }} />
               <DownloadRecordFileButton record={recordFile} />
               {role !== "read" && (
                 <>
@@ -816,27 +788,6 @@ export default function WorkModal({
                   >
                     {recordFile ? "변경" : "추가"}
                   </Button>
-                  <Button
-                    variant="contained"
-                    onClick={() => {
-                      setRecordFile(null);
-                      setRecordFileUrl(null);
-                      if (recordFileInput.current) {
-                        recordFileInput.current.value = "";
-                      }
-                    }}
-                    sx={{
-                      backgroundColor: "#ee2727",
-                      color: "#ffffff",
-                      borderRadius: "25px",
-                      marginLeft: "10px",
-                      "&:hover": {
-                        backgroundColor: "#ee2727",
-                      },
-                    }}
-                  >
-                    삭제
-                  </Button>
                 </>
               )}
               <input
@@ -851,21 +802,26 @@ export default function WorkModal({
 
           {/* 유튜브 링크 입력 */}
           <div
+            className="aboutYoutube"
             style={{
               display: "flex",
-              flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
-              paddingBottom: "5px",
+              margin: "20px",
+              padding: "15px",
             }}
           >
-            <YouTubeIcon style={{ fontSize: 30, marginLeft: "10px" }} />
+            <YouTubeIcon style={{ fontSize: 40 }} />
             <TextField
               label="유튜브 링크"
               value={youtubeUrl}
               onChange={(e) => setYoutubeUrl(e.target.value)}
               disabled={role === "read"}
-              style={{ flexGrow: 1, marginLeft: "20px", marginInline: "10px" }}
+              style={{
+                flexGrow: 0.95,
+                marginLeft: "20px",
+                marginInline: "10px",
+              }}
             />
           </div>
         </div>

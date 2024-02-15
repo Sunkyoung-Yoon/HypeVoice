@@ -5,7 +5,7 @@ import styled from "styled-components";
 const FloatingScrollNavigation = styled.nav`
   position: fixed;
   top: 50%;
-  right: 50px;
+  left: 20px;
   text-align: center;
 
   p {

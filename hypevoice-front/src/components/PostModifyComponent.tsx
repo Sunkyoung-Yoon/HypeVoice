@@ -195,31 +195,31 @@ const PostModifyComponent = () => {
 	const { mutate } = useMutation({
 		mutationFn: modifyPost,
 		onError: () => {
-			// console.log('modifyPost : On Error');
+			console.log('modifyPost : On Error');
 			alert('Error : 관리자에게 문의하세요');
 		},
 		onSuccess: () => {
-			// console.log('modifyPost : Success');
+			console.log('modifyPost : Success');
 			queryClient.invalidateQueries({ queryKey: ['post'] });
 			alert('수정 성공!');
 		},
 		onSettled: () => {
-			// console.log('modifyPost : On Settled');
+			console.log('modifyPost : On Settled');
 		},
 	});
 
 	if (isLoading) {
-		// console.log('Post : isLoading');
+		console.log('Post : isLoading');
 		return <LoadingComponent />;
 	}
 
 	if (isFetched) {
-		// console.log('Post : isFetched');
+		console.log('Post : isFetched');
 		queryClient.invalidateQueries({ queryKey: ['get-post'] });
 	}
 
 	if (isError) {
-		// console.log('Post : isError');
+		console.log('Post : isError');
 		return <div>게시물을 불러올 수 없습니다</div>;
 	}
 
@@ -228,7 +228,7 @@ const PostModifyComponent = () => {
 	};
 
 	const onModify = (title: string, category: string, content: string) => {
-		// console.log(content);
+		console.log(content);
 		const modifiedPost: CreatePostType = {
 			category: category,
 			title: title,
@@ -253,17 +253,17 @@ const PostModifyComponent = () => {
 	const handlePublish = () => {
 		if (title.length < 5) {
 			alert('제목의 내용이 너무 짧습니다');
-			// console.log(content.replace(reg, ''));
-			// console.log(content);
-			// console.log(content.replace(reg, '').length);
+			console.log(content.replace(reg, ''));
+			console.log(content);
+			console.log(content.replace(reg, '').length);
 			return;
 		}
 
 		if (content.replace(reg, '').length < 10) {
 			alert('글의 내용이 너무 짧습니다');
-			// console.log(content.replace(reg, ''));
-			// console.log(content);
-			// console.log(content.replace(reg, '').length);
+			console.log(content.replace(reg, ''));
+			console.log(content);
+			console.log(content.replace(reg, '').length);
 			return;
 		}
 
@@ -276,7 +276,7 @@ const PostModifyComponent = () => {
 		setCategory('');
 		setTitle('');
 		setContent('');
-		// console.log('글을 수정합니다:', content);
+		console.log('글을 수정합니다:', content);
 		navigation(`/community/${id}`);
 	};
 

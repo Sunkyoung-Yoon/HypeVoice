@@ -104,9 +104,6 @@ export default function HeaderBarComponent() {
       style={{
         backgroundColor: "white",
         boxShadow: "none",
-        borderColor: "grey",
-        borderBottom: "solid",
-        borderWidth: "1px",
       }}
     >
       <Toolbar

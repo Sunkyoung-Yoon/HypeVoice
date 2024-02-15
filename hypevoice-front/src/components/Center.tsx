@@ -3,7 +3,7 @@ import ScrollToTopComponent from './ScrollToTopComponent';
 
 const CenterStyleDiv = styled.div`
   width: 100%;
-  background-color: white;
+  background-color: #f5f5f5;
   // margin: auto;
   // overflow: auto;
 `;

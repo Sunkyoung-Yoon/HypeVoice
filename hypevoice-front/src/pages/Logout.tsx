@@ -28,8 +28,6 @@ export default function Logout() {
 
         // 쿠키에서 엑세스 토큰을 제거합니다.
         removeCookie("access_token");
-        
-        alert("로그아웃 되었습니다.");
 
         // 사용자를 로그인 페이지로 리디렉션합니다.
         navigate("/login");
