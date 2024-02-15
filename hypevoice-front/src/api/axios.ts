@@ -1,9 +1,7 @@
-import axios, { Axios } from "axios";ZZ
-import { SERVER_URL } from "@/recoil/SERVER_URL";
-import { useRecoilValue } from "recoil";
+import axios, { Axios } from "axios";
 
 export const axiosClient: Axios = axios.create({
-  baseURL: useRecoilValue(SERVER_URL),
+  baseURL: "https://hypevoice.site", // 백 URL
   headers: {
     "Content-Type": "application/json",
   },

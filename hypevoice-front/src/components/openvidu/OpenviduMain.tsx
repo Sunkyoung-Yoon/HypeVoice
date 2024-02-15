@@ -11,8 +11,6 @@ import OpenviduForm from './OpenviduForm';
 import OpenviduSession from './OpenviduSession';
 import { getCookie } from '../../api/cookie';
 import { Box, Button, Modal, Typography } from '@mui/material';
-import { SERVER_URL } from '@/recoil/SERVER_URL';
-import { useRecoilValue } from 'recoil';
 const modalStyle = {
 	position: 'absolute' as 'absolute',
 	top: '50%',
@@ -30,7 +28,7 @@ type ChatType = {
 	message: string;
 };
 function OpenviduMain() {
-	const OPENVIDU_SERVER_URL = useRecoilValue(SERVER_URL);
+	const OPENVIDU_SERVER_URL = `https://hypevoice.site`;
 	const [session, setSession] = useState<OVSession | ''>('');
 	const [sessionScreen, setSessionScreen] = useState<OVSession | ''>('');
 	const [studioId, setStudioId] = useState<string>('');

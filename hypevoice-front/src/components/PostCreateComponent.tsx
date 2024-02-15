@@ -164,7 +164,7 @@ const modules = {
 Quill.register('formats/my-link', MyLink);
 Quill.register('formats/align', Quill.import('attributors/style/align'));
 
-const base_server_url = 'http://localhost:8081';
+const base_server_url = 'https://hypevoice.site';
 let id: number;
 const PostCreateComponent = () => {
 	const navigation = useNavigate();

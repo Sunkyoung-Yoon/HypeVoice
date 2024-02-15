@@ -8,7 +8,6 @@ import { useParams } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { LoginState } from '@/recoil/Auth';
 import AudioRecorder from './AudioRecorder';
-import { SERVER_URL } from '@/recoil/SERVER_URL';
 
 const CommentInputStyleDiv = styled.div`
 	.comment-input-component {
@@ -64,7 +63,7 @@ const CommentInputStyleDiv = styled.div`
 		margin: 5px;
 	}
 `;
-const base_server_url = useRecoilValue(SERVER_URL);
+const base_server_url = 'https://hypevoice.site';
 const CommentInputComponent = () => {
 	const [comment, setComment] = useState('');
 	const [voiceCommentUrl, setVoiceCommentUrl] = useState('');

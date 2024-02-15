@@ -9,8 +9,6 @@ import axios from 'axios';
 import { GetPostType } from './CommunityType';
 import LoadingComponent from './LoadingComponent';
 import { CreatePostType } from './CommunityType';
-import { useRecoilValue } from 'recoil';
-import { SERVER_URL } from '@/recoil/SERVER_URL';
 // import AudioRecord from './AudioRecord';
 
 const PostEditorStyleDiv = styled.div`
@@ -148,7 +146,7 @@ const modules = {
 
 const queryClient = new QueryClient();
 
-const base_server_url = useRecoilValue(SERVER_URL);
+const base_server_url = 'https://hypevoice.site';
 
 const PostModifyComponent = () => {
 	const navigation = useNavigate();

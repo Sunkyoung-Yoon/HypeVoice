@@ -3,7 +3,6 @@ import { getCookie } from "@/api/cookie";
 import InlineHeader from "@/components/InlineHeader";
 import { MemberInfo } from "@/components/type";
 import { CurrentMemberAtom, LoginState } from "@/recoil/Auth";
-import { SERVER_URL } from "@/recoil/SERVER_URL";
 import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -131,7 +130,7 @@ const updateMember = async (
   // console.log(...formData);
 
   try {
-    const response = await axios.patch(`${useRecoilValue(SERVER_URL)}/api/members`, formData, {
+    const response = await axios.patch("https://hypevoice.site/api/members", formData, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -149,7 +148,7 @@ const updateMember = async (
 };
 
 const deleteMember = async (accessToken: string) => {
-  const response = await axios.delete("http://localhost:8081/api/members", {
+  const response = await axios.delete("https://hypevoice.site/api/members", {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
