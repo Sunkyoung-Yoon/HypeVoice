@@ -26,8 +26,8 @@ const WorkWrapper = styled.div<WorkWrapperProps>`
 
 const StyledImg = styled.img`
   transition: opacity 0.3s ease;
-  width: 100px;
-  height: 100px;
+  width: 70px;
+  height: 90px;
   border-radius: 20%;
 `;
 

@@ -10,6 +10,8 @@ const VoiceFilteringComponent = styled.div`
   border-radius: 10px;
   display: flex;
   flex-direction: column;
+  margin-left: 3%;
+  margin-right: 3%;
 `;
 
 interface Props {
