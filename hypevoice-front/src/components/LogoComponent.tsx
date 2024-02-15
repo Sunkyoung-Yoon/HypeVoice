@@ -27,8 +27,8 @@ const LogoContainer = styled.div`
 
 const LogoImg = styled.img`
   display: block;
-  width: 300px;
-  height: 200px;
+  width: 600px;
+  height: 400px;
 `;
 
 export default function LogoComponent() {

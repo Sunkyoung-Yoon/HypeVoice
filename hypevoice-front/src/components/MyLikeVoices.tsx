@@ -12,31 +12,27 @@ import { LoginState } from "@/recoil/Auth";
 const Container = styled.div`
   border: 1px solid black;
   border-radius: 12px;
-  border-width: 2px;
-  width: 220px;
+  border-width: 1px;
   padding: 5px;
-  margin: 10px;
 `;
 
 const Title = styled.div`
   text-align: center;
   font-weight: bold;
   margin-bottom: 2px;
-  font-size: 20px;
+  font-size: 14px;
 `;
 
 const VoiceList = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
 `;
 
 const VoiceItem = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 170px;
   margin: 2px;
-  font-size: 18px;
+  font-size: 12px;
 `;
 
 const VoiceName = styled.p`
@@ -114,7 +110,7 @@ export default function MyLikeVoices() {
   return (
     <>
       <Container>
-        <Title>좋아요 누른 보이스들</Title>
+        <Title>좋아요 누른 보이스</Title>
         <hr />
         <VoiceList>
           {voices

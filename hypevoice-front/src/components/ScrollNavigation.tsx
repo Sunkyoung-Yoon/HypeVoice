@@ -1,11 +1,10 @@
-import React from "react";
-import { Link, animateScroll } from "react-scroll";
+import { Link } from "react-scroll";
 import styled from "styled-components";
 
 const FloatingScrollNavigation = styled.nav`
   position: fixed;
-  top: 50%;
-  right: 50px;
+  top: 45%;
+  left: 45px;
   text-align: center;
 
   p {

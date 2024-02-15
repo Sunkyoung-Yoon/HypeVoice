@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { RecoilState, useRecoilState } from "recoil";
 import styled from "styled-components";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Button } from "@mui/material";
 import CategoryFilter, { SmallIcon, IconKey } from "./CategoryFilter";
 import {
   MainCurrentFilterAtom,
@@ -23,9 +22,11 @@ const CategoryContainer = styled.div`
 const CategoryButton = styled.button`
   display: flex;
   align-items: center;
-  border: 2px solid;
+  border: 1px solid;
   background: none;
-`;
+  font-size: 16px;
+  padding: 8px 8px 8px 12px;
+  `;
 
 // 카테고리 필터 공간
 const CategoryFilterDiv = styled.div`
@@ -34,6 +35,7 @@ const CategoryFilterDiv = styled.div`
   border-top: 1px solid;
   border-bottom: 1px solid;
   background: none;
+  padding: 10px 0px 15px 20px;
 `;
 
 // 태그들 뜨는 곳
@@ -41,7 +43,7 @@ const TagContainer = styled.div`
   flex: 1;
   display: flex;
   flex-wrap: wrap;
-  padding: 15px;
+  padding: 5px;
 `;
 
 // 선택에 따라 만들어지는 태그
@@ -57,6 +59,18 @@ const Tag = styled.div`
 
   img {
     margin-right: 5px; // 아이콘과 글자 사이의 공간 늘리기
+  }
+`;
+
+const Button = styled.div`
+font-size: 18px;
+display: inline;
+  background-color: white;
+  color: black;
+  padding-right: 15px;
+  cursor: pointer;
+  &:hover {
+    color: blue;
   }
 `;
 
