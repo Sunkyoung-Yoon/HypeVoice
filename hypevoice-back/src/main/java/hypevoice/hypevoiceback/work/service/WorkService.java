@@ -59,7 +59,7 @@ public class WorkService {
             voice.increaseTotalSize(script.getSize());
         }
 
-        Work work = Work.createWork(voice, title, videoLink, imageUrl, recordUrl, scriptUrl, info, isRep);
+        Work work = Work.createWork(voice, title, videoLink, imageUrl, scriptUrl, recordUrl, info, isRep);
         return workRepository.save(work).getId();
     }
 
@@ -97,7 +97,7 @@ public class WorkService {
         if (work.getRecordUrl() != null)
             fileService.deleteFiles(work.getRecordUrl());
 
-        work.updateWork(title, videoLink, imageUrl, recordUrl, scriptUrl, info, isRep);
+        work.updateWork(title, videoLink, imageUrl, scriptUrl, recordUrl, info, isRep);
     }
 
     @Transactional
