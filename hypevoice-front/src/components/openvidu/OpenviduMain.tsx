@@ -55,15 +55,15 @@ function OpenviduMain() {
 			.delete(
 				`${OPENVIDU_SERVER_URL}/api/studios/${studioId}/recording/${recordingId}`,
 				{
-					params: { recFiles },
 					headers: { Authorization: `Bearer ${accessToken}` },
+					data: { urls: recFiles },
 				},
 			)
 			.catch((e) => console.log(e))
 			.then(() => {
 				setRecFiles([]);
-				setModalOpen(false);
 			});
+		setModalOpen(false);
 	};
 
 	// const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
