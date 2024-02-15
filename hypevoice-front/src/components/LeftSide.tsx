@@ -13,9 +13,9 @@ function LeftSide() {
   const location = useLocation();
 
   return (
-    <LeftSideDiv>
-      {location.pathname === "/voice" && <ScrollNavigation />}
-    </LeftSideDiv>
+    <>
+      <LeftSideDiv>{location.pathname === "/voice" && <ScrollNavigation />}</LeftSideDiv>
+    </>
   );
 }
 

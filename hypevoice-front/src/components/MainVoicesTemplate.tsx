@@ -20,7 +20,7 @@ const WorkWrapper = styled.div<WorkWrapperProps>`
   width: 330px;
   cursor: pointer;
 
-  border: 5px solid ${(props) => (props.isHovered ? "#5b5ff4" : "black")};
+  border: 1px solid ${(props) => (props.$isHovered ? "#5b5ff4" : "black")};
   transition: border-color 0.3s, border-width 0.3s;
 `;
 

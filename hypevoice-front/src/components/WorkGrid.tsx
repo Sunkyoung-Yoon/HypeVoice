@@ -48,8 +48,7 @@ const WorksGrid = styled.div`
 // 페이지네이션용
 const PaginationContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
-  padding-right: 15px;
+  justify-content: center;
 `;
 
 export default function WorkGrid({ setWorkCount }: WorkGridProps) {
@@ -163,7 +162,6 @@ export default function WorkGrid({ setWorkCount }: WorkGridProps) {
         )}
       </WorksGrid>
       <PaginationContainer>
-        {" "}
         <Pagination
           count={Math.ceil(works ? works.length / worksPerPage : 0)}
           page={activePage}

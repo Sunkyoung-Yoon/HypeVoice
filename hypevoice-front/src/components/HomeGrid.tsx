@@ -19,20 +19,20 @@ const HomeGridDiv = styled.div`
   flex-direction: column;
   background-color: #f5f5f5;
 `;
+
 const VoicesContainer = styled.div`
-  flex-grow: 1;
   overflow-y: auto;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 20px;
-  padding: 15px;
-  margin: 15px;
+  align-items: center;
+  justify-content: space-between;
+  grid-template-columns: repeat(3, 1fr); // 변경: 한 줄에 3개의 아이템
+  margin: 0px 30px;
 
   @media (max-width: 1000px) {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @media (max-width: 700px) {
+  @media (max-width: 400px) {
     grid-template-columns: repeat(1, 1fr);
   }
 `;

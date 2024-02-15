@@ -14,12 +14,12 @@ import MyPage from "./MyPage";
 import PostCreateComponent from "@/components/PostCreateComponent";
 import PostModifyComponent from "@/components/PostModifyComponent";
 
-const HeaderHeight = "40px";
+const HeaderHeight = "60px";
 
 const MainGrid = styled.div`
   display: grid;
   grid-template-rows: auto 1fr auto;
-  grid-template-columns: 10% 1fr 15%;
+  grid-template-columns: 2fr 16fr 2fr;
   overflow: auto;
   grid-gap: 0;
   padding-top: ${HeaderHeight};
@@ -33,7 +33,7 @@ const MainGrid = styled.div`
 
 const HeaderGrid = styled.div`
   grid-row: 1 / 2;
-  grid-column: 1 / 4;
+  grid-column: 1 / -1;
   height: ${HeaderHeight};
   background-color: #f5f5f5;
 `;
@@ -41,7 +41,6 @@ const HeaderGrid = styled.div`
 const LeftSideGrid = styled.div`
   grid-row: 2 / 3;
   grid-column: 1 / 2;
-  /* background-color: #f5f5f5; */
   @media (max-width: 768px) {
     display: none;
   }
@@ -50,7 +49,6 @@ const LeftSideGrid = styled.div`
 const CenterGrid = styled.div`
   grid-row: 2 / 3;
   grid-column: 2 / 3;
-  /* background-color: #ffffff; */
   @media (max-width: 768px) {
     grid-column: 1 / -1;
   }
@@ -59,7 +57,6 @@ const CenterGrid = styled.div`
 const RightSideGrid = styled.div`
   grid-row: 2 / 3;
   grid-column: 3 / 4;
-  /* background-color: #f5f5f5; */
   @media (max-width: 768px) {
     display: none;
   }
@@ -67,8 +64,7 @@ const RightSideGrid = styled.div`
 
 const FooterGrid = styled.div`
   grid-row: 3 / 4;
-  grid-column: 1 / 4;
-  /* background-color: #f5f5f5; */
+  grid-column: 1 / -1;
 `;
 
 function Main() {

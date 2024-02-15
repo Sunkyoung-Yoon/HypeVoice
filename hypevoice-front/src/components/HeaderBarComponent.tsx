@@ -7,17 +7,33 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import useRequireLogin from "../hooks/useRequireLogin";
 import logo from "@/assets/HYPE_VOICE_IMG.png";
 import { useEffect, useState } from "react";
+import { NoEncryption } from "@mui/icons-material";
 
-const HeaderButtonComponent = styled(Button)`
+const HeaderButtonComponent = styled.button`
   color: black;
   font-weight: 1000;
   font-size: large;
   margin-inline: 10px;
   align-self: center;
   white-space: nowrap;
+  background-color: white;
+  border: none;
+  outline: none;
   :hover {
     color: #5b5ff4;
+    background-color: white;
     opacity: 70%;
+    border: none;
+  outline: none;
+  }
+  :active {
+    border: none;
+  outline: none;
+  }
+  :focus {
+    color: #5b5ff4;
+    border: none;
+  outline: none;
   }
 
   @media (max-width: 750px) {
@@ -41,12 +57,10 @@ const HamburgerButtonComponent = styled(MenuIcon)`
 export const LogoImg = styled.img`
   cursor: pointer;
   transition: opacity 0.1s ease, border 0.1s ease;
-  border: 0 solid transparent;
-  border-radius: 15%;
+  border: 1px solid transparent;
 
   &:hover {
-    opacity: 0.6;
-    /* border: 2px solid #5b5ff4; */
+    opacity: 0.7;
   }
 `;
 
@@ -101,9 +115,10 @@ export default function HeaderBarComponent() {
   return (
     <AppBar
       position="fixed"
+      elevation={2}
       style={{
         backgroundColor: "white",
-        boxShadow: "none",
+        height: "80px",
       }}
     >
       <Toolbar
@@ -129,7 +144,7 @@ export default function HeaderBarComponent() {
             src={logo}
             alt="HypeVoice Logo"
             onClick={() => navigation("/")}
-            style={{ height: "43px", alignItems: "center", padding: "10px" }}
+            style={{ width: "80px", alignItems: "center", padding: "10px", marginRight: "10px", }}
           />
           {loginState && (
             <HeaderButtonComponent

@@ -6,7 +6,7 @@ import { useRedirectionWhenLoggedIn } from "../hooks/useRedirectionWhenLoggedIn"
 
 const OuterContainer = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
   align-content: center;
   width: 100%;
@@ -19,15 +19,16 @@ const OuterContainer = styled.div`
 `;
 
 const StyledLogoComponent = styled(LogoComponent)`
-  width: 10vw;
-  height: 10vw;
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
   /* margin-inline: 100px; */
 `;
 
 const H2 = styled.h2`
   font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
     "Lucida Sans", Arial, sans-serif;
-  font-size: xx-large;
+  font-size: 3rem;
   text-align: center;
   white-space: nowrap;
   margin-bottom: 20px;
@@ -42,7 +43,6 @@ const AboutLogin = styled.div`
   justify-content: space-around;
   align-items: center;
   align-content: center;
-  width: 20vw;
 `;
 
 const LoginButtonContainer = styled.div`
@@ -59,7 +59,7 @@ const KakaoLoginButton = styled.button`
   text-decoration: none;
   border-radius: 10px;
   margin-bottom: 2em;
-  height: 50px; // 세로 크기 조절
+  height: 70px; // 세로 크기 조절
   overflow: hidden; // 내용이 넘칠 경우 숨기기
   border: none; // 테두리 없애기
   display: flex;
@@ -77,7 +77,7 @@ const NaverLoginButton = styled.button`
   text-decoration: none;
   border-radius: 10px;
   margin-bottom: 2em;
-  height: 50px; // 세로 크기 조절
+  height: 70px; // 세로 크기 조절
   overflow: hidden; // 내용이 넘칠 경우 숨기기
   border: none; // 테두리 없애기
   display: flex;
@@ -96,15 +96,17 @@ const LogoContainer = styled.div`
 `;
 
 const TextContainer = styled.div`
-  flex: 4;
+  flex: 3;
   display: flex;
   justify-content: flex-start;
   white-space: nowrap; // 줄바꿈 없애기
+  font-size: 26px;
+  width: 200px;
 `;
 
 const Logo = styled("img")`
-  width: 30px;
-  height: 30px;
+  width: 50px;
+  height: 50px;
   margin-right: 10px;
 `;
 
@@ -127,10 +129,8 @@ function Login() {
       <StyledLogoComponent />
       <AboutLogin>
         <H2>
-          <br />
           HYPE VOICE에서 <br />
           모든 목소리를 만나보세요!
-          <br />
         </H2>
         <LoginButtonContainer>
           <KakaoLoginButton onClick={doKakaoLogin}>

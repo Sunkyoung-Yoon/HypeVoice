@@ -22,7 +22,7 @@ const CommunityStyleDiv = styled.div`
 		margin-right: auto;
 		margin-top: 20px;
 		margin-bottom: 20px;
-		background-color: #f3f3f3;
+		background-color: white;
 		border-radius: 10px;
 	}
 

@@ -67,9 +67,8 @@ const ImageContainer = styled.div`
 
 const TagContainer = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  overflow: hidden;
+  flex-direction: column;
+  justify-content: space-around;
 
   @media (max-width: 480px) {
     display: none;
@@ -79,16 +78,16 @@ const TagContainer = styled.div`
 const Tag = styled.span`
   background-color: #5b5ff4;
   color: #fff;
-  padding: 0.2rem 0.8rem;
   border-radius: 25px;
   display: inline-block;
   text-align: center;
-  margin: 0.1rem;
   width: 70px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 12px;
+  padding: 8px;
+  margin-left: 5px;
 `;
 
 export default function RepWork({ work }: { work: WorkInfo }) {
@@ -109,34 +108,25 @@ export default function RepWork({ work }: { work: WorkInfo }) {
     <WorkWrapper>
       <div>
         <Star $isrep={work.isRep} onClick={handleStarClick}>
-          {work.isRep ? "★" : "☆"}
+          {work.isRep ? "⭐" : "☆"}
         </Star>
       </div>
       <div>
         <div style={{ display: "flex", marginBottom: "15px" }}>
           <ImageContainer>
             <img
-              src={work.photoUrl}
+              src={work.photoUrl ? work.photoUrl : "src/assets/basicImg.png"}
               alt={work.title}
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           </ImageContainer>
-          <div
-            style={{
-              flex: "1",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-around",
-            }}
-          >
-            <TagContainer>
-              <Tag>{work.categoryInfoValue.mediaClassificationValue}</Tag>
-              <Tag>{work.categoryInfoValue.voiceToneValue}</Tag>
-              <Tag>{work.categoryInfoValue.voiceStyleValue}</Tag>
-              <Tag>{work.categoryInfoValue.genderValue}</Tag>
-              <Tag>{work.categoryInfoValue.ageValue}</Tag>
-            </TagContainer>
-          </div>
+          <TagContainer>
+            <Tag>{work.categoryInfoValue.mediaClassificationValue}</Tag>
+            <Tag>{work.categoryInfoValue.voiceToneValue}</Tag>
+            <Tag>{work.categoryInfoValue.voiceStyleValue}</Tag>
+            <Tag>{work.categoryInfoValue.genderValue}</Tag>
+            <Tag>{work.categoryInfoValue.ageValue}</Tag>
+          </TagContainer>
         </div>
         <div
           style={{
@@ -152,7 +142,7 @@ export default function RepWork({ work }: { work: WorkInfo }) {
               marginBottom: "20px",
             }}
           >
-            {work.title}
+            {work.title.length > 12 ? `${work.title.slice(0, 12)}...` : work.title}
           </h2>
           <CustomAudioPlayer src={work.recordUrl} />
         </div>

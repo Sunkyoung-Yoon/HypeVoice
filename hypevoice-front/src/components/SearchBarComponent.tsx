@@ -1,23 +1,31 @@
-import React from "react";
 import { useRecoilState, RecoilState } from "recoil";
 import styled from "styled-components";
-import SearchIcon from "@mui/icons-material/Search";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { Button } from "@mui/material";
+// import { Button } from "@mui/material";
 
 const SearchBar = styled.div`
   display: flex;
   align-items: center;
   padding: 10px;
+  border: solid 1px;
+  border-radius: 10px;
+  margin: 10px 10px 0px 10px;
 `;
 
 const SearchInput = styled.input`
   flex: 1;
   border: none;
-  border-radius: 10px;
-  margin-right: 5px;
   outline: none;
-  padding: 10px;
+  padding-left: 10px;
+`;
+
+const DeleteButton = styled.div`
+  background-color: white;
+  color: black;
+  padding-right: 15px;
+  cursor: pointer;
+  &:hover {
+    color: red;
+  }
 `;
 
 export default function SearchBarComponent({
@@ -41,12 +49,7 @@ export default function SearchBarComponent({
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
       />
-      {/* <Button variant="text" onClick={handleSearch}>
-        <SearchIcon />
-      </Button> */}
-      <Button variant="text" onClick={resetSearch} style={{ color: "red" }}>
-        <DeleteForeverIcon />
-      </Button>
+      <DeleteButton onClick={resetSearch}>X</DeleteButton>
     </SearchBar>
   );
 }

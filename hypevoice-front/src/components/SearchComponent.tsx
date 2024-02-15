@@ -7,10 +7,13 @@ import CategoryAndTag, { InitialState } from "./CategoryAndTag";
 const VoiceFilteringComponent = styled.div`
   width: 90%;
   border: 1px solid black;
-  border-radius: 10px;
+  border-radius: 15px;
   display: flex;
   flex-direction: column;
-`;
+  text-align: right;
+  `;
+  // margin-left: 3%;
+  // margin-right: 3%;
 
 interface Props {
   placeholder?: string;
@@ -26,17 +29,19 @@ export default function SearchComponent({
   fetchFilteredData,
 }: Props) {
   return (
-    <VoiceFilteringComponent>
-      {searchBarStateAtom && placeholder && (
-        <SearchBarComponent
-          placeholder={placeholder}
-          stateAtom={searchBarStateAtom}
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <VoiceFilteringComponent>
+        {searchBarStateAtom && placeholder && (
+          <SearchBarComponent
+            placeholder={placeholder}
+            stateAtom={searchBarStateAtom}
+          />
+        )}
+        <CategoryAndTag
+          filterAtom={filterAtom}
+          fetchFilteredData={fetchFilteredData}
         />
-      )}
-      <CategoryAndTag
-        filterAtom={filterAtom}
-        fetchFilteredData={fetchFilteredData}
-      />
-    </VoiceFilteringComponent>
+      </VoiceFilteringComponent>
+    </div>
   );
 }
