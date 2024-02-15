@@ -37,7 +37,7 @@ export default function CommentDeleteButtonComponent({
 	const queryClient = useQueryClient();
 	const [open, setOpen] = useState(false);
 	const getAccessToken = () => {
-		console.log(document.cookie);
+		// console.log(document.cookie);
 		const cookies = document.cookie.split('; ');
 		const accessTokenCookie = cookies.find((cookie) =>
 			cookie.startsWith('access_token='),
@@ -67,15 +67,15 @@ export default function CommentDeleteButtonComponent({
 	const { mutate } = useMutation({
 		mutationFn: deleteComment,
 		onError: () => {
-			console.log('deleteComment : On Error');
+			// console.log('deleteComment : On Error');
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries();
 			alert('삭제 성공');
-			console.log('deleteComment : Success, id : ' + id);
+			// console.log('deleteComment : Success, id : ' + id);
 		},
 		onSettled: () => {
-			console.log('deleteComment : On Settled');
+			// console.log('deleteComment : On Settled');
 		},
 	});
 

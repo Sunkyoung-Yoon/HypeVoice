@@ -7,6 +7,7 @@ import { likeState } from "@/recoil/likeState";
 import styled from "styled-components";
 import { MyInfoVoiceId } from "@/recoil/CurrentVoiceId/MyInfoVoiceId";
 import { Navigate, useNavigate } from "react-router-dom";
+import { LoginState } from "@/recoil/Auth";
 
 const Container = styled.div`
   border: 1px solid black;
@@ -45,6 +46,7 @@ export default function MyLikeVoices() {
   const accessToken = getCookie("access_token");
   const setMyInfoVoiceId = useSetRecoilState(MyInfoVoiceId);
   const navigate = useNavigate();
+  const loginState = useRecoilValue(LoginState);
 
   const GetVoicesData = async () => {
     const response = await axiosClient.get("/api/voices/list/likes");
@@ -100,7 +102,9 @@ export default function MyLikeVoices() {
   };
 
   useEffect(() => {
-    fetchVoicesData();
+    if (loginState) {
+      fetchVoicesData();
+    }
   }, [like]);
 
   return (

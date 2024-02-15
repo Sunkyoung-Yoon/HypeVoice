@@ -442,7 +442,7 @@ export default function WorkModal({
     role,
     workId,
     scriptFileUrl,
-    recordFileUrl,
+    // recordFileUrl,
     scriptFile,
     recordFile,
     scriptFileInput,
@@ -721,58 +721,51 @@ export default function WorkModal({
             onChange={handleScriptFileChange}
           />
           {/* 음성 파일 첨부 */}
-          {recordFileUrl ? (
-            <div
-              className="aboutRecord"
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                margin: "20px",
-                padding: "15px",
-              }}
-            >
-              <MicIcon style={{ fontSize: 40 }} />
-              <CustomAudioPlayer src={recordFileUrl} width={80} />
-              <Button
-                variant="contained"
-                onClick={() => {
-                  setRecordFile(null);
-                  setRecordFileUrl(null);
-                  if (recordFileInput.current) {
-                    recordFileInput.current.value = "";
-                  }
-                }}
-                sx={{
-                  backgroundColor: "#ee2727",
-                  color: "#ffffff",
-                  borderRadius: "25px",
-                  height: "41px",
-                  width: "60px",
-                  marginLeft: "25px",
-                  alignSelf: "center",
-                  "&:hover": {
-                    backgroundColor: "#ee2727",
-                  },
-                }}
-              >
-                삭제
-              </Button>
-            </div>
-          ) : (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                margin: "20px",
-                padding: "15px",
-              }}
-            >
-              <MicIcon style={{ fontSize: 40 }} />
-              <DownloadRecordFileButton record={recordFile} />
-              {role !== "read" && (
+          <div
+            className="aboutRecord"
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              margin: "20px",
+              padding: "15px",
+            }}
+          >
+            <MicIcon style={{ fontSize: 40 }} />
+            {recordFileUrl ? (
+              <>
+                <CustomAudioPlayer src={recordFileUrl} width={80} />
+                {role !== "read" && (
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      setRecordFile(null);
+                      setRecordFileUrl(null);
+                      if (recordFileInput.current) {
+                        recordFileInput.current.value = "";
+                      }
+                    }}
+                    sx={{
+                      backgroundColor: "#ee2727",
+                      color: "#ffffff",
+                      borderRadius: "25px",
+                      height: "41px",
+                      width: "60px",
+                      marginLeft: "25px",
+                      alignSelf: "center",
+                      "&:hover": {
+                        backgroundColor: "#ee2727",
+                      },
+                    }}
+                  >
+                    삭제
+                  </Button>
+                )}
+              </>
+            ) : (
+              role !== "read" && (
                 <>
+                  <DownloadRecordFileButton record={recordFile} />
                   <Button
                     variant="contained"
                     onClick={() => recordFileInput.current?.click()}
@@ -788,17 +781,17 @@ export default function WorkModal({
                   >
                     {recordFile ? "변경" : "추가"}
                   </Button>
+                  <input
+                    type="file"
+                    hidden
+                    ref={recordFileInput}
+                    onChange={handleRecordFileChange}
+                    accept="audio/*"
+                  />
                 </>
-              )}
-              <input
-                type="file"
-                hidden
-                ref={recordFileInput}
-                onChange={handleRecordFileChange}
-                accept="audio/*"
-              />
-            </div>
-          )}
+              )
+            )}
+          </div>
 
           {/* 유튜브 링크 입력 */}
           <div

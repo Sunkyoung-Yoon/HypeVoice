@@ -17,7 +17,7 @@ const HomeGridDiv = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: #f5f5f5;
+  background-color: white;
 `;
 
 const VoicesContainer = styled.div`
@@ -28,7 +28,7 @@ const VoicesContainer = styled.div`
   grid-template-columns: repeat(3, 1fr); // 변경: 한 줄에 3개의 아이템
   margin: 0px 30px;
 
-  @media (max-width: 1000px) {
+  @media (max-width: 700px) {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -65,18 +65,18 @@ export default function HomeGrid() {
   // 선택한 카테고리를 기반 보이스 조회
   const fetchFilteredVoicesData = async () => {
     try {
-      console.log(filterState);
+      // console.log(filterState);
       const transformedFilterState = transformFilterState(filterState);
-      console.log(transformedFilterState);
+      // console.log(transformedFilterState);
       // 선택한 카테고리 상태를 바탕으로 필터링된 음성 데이터를 요청
       const data = await axiosClient.post(
         "/api/voices/filter",
         transformedFilterState
       );
-      console.log(data.data);
+      // console.log(data.data);
       setVoices(data.data);
       voices.map((voice: VoiceInfo) => {
-        console.log(voice);
+        // console.log(voice);
       });
     } catch (error) {
       console.error(error);
@@ -90,11 +90,11 @@ export default function HomeGrid() {
         `/api/voices/search?keyword=${searchText}`
       );
       if (data) {
-        console.log(data);
-        console.log(data.data);
+        // console.log(data);
+        // console.log(data.data);
         setVoices(data.data);
         voices.map((voice: VoiceInfo) => {
-          console.log(voice);
+          // console.log(voice);
         });
       }
     } catch (error) {
@@ -131,8 +131,9 @@ export default function HomeGrid() {
         filterAtom={MainCurrentFilterAtom}
         fetchFilteredData={fetchFilteredVoicesData}
       />
+      <div style={{marginTop : "15px"}}>
       <InlineHeader title={"🎶 보이스"} worksCnt={0} storageSpace={0} />
-
+      </div>
       <VoicesContainer>
         {voices.map((voice) => (
           <MainVoicesTemplate key={voice.voiceId} voice={voice} />

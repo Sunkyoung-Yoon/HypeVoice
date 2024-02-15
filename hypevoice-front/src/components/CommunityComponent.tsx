@@ -99,17 +99,12 @@ const CommunityStyleDiv = styled.div`
   }
 
   .community-post-header-boardid {
-    flex-basis: 9%;
+    flex-basis: 10%;
     /* background-color: aliceblue; */
   }
 
-  .community-post-header-category {
-    flex-basis: 9%;
-    /* background-color: antiquewhite; */
-  }
-
   .community-post-header-title {
-    flex-basis: 50%;
+    flex-basis: 55%;
     /* background-color: aqua; */
   }
 
@@ -122,17 +117,17 @@ const CommunityStyleDiv = styled.div`
   }
 
   .community-post-header-writerNickname {
-    flex-basis: 14%;
+    flex-basis: 15%;
     /* background-color: aquamarine; */
   }
 
   .community-post-header-view {
-    flex-basis: 9%;
+    flex-basis: 10%;
     /* background-color: azure; */
   }
 
   .community-post-header-date {
-    flex-basis: 9%;
+    flex-basis: 10%;
     /* background-color: beige; */
   }
 
@@ -167,17 +162,17 @@ const CommunityStyleDiv = styled.div`
   }
 
   .community-post-boardid {
-    flex-basis: 9%;
+    flex-basis: 10%;
     /* background-color: aliceblue; */
   }
 
   .community-post-category {
-    flex-basis: 9%;
+    flex-basis: 10%;
     /* background-color: antiquewhite; */
   }
 
   .community-post-title {
-    flex-basis: 50%;
+    flex-basis: 55%;
     /* background-color: aqua; */
   }
 
@@ -192,17 +187,17 @@ const CommunityStyleDiv = styled.div`
   }
 
   .community-post-writerNickname {
-    flex-basis: 14%;
+    flex-basis: 15%;
     /* background-color: aquamarine; */
   }
 
   .community-post-view {
-    flex-basis: 9%;
+    flex-basis: 10%;
     /* background-color: azure; */
   }
 
   .community-post-date {
-    flex-basis: 9%;
+    flex-basis: 10%;
     /* background-color: beige; */
   }
 
@@ -437,7 +432,6 @@ const CommunityComponent: React.FC = () => {
             <List className="community-post-container">
               <ListItem className="community-post-header">
                 <div className="community-post-header-boardid">번호</div>
-                <div className="community-post-header-category">분류</div>
                 <div className="community-post-header-title">제목</div>
                 <div className="community-post-header-writerNickname">작성자</div>
                 <div className="community-post-header-date">작성일자</div>
@@ -446,7 +440,6 @@ const CommunityComponent: React.FC = () => {
               {currentPosts.map((p) => (
                 <ListItem key={p.boardId} className="community-post">
                   <div className="community-post-boardid">{p.boardId}</div>
-                  <div className="community-post-category">피드백</div>
                   <div className="community-post-title">
                     <Link to={`/community/${p.boardId}`} className="community-post-title-link">
                       <p>{p.title}</p>

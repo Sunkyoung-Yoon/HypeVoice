@@ -227,7 +227,7 @@ const PostComponent: React.FC = () => {
 					<>
 						<div className="post-header">
 							<div className="post-header-upper">
-								<p className="post-category">[{getPostData.category}]</p>
+								{/* <p className="post-category">[{getPostData.category}]</p> */}
 								<p className="post-title">{getPostData.title}</p>
 							</div>
 							<div className="post-header-lower">

@@ -5,7 +5,7 @@ import ScrollNavigation from "./ScrollNavigation";
 const LeftSideDiv = styled.div`
   height: 90vh;
   width: 100%;
-  background-color: #f5f5f5;
+  background-color: white;
   float: center;
 `;
 

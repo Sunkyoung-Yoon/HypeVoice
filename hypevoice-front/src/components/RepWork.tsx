@@ -21,14 +21,14 @@ interface StarProps {
 // 별 아이콘
 const Star = styled.span<StarProps>`
   position: relative;
-  top: 8px;
-  left: 8px;
+  top: 10px;
+  left: 10px;
   cursor: pointer;
   color: ${(props) => (props.$isrep === 1 ? "yellow" : "grey")};
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  font-size: 4vw;
+  width: 10px;
+  height: 10px;
+  font-size: 35px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -144,7 +144,7 @@ export default function RepWork({ work }: { work: WorkInfo }) {
           >
             {work.title.length > 12 ? `${work.title.slice(0, 12)}...` : work.title}
           </h2>
-          <CustomAudioPlayer src={work.recordUrl} />
+          <CustomAudioPlayer src={work.recordUrl} width={100} />
         </div>
       </div>
     </WorkWrapper>

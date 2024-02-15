@@ -96,7 +96,7 @@ export default function WorkGrid({ setWorkCount }: WorkGridProps) {
   };
 
   const { data: works } = useQuery({
-    queryKey: ["works"],
+    queryKey: ["works", voiceId],
     queryFn: fetchWorks,
     // queryFn: mockFetchWorks,
   });

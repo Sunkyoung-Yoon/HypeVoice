@@ -153,7 +153,7 @@ const deleteMember = async (accessToken: string) => {
       Authorization: `Bearer ${accessToken}`,
     },
   });
-  console.log(response.data);
+  // console.log(response.data);
   return response.data;
 };
 
@@ -161,7 +161,7 @@ const fetchMemberInfo = async (accessToken: string) => {
   const response = await axiosClient.get("/api/members", {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
-  console.log(response.data); // response.data가 멤버info
+  // console.log(response.data); // response.data가 멤버info
   return response.data;
 };
 
@@ -206,7 +206,7 @@ function MyPage() {
 
   const handleSaveChanges = async () => {
     const currentAcceessToken = getCookie("access_token");
-    alert("바뀔 nickname : " + nickname);
+    // alert("바뀔 nickname : " + nickname);
     // alert("바뀔 profileUrl : " + newProfileFile);
     // alert("currentAcceessToken : \n" + currentAcceessToken);
     await updateMember(currentAcceessToken, nickname, newProfileFile);

@@ -111,13 +111,13 @@ const Logo = styled("img")`
 `;
 
 function doNaverLogin() {
-  console.log("네이버로 로그인");
+  // console.log("네이버로 로그인");
   window.location.href =
     "http://localhost:8081/oauth2/authorization/naver?redirect_uri=http://localhost:3000/after-login";
 }
 
 function doKakaoLogin() {
-  console.log("카카오로 로그인");
+  // console.log("카카오로 로그인");
   window.location.href =
     "http://localhost:8081/oauth2/authorization/kakao?redirect_uri=http://localhost:3000/after-login";
 }

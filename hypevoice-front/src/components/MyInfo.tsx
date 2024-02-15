@@ -134,6 +134,7 @@ function MyInfo() {
           margin: "auto",
           maxWidth: 500,
           flexGrow: 1,
+          border: 1,
           backgroundColor: (theme) =>
             theme.palette.mode === "dark" ? "#1A2027" : "#fff",
         }}

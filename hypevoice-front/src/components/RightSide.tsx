@@ -6,8 +6,8 @@ import { useRecoilValue } from "recoil";
 
 const RightSideDiv = styled.div`
   height: 90vh;
-  width: 100%;
-  background-color: #f5f5f5;
+  width: 90%;
+  background-color: white;
   float: center;
 `;
 
@@ -20,7 +20,7 @@ position: fixed;
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 
 function RightSide() {
   const location = useLocation();

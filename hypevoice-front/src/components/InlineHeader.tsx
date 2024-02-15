@@ -27,7 +27,7 @@ function InlineHeader(props: OwnProps) {
           justifyContent: "space-between",
         }}
       >
-        <div style={{ justifyContent: "left", fontSize: "30px" }}>
+        <div style={{ justifyContent: "left", fontSize: "30px", marginLeft: "40px" }}>
           {props.title}
         </div>
         <div

@@ -24,10 +24,10 @@ const MainGrid = styled.div`
   grid-gap: 0;
   padding-top: ${HeaderHeight};
   border: none;
-  background-color: #f5f5f5;
+  background-color: white;
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* 반응형 스타일링 */
   }
 `;
 
@@ -35,7 +35,7 @@ const HeaderGrid = styled.div`
   grid-row: 1 / 2;
   grid-column: 1 / -1;
   height: ${HeaderHeight};
-  background-color: #f5f5f5;
+  background-color: white;
 `;
 
 const LeftSideGrid = styled.div`
