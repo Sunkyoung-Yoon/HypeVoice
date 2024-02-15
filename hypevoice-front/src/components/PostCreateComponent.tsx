@@ -9,7 +9,8 @@ import axios from 'axios';
 import { CreatePostType } from './CommunityType';
 import { useRecoilValue } from 'recoil';
 import { LoginState } from '@/recoil/Auth';
-// import AudioRecord from './AudioRecord';
+import AudioRecord from './AudioRecord';
+import AudioRecorder from './AudioRecorder';
 
 const PostEditorStyleDiv = styled.div`
 	.post-editor-component {
@@ -83,7 +84,8 @@ const PostEditorStyleDiv = styled.div`
 
 	.post-editor-footer {
 		display: flex;
-		justify-content: flex-end;
+		justify-content: space-between;
+		align-content: center;
 		width: 90%;
 		margin-left: auto;
 		margin-right: auto;
@@ -97,6 +99,24 @@ const PostEditorStyleDiv = styled.div`
 		margin-right: auto;
 		height: 400px;
 		width: 90%;
+	}
+
+	.post-editor-footer-rec {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		margin-bottom: 20px;
+		height: 50px;
+		padding: 10px;
+		background-color: #f0f0f0;
+		border-radius: 10px;
+		box-shadow: 1px 1px 1px;
+	}
+
+	.post-upload-button {
+		margin-top: 6px;
+		width: 120px;
+		height: 60px;
 	}
 `;
 
@@ -152,6 +172,7 @@ const PostCreateComponent = () => {
 	const [title, setTitle] = useState<string>('');
 	const [content, setContent] = useState<string>('');
 	const [category, setCategory] = useState<string>('피드백');
+	const [audioURL, setAudioURL] = useState('');
 	const isLogin = useRecoilValue(LoginState);
 	const getAccessToken = () => {
 		console.log(document.cookie);
@@ -166,37 +187,39 @@ const PostCreateComponent = () => {
 		}
 	};
 
-	// const createPost = async (newPost: CreatePostType): Promise<number> => {
-	// 	console.log(`Bearer ${getAccessToken()}`);
-	// 	const token = getAccessToken();
-	// 	const response = await axios.post(
-	// 		base_server_url + `/api/boards`,
-	// 		newPost,
-	// 		{
-	// 			headers: {
-	// 				'Authorization': `Bearer ${token}`,
-	// 			},
-	// 		},
-	// 	);
-	// 	return response.data;
-	// };
+	const handleAudioURL = (url: string) => {
+		setAudioURL(url);
+		console.log(audioURL);
+	};
 
 	const createPost = async (newPost: CreatePostType): Promise<number> => {
 		const token = getAccessToken();
-		console.log(token);
 		const data = new FormData();
 		data.append(
 			'request',
 			new Blob([JSON.stringify(newPost)], { type: 'application/json' }),
 		);
 		const headers = {
-			// 'Content-Type': 'multipart/form-data',
+			'Content-Type': 'multipart/form-data',
 			'Authorization': `Bearer ${token}`,
 		};
 
-		// if (file) {
-		// 	form.append('file', file);
-		// }
+		if (audioURL) {
+			const response = await fetch(audioURL);
+			const blob = await response.blob();
+			// 현재 시간을 가져옵니다.
+			const now = new Date();
+			// 시간을 문자열로 변환합니다. 이 예제에서는 'YYYYMMDDHHMMSS' 형식을 사용합니다.
+			const filename =
+				now.getFullYear() +
+				('0' + (now.getMonth() + 1)).slice(-2) +
+				('0' + now.getDate()).slice(-2) +
+				('0' + now.getHours()).slice(-2) +
+				('0' + now.getMinutes()).slice(-2) +
+				('0' + now.getSeconds()).slice(-2);
+
+			data.append('file', blob, filename);
+		}
 
 		try {
 			const response = await axios.post<number>(
@@ -268,16 +291,16 @@ const PostCreateComponent = () => {
 	// };
 
 	const handlePublish = () => {
-		if (title.length < 5) {
-			alert('제목의 내용이 너무 짧습니다');
+		if (title.length <= 0) {
+			alert('제목을 입력하세요');
 			console.log(content.replace(reg, ''));
 			console.log(content);
 			console.log(content.replace(reg, '').length);
 			return;
 		}
 
-		if (content.replace(reg, '').length < 10) {
-			alert('글의 내용이 너무 짧습니다');
+		if (content.replace(reg, '').length <= 0) {
+			alert('본문을 입력하세요');
 			console.log(content.replace(reg, ''));
 			console.log(content);
 			console.log(content.replace(reg, '').length);
@@ -354,19 +377,19 @@ const PostCreateComponent = () => {
 							onChange={handleContentChange}
 						/>
 						<div className="post-editor-footer">
+							<div className="post-editor-footer-rec">
+								<AudioRecorder getAudioURL={handleAudioURL} />
+							</div>
 							<Button
 								variant="contained"
 								color="success"
-								className="post-tolist-button"
+								className="post-upload-button"
 								onClick={handlePublish}
 								size="large"
 							>
 								<p>등록하기</p>
 							</Button>
 						</div>
-						{/* <div>
-							<AudioRecorder />
-						</div> */}
 					</div>
 				</div>
 			) : (

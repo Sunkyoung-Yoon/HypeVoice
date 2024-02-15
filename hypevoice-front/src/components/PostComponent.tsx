@@ -136,6 +136,15 @@ const PostStyleDiv = styled.div`
 	.post-modify-button {
 		margin-right: 10px;
 	}
+
+	.post-record-file {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-left: auto;
+		margin-right: auto;
+		padding: 30px 0px 10px 0px;
+	}
 `;
 
 Quill.register('formats/align', Quill.import('attributors/style/align'));
@@ -236,17 +245,18 @@ const PostComponent: React.FC = () => {
 								</div>
 							</div>
 						</div>
-						{/*{getPostData.recordUrl ? (
-							<div>
-								<img src={`${getPostData.recordUrl}`} />
-							</div>
-						) : (
-							<div></div>
-						)}*/}
+						<div className="post-record-file">
+							{getPostData.recordUrl ? (
+								<audio controls src={getPostData.recordUrl} />
+							) : (
+								<div></div>
+							)}
+						</div>
 						<div
 							className="post-content"
 							dangerouslySetInnerHTML={{ __html: getPostData.content }}
 						></div>
+						<div></div>
 						<div>
 							{userInfo && userInfo.memberId === getPostData.writerId ? (
 								<div className="post-footer">

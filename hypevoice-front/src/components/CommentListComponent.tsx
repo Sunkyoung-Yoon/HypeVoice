@@ -111,6 +111,11 @@ const CommunityListStyleDiv = styled.div`
 		margin-right: auto;
 		padding: 4%;
 	}
+
+	.voicereply {
+		display: flex;
+		height: 20px;
+	}
 `;
 
 const CommentListComponent = () => {
@@ -229,22 +234,37 @@ const CommentListComponent = () => {
 					{currentComments.length >= 1 ? (
 						<div className="comments-available">
 							{currentComments.map((comment) => (
-								<ListItem key={comment.commentId} className="comment">
-									<div className="comment-writerNickname">
-										{comment.writerNickname}
-									</div>
-									<div className="comment-content">{comment.content}</div>
-									<div className="comment-createdDate">
-										{commentTime(comment.createdDate)}
-									</div>
-									<div className="comment-delete-button">
-										{loginUser && loginUser.memberId === comment.writerId ? (
-											<CommentDeleteButtonComponent id={comment.commentId} />
-										) : (
-											<div></div>
-										)}
-									</div>
-								</ListItem>
+								<>
+									<ListItem key={comment.commentId} className="comment">
+										<div className="comment-writerNickname">
+											{comment.writerNickname}
+										</div>
+										<div className="comment-content">
+											<div>
+												<p>{comment.content}</p>
+												{comment.voiceCommentUrl ? (
+													<audio
+														className="voicereply"
+														controls
+														src={comment.voiceCommentUrl}
+													/>
+												) : (
+													<div></div>
+												)}
+											</div>
+										</div>
+										<div className="comment-createdDate">
+											{commentTime(comment.createdDate)}
+										</div>
+										<div className="comment-delete-button">
+											{loginUser && loginUser.memberId === comment.writerId ? (
+												<CommentDeleteButtonComponent id={comment.commentId} />
+											) : (
+												<div></div>
+											)}
+										</div>
+									</ListItem>
+								</>
 							))}
 							<div className="pagination">
 								<Pagination

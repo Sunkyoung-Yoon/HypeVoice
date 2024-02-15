@@ -7,22 +7,20 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { LoginState } from '@/recoil/Auth';
+import AudioRecorder from './AudioRecorder';
 
 const CommentInputStyleDiv = styled.div`
 	.comment-input-component {
-		width: 50%;
+		width: 90%;
 		margin-left: auto;
 		margin-right: auto;
 		margin-top: 10px;
 		margin-bottom: 40px;
-		padding: 10px;
-		/* border: 1px solid #cccccc; */
-		background-color: #e0e0e0;
+		padding: 5px;
 		border-radius: 5px;
-		box-shadow: 2px 2px 2px;
 	}
 
-	.comment-input-id {
+	/* .comment-input-id {
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
@@ -30,7 +28,7 @@ const CommentInputStyleDiv = styled.div`
 		font-size: x-large;
 		font-weight: bold;
 		text-align: left;
-	}
+	} */
 
 	.comment-input-textfield {
 		display: flex;
@@ -53,7 +51,7 @@ const CommentInputStyleDiv = styled.div`
 		grid-template-columns: repeat(2, auto);
 		grid-column-gap: 10px;
 		justify-content: flex-end;
-		margin-right: 30px;
+		margin-right: 40px;
 		margin-top: 10px;
 	}
 
@@ -68,6 +66,7 @@ const CommentInputStyleDiv = styled.div`
 const base_server_url = 'http://localhost:8081';
 const CommentInputComponent = () => {
 	const [comment, setComment] = useState('');
+	const [voiceCommentUrl, setVoiceCommentUrl] = useState('');
 	const queryClient = useQueryClient();
 	const isLogin = useRecoilValue(LoginState);
 	const { id } = useParams();
@@ -87,21 +86,30 @@ const CommentInputComponent = () => {
 		newComment: CreateCommentType,
 	): Promise<number> => {
 		const token = getAccessToken();
-		console.log(token);
 		const data = new FormData();
-
 		data.append(
 			'request',
 			new Blob([JSON.stringify(newComment)], { type: 'application/json' }),
 		);
 		const headers = {
-			// 'Content-Type': 'multipart/form-data',
+			'Content-Type': 'multipart/form-data',
 			'Authorization': `Bearer ${token}`,
 		};
 
-		// if (file) {
-		// 	form.append('file', file);
-		// }
+		if (voiceCommentUrl) {
+			const response = await fetch(voiceCommentUrl);
+			const blob = await response.blob();
+			const now = new Date();
+			const filename =
+				now.getFullYear() +
+				('0' + (now.getMonth() + 1)).slice(-2) +
+				('0' + now.getDate()).slice(-2) +
+				('0' + now.getHours()).slice(-2) +
+				('0' + now.getMinutes()).slice(-2) +
+				('0' + now.getSeconds()).slice(-2);
+
+			data.append('file', blob, filename);
+		}
 
 		try {
 			const response = await axios.post<number>(
@@ -148,15 +156,24 @@ const CommentInputComponent = () => {
 		setComment(event.target.value);
 	};
 	const handleSubmit = () => {
+		if (comment.length <= 0) {
+			alert('댓글 내용을 입력하세요');
+			return;
+		}
 		onCreate(comment);
 		setComment('');
+	};
+
+	const handleVoiceCommentUrl = (url: string) => {
+		setVoiceCommentUrl(url);
+		console.log(voiceCommentUrl);
 	};
 
 	return (
 		<CommentInputStyleDiv>
 			{isLogin ? (
 				<div className="comment-input-component">
-					<div className="comment-input-id">댓글 작성하기</div>
+					{/* <div className="comment-input-id">댓글 작성하기</div> */}
 					<div className="comment-input-textfield">
 						<TextField
 							className="comment-input-textfield-box"
@@ -167,17 +184,12 @@ const CommentInputComponent = () => {
 						/>
 					</div>
 					<div className="comment-input-buttons">
-						{/*<Button
-						className="comment-input-button-voice"
-						variant="contained"
-						color="error"
-					>
-						●보이스리플</Button>*/}
-
+						<AudioRecorder getAudioURL={handleVoiceCommentUrl} />
 						<Button
 							className="comment-input-button-confirm"
 							variant="contained"
 							color="primary"
+							size="medium"
 							onClick={handleSubmit}
 						>
 							작성
