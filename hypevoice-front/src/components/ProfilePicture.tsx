@@ -2,10 +2,12 @@ import loadingUserIcon from "../assets/userIcon.png";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { MemberInfo } from "./type";
+import { useRecoilValue } from "recoil";
+import { SERVER_URL } from "@/recoil/SERVER_URL";
 
 const fetchMemberInfo = async (id: string): Promise<MemberInfo> => {
   const response = await axios.get<MemberInfo>(
-    `http://localhost:8080/api/members/${id}`
+    `${useRecoilValue(SERVER_URL)}/api/members/${id}`
   );
   return response.data;
 };

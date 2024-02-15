@@ -3,6 +3,8 @@ import styled from "styled-components";
 import kakaoLogo from "@/assets/kakaoIcon.png";
 import naverLogo from "@/assets/naverIcon.jpg";
 import { useRedirectionWhenLoggedIn } from "../hooks/useRedirectionWhenLoggedIn";
+import { SERVER_URL } from "@/recoil/SERVER_URL";
+import { useRecoilValue } from "recoil";
 
 const OuterContainer = styled.div`
   display: flex;
@@ -113,13 +115,13 @@ const Logo = styled("img")`
 function doNaverLogin() {
   // console.log("네이버로 로그인");
   window.location.href =
-    "http://localhost:8081/oauth2/authorization/naver?redirect_uri=http://localhost:3000/after-login";
+    `${useRecoilValue(SERVER_URL)}/oauth2/authorization/naver?redirect_uri=${useRecoilValue(SERVER_URL)}/after-login`;
 }
 
 function doKakaoLogin() {
   // console.log("카카오로 로그인");
   window.location.href =
-    "http://localhost:8081/oauth2/authorization/kakao?redirect_uri=http://localhost:3000/after-login";
+    `${useRecoilValue(SERVER_URL)}/oauth2/authorization/kakao?redirect_uri=${useRecoilValue(SERVER_URL)}/after-login`;
 }
 
 function Login() {
