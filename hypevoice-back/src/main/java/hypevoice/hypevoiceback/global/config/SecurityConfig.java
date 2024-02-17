@@ -103,7 +103,12 @@ public class SecurityConfig {
                 .oauth2Login(configure  ->
                         configure
                                 .authorizationEndpoint(authorizationEndpointConfig ->
-                                        authorizationEndpointConfig.authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository()))
+                                        authorizationEndpointConfig
+                                                .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository())
+                                                .baseUri("/api/oauth2/authorization/**")
+                                )
+                                .redirectionEndpoint(redirectionEndpointConfig ->
+                                        redirectionEndpointConfig.baseUri("/api/login/oauth2/code/**"))
                                 .successHandler(oAuth2LoginSuccessHandler())
                                 .failureHandler(oAuthLoginFailureHandler())
                                 .userInfoEndpoint(config  ->

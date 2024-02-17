@@ -113,13 +113,13 @@ const Logo = styled("img")`
 function doNaverLogin() {
   // console.log("네이버로 로그인");
   window.location.href =
-    "https://hypevoice.site/api/oauth2/authorization/naver?redirect_uri=https://hypevoice.site/after-login";
+    "https://hypevoice.site/api/oauth2/authorization/naver?redirect_uri=http://hypevoice.site/after-login";
 }
 
 function doKakaoLogin() {
   // console.log("카카오로 로그인");
   window.location.href =
-    "https://hypevoice.site/api/oauth2/authorization/kakao?redirect_uri=https://hypevoice.site/after-login";
+    "https://hypevoice.site/api/oauth2/authorization/kakao?redirect_uri=http://hypevoice.site/after-login";
 }
 
 function Login() {
