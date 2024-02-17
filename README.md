@@ -30,20 +30,21 @@ HypeVoice를 통해 내 목소리를 소개를 좀 더 쉽고 편하게 할 수 
 ***
 ### Frontend
 
-- React : Main Framework
-- Typescript : 자바스크립트에서 발생 가능한 오류들을 미리 발견할 수 있게하여 높은 프로젝트 안정성을 꾀함
-- Recoil : 클라이언트 사이드와 관련된 상태들을 전역으로 관리
-- Tanstack-React-Query : 서버 사이드와 관련된 상태들을 비동기적으로 관리
+- Visual Studio Code : 1.85.1
+- React : 2.27.0
+- Typescript : 5.2.2
+- Recoil : 0.7.7
+- Tanstack-React-Query : 5.17.19
 
 ### Backend
+- IntelliJ : 2023.3.4
 - Java : 17.0.9
 - Springboot : 3.2.2
-- Spring Data JPA
-- Spring Security
-- QueryDSL
-- JPQL
-- Junit
-- WebSocket
+- Spring Data JPA : 3.2.2
+- Spring Security : 6.2.1
+- QueryDSL : 5.0.0
+- JPQL : 6.4.1
+- Junit5
 
 ### Infra
 - AWS EC2
@@ -133,8 +134,8 @@ HypeVoice를 통해 내 목소리를 소개를 좀 더 쉽고 편하게 할 수 
 <!-- 가운데 정렬 -->
 |이름|역할|
 |:---:|:---|
-|[윤선경(팀장)](https://github.com/Sunkyoung-Yoon)|- BackEnd<br> - 전역예외 처리 및 테스트 코드 틀 구성<br> - Spring security, JWT, JPA를 이용한 소셜로그인, 회원가입 구현 (인증, 인가)<br> - 회원,게시판,댓글, 좋아요 관련 CRUD 구현<br> - AWS S3를 활용한 파일 업로드 기능 구현<br> - 게시글 검색 시 querydsl 사용으로 가독성 높임 및 offset 방식으로 구현<br> - 오픈비두 서버 배포 및 react, springboot 배포<br> - Nginx 프론트, 백엔드 분기 처리 (/, /api)|
-|[최재식(부팀장)](https://github.com/summeree22)|- BackEnd<br>- 전역예외 처리 및 테스트코드 작성<br>- Spring JPA를 이용한 보이스(포트폴리오), 작업물, 카테고리 관련 CRUD 구현<br>- JPQL, native query를 사용한 db 관련 로직 처리 및 페이징 처리<br>- 녹음물, 스크립트과 같은 파일 관련 api 연동<br>|
+|[윤선경(팀장)](https://github.com/Sunkyoung-Yoon)|- BackEnd<br> - 전역예외 처리 및 테스트 코드 틀 구성 및 작성<br> - Spring security, JWT, JPA를 이용한 소셜로그인, 회원가입 구현 (인증, 인가)<br> - 회원,게시판,댓글, 좋아요 관련 CRUD 구현<br> - AWS S3를 활용한 파일 업로드 기능 구현 및 보이스, 작업물 파일 관련 코드 작성<br> - 게시글 검색 시 querydsl 사용으로 가독성 높임 및 offset 방식으로 구현<br> - 오픈비두 서버 배포 및 react, springboot 배포<br> - Nginx 프론트, 백엔드 분기 처리 (/, /api)|
+|[최재식(부팀장)](https://github.com/summeree22)|- BackEnd<br>- 테스트코드 작성<br>- Spring JPA를 이용한 보이스(포트폴리오), 작업물, 카테고리 관련 CRUD 구현<br>- JPQL, native query를 사용한 db 관련 로직 처리 및 페이징 처리<br>- 녹음물, 스크립트과 같은 파일 관련 api 연동<br>|
 |[김가빈]()|- BackEnd<br> - openvidu를 통한 WebRTC 기능 구현<br> - openvidu 기능 테스트<br> - 백엔드 스튜디오 관리 API 구현(방 만들기/방 찾기/방 나가기/방장 부여)<br> - 백엔드 스튜디오 녹음 파일 저장 및 삭제 기능 구현 <br> - 백엔드 스튜디오 참가 인원 관리 API 구현<br> - JPQL, native query를 사용한 db 관련 로직 처리 및 페이징 처리, 관련 테스트 코드 작성|
 |[김금환](https://github.com/imkhkim)|- 내 보이스 구현<br> - 좋아요 누른 보이스 구현<br> - 스크롤 네비게이션 구현<br> - 마이페이지 구현<br> - 내 보이스, 마이 페이지 CRUD 구현<br> - 여러 컴포넌트들 구현<br> - 화면 그리드 나누기<br> - 전체적인 CSS 다듬기|
 |[안상준](https://github.com/yonggari0821?tab=repositories)|- OpenVidu 화면 구현<br> - StudioList 관련 기능 구현(방 생성, 방 참가, 방 검색)<br> - 전반적인 프로젝트 설계 (SPA - Routes 구조, 폴더 구조)<br> - Recoil 및 TanStack-Query 활용 (서버 및 클라이언트 사이트 전역 상태 관리, 타입스크립트 관련 설계)<br> - 작업물 생성, 수정, 삭제 관련 기능 및 화면 구현<br>|
