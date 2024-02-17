@@ -181,7 +181,7 @@ const joinStudio = async (studio: StudioInfo) => {
 		const pw = prompt('비밀방입니다. 비밀번호를 입력해주세요.');
 		joinStudioInfo.password = parseInt(pw);
 	}
-	const studioId = joinStudioInfo.studioId;
+	const studioId = joinStudioInfo.studioId
 	try {
 		const response = await axiosClient.post(
 			`/api/studios/${studioId}/connect/${
