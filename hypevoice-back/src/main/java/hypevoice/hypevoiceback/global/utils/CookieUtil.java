@@ -40,7 +40,7 @@ public class CookieUtil {
         cookie.setPath("/");
         cookie.setHttpOnly(false);
         cookie.setMaxAge(maxAge);
-        cookie.setDomain("localhost");
+        cookie.setDomain("hypevoice.site");
         response.addCookie(cookie);
     }
 
@@ -49,7 +49,7 @@ public class CookieUtil {
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setMaxAge(maxAge);
-        cookie.setDomain("localhost");
+        cookie.setDomain("hypevoice.site");
         response.addCookie(cookie);
     }
 
@@ -62,7 +62,7 @@ public class CookieUtil {
                     cookie.setValue("");
                     cookie.setPath("/");
                     cookie.setMaxAge(0);
-                    cookie.setDomain("localhost");
+                    cookie.setDomain("hypevoice.site");
                     response.addCookie(cookie);
                 }
             }
