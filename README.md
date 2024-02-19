@@ -157,8 +157,8 @@ HypeVoice를 통해 내 목소리를 소개를 좀 더 쉽고 편하게 할 수 
 ***
 - 회원가입 및 로그인
     - 소셜로그인 (네이버, 카카오)
-    ![kakao](/uploads/0c44947dea3618bd4dfae0d6a469b300/kakao.gif)
-    ![naver](/uploads/00e28ded3aa575b12ca962d67d884e8e/naver.gif)
+        ![kakao](/uploads/0c44947dea3618bd4dfae0d6a469b300/kakao.gif)
+        ![naver](/uploads/00e28ded3aa575b12ca962d67d884e8e/naver.gif)
 - 메인 화면
     - 보이스 목록을 보여주는 화면
     - 보이스 카테고리 검색 화면
@@ -170,8 +170,13 @@ HypeVoice를 통해 내 목소리를 소개를 좀 더 쉽고 편하게 할 수 
     - 내 보이스 작업물 등록 장면
 - 피드백 게시판
     - 게시글 목록 보여주고 페이지 넘기는 거 보여주는 장면
+        ![게시글_목록](/uploads/ab6a3c5577784d31c61df5f6f24f692f/게시글_목록.gif)
     - 게시글 검색하는 장면
+        ![게시글_검색](/uploads/f807be6def9fac7be590ca703567994d/게시글_검색.gif)
     - 게시글 등록 (글 및 유투브 링크 적용)
+        ![게시물_등록](/uploads/216f27538429d053ca336a3c7b36ad5d/게시물_등록.gif)
+    - 보이스 리플
+        ![보이스_리플](/uploads/4f979cb9142d8711e479beb84f2970d0/보이스_리플.gif)
 - 스튜디오
     - 방 생성하는 장면
     - 기존 방에 들어가서 화면 공유하거나 채팅하는 장면
