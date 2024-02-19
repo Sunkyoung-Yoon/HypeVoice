@@ -157,6 +157,8 @@ HypeVoice를 통해 내 목소리를 소개를 좀 더 쉽고 편하게 할 수 
 ***
 - 회원가입 및 로그인
     - 소셜로그인 (네이버, 카카오)
+    ![kakao](/uploads/0c44947dea3618bd4dfae0d6a469b300/kakao.gif)
+    ![naver](/uploads/00e28ded3aa575b12ca962d67d884e8e/naver.gif)
 - 메인 화면
     - 보이스 목록을 보여주는 화면
     - 보이스 카테고리 검색 화면
