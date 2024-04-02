@@ -1,6 +1,6 @@
 # :microphone: HYPE VOICE - 성우 지망생들을 위한 플랫폼
 
-<img src="/uploads/b6b4ceafdd99ffd4ef35b80f46990371/image.png" width="500px" height="300px">
+<img src="https://github.com/Sunkyoung-Yoon/SunKyoung-Yoon/assets/97610532/ca7a2fb1-468c-4d48-962e-573e7f53d6c4" width="500px" height="300px">
 
 ## 서비스 소개
 > Hype 한 Voice로 성우가 되고 싶은 사람은 누구나! <br> 내가 올린 작업물들이 곧 내 포트폴리오! <br> 같은 꿈을 키워나가는 사람들과 함께 연습과 피드백도 가능합니다! 😎
@@ -144,12 +144,12 @@ HypeVoice를 통해 내 목소리를 소개를 좀 더 쉽고 편하게 할 수 
 
 
 ## 아키텍처
-<img src="/uploads/c06f11332422434ffd0bfdfb35c48b3c/image.png" width="800px" height="550px">
+<img src="https://github.com/Sunkyoung-Yoon/SunKyoung-Yoon/assets/97610532/71c26f9f-51b6-4b04-a93f-2ac86395a310" width="800px" height="550px">
 <br>
 
 
 ## ERD
-<img src="/uploads/17a36e2f5a33d531b3a9dec1a6b73b70/image.png" width="800px" height="550px">
+<img src="https://github.com/Sunkyoung-Yoon/SunKyoung-Yoon/assets/97610532/c1b9fd4f-d42f-436c-935a-5259eb81c8d4" width="800px" height="550px">
 <br>
 
 
@@ -158,50 +158,50 @@ HypeVoice를 통해 내 목소리를 소개를 좀 더 쉽고 편하게 할 수 
 - 회원가입 및 로그인 / 로그아웃
     - 소셜로그인 (네이버, 카카오)
 
-        ![kakao](/uploads/0c44947dea3618bd4dfae0d6a469b300/kakao.gif)
-        ![naver](/uploads/00e28ded3aa575b12ca962d67d884e8e/naver.gif)
+        ![kakao](https://github.com/Sunkyoung-Yoon/SunKyoung-Yoon/assets/97610532/b036b171-f28c-4ac3-9516-8f0d30eb218c)
+        ![naver](https://github.com/Sunkyoung-Yoon/SunKyoung-Yoon/assets/97610532/be181a8f-3aee-42e5-8322-18ce9a4849ee)
 - 메인 화면
     - 보이스 목록, (카테고리) 검색, 조회
 
-        ![보이스_검색](/uploads/faf5ad118018829c52e0e0e2323b463d/보이스_검색.gif)
+        ![보이스_검색](https://github.com/Sunkyoung-Yoon/SunKyoung-Yoon/assets/97610532/864d81b9-9b83-46ce-87e3-9b8c3917918f)
     - 보이스 좋아요 기능 (좋아요 리스트 추가 및 이동)
     
-        ![좋아요_기능](/uploads/8c1304de6a8a029bc991a38d9e70b594/좋아요_기능.gif)
+        ![좋아요_기능](https://github.com/Sunkyoung-Yoon/SunKyoung-Yoon/assets/97610532/54b8c389-b452-4cfc-8005-69d1316668a1)
 - 내 보이스
     - 내 보이스 작업물 등록
 
-        ![작업물_등록](/uploads/2230d19b106bbe608da47a9bfc1bc8d2/작업물_등록.gif)
+        ![작업물_등록](https://github.com/Sunkyoung-Yoon/SunKyoung-Yoon/assets/97610532/2305a548-c7cd-44f0-b446-81c295d5bd34)
     - 대표 작업물 등록, 작업물 상세 화면
 
-        ![대표_작업물_등록__조회](/uploads/275974d23d3aa453c39c114bcbd08b3e/대표_작업물_등록__조회.gif)
+        ![대표_작업물_등록__조회](https://github.com/Sunkyoung-Yoon/SunKyoung-Yoon/assets/97610532/89974c8b-cd91-4fdb-a86f-b78e01ba93c5)
 - 피드백 게시판
     - 게시글 목록, 페이지
 
-        ![게시글_목록](/uploads/ab6a3c5577784d31c61df5f6f24f692f/게시글_목록.gif)
+        ![게시글_목록](https://github.com/Sunkyoung-Yoon/SunKyoung-Yoon/assets/97610532/babc5846-2e8f-4468-811c-c3821acb97d5)
     - 게시글 검색
 
-        ![게시글_검색](/uploads/f807be6def9fac7be590ca703567994d/게시글_검색.gif)
+        ![게시글_검색](https://github.com/Sunkyoung-Yoon/SunKyoung-Yoon/assets/97610532/0b94ec39-f4c3-405b-a625-0073b3f58408)
     - 게시글 등록 (글 및 유투브 링크 적용)
 
-        ![게시물_등록](/uploads/216f27538429d053ca336a3c7b36ad5d/게시물_등록.gif)
+        ![게시물_등록](https://github.com/Sunkyoung-Yoon/SunKyoung-Yoon/assets/97610532/b9604754-2cc3-411b-875d-b7658850ebf3)
     - 보이스 리플
 
-        ![보이스_리플](/uploads/4f979cb9142d8711e479beb84f2970d0/보이스_리플.gif)
+        ![보이스_리플](https://github.com/Sunkyoung-Yoon/SunKyoung-Yoon/assets/97610532/de0baf45-e837-4c0b-9d75-09313e905fc3)
 - 스튜디오
     - 방 생성
     - 방 참여 및 화면 공유
 
-        ![방_참여_및_화면_공유](/uploads/b4cc8f0daf8a61e817e895293f0203bc/방_참여_및_화면_공유.gif)
+        ![방_참여_및_화면_공유](https://github.com/Sunkyoung-Yoon/SunKyoung-Yoon/assets/97610532/9e841e42-c048-4f1c-a19a-59c71e0378ce)
     - 채팅
     
-        ![채팅](/uploads/b695b879cf0baa381c09afba2bd5827c/채팅.gif)
+        ![채팅](https://github.com/Sunkyoung-Yoon/SunKyoung-Yoon/assets/97610532/c5300bf0-72f3-4f8c-9fa3-6b1c67202a0e)
     - 녹음(자기 것, 다른사람 것) 녹음 및 다운 기능
 - 마이페이지
     - 마이페이지 프로필 이미지, 닉네임 수정
 
-        ![마이_페이지_수정](/uploads/ad83c698710807d60da0fa6c86d1295d/마이_페이지_수정.gif)
+        ![마이_페이지_수정](https://github.com/Sunkyoung-Yoon/SunKyoung-Yoon/assets/97610532/98f5fd88-a6c7-4568-9a86-87231ca6676c)
     - 회원 탈퇴
     
-        ![회원_탈퇴](/uploads/30291f4e03198484bf1ff79962128cb4/회원_탈퇴.gif)
+        ![회원_탈퇴](https://github.com/Sunkyoung-Yoon/SunKyoung-Yoon/assets/97610532/e09e9c93-12db-42c7-a301-2834cb606268)
     
 
